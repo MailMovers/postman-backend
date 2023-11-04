@@ -6,7 +6,7 @@ CREATE TABLE writing_pads (
   is_default TINYINT NOT NULL DEFAULT 0,
   name VARCHAR(20) NOT NULL,
   writing_limit INT NOT NULL DEFAULT 1000
-)NGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 
 -- migrate:down
 DROP TABLE writing_pads;

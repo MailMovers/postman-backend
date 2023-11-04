@@ -8,7 +8,7 @@ CREATE TABLE letter_detail (
   image_url VARCHAR(255),
   FOREIGN KEY (letter_id) REFERENCES letters(id),
   FOREIGN KEY (letter_types_id) REFERENCES letter_types(id)
-)NGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 
 -- migrate:down
 

@@ -9,7 +9,7 @@ CREATE TABLE address (
   send_phone_number INT(20),
   post_number INT(10),
   FOREIGN KEY (user_id) REFERENCES users(id)
-)NGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 
 -- migrate:down
 DROP TABLE address;

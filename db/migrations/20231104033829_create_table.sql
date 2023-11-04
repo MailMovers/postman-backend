@@ -15,7 +15,7 @@ CREATE TABLE order_detail (
   FOREIGN KEY (payment_id) REFERENCES payments(id),
   FOREIGN KEY (users_id) REFERENCES users(id),
   FOREIGN KEY (delivery_method_id) REFERENCES delivery_methods(id)
-)NGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 
 -- migrate:down
 DROP TABLE order_detail

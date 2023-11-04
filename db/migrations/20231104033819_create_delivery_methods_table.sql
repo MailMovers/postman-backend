@@ -4,7 +4,7 @@ CREATE TABLE delivery_methods (
   name VARCHAR(255) NOT NULL,
   price SMALLINT NOT NULL,
   description VARCHAR(255)
-)NGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 
 -- migrate:down
 DROP TABLE delivery_methods;

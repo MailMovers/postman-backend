@@ -12,6 +12,6 @@ CREATE TABLE letters (
   create_at TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (writing_pad_id) REFERENCES writing_pads(id)
-)NGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 -- migrate:down
 DROP TABLE letters;

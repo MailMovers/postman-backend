@@ -10,6 +10,7 @@ CREATE TABLE reviews (
   letter_id INT NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (letter_id) REFERENCES letters(id)
-)NGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 -- migrate:down
 DROP TABLE reviews;
+

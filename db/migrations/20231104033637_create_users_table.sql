@@ -10,7 +10,7 @@ CREATE TABLE users (
   phone_number INT(11),
   status TINYINT DEFAULT 1,
   created_at TIMESTAMP
-)NGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 
 -- migrate:down
 DROP TABLE users;
