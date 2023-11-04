@@ -3,7 +3,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 
 const { errorHandler } = require("./src/utils/errorHandler");
-const { routes } = require("./src/routes");
+const router = require("./src/routes");
 
 
 const createApp = () => {
@@ -11,9 +11,9 @@ const createApp = () => {
 
   app.use(express.json());
   app.use(cors());
-  app.use(morgan("combined"));
+  app.use(morgan("dev"));
 
-  app.use(routes);
+  app.use(router);
   app.use(errorHandler);
 
   return app;
