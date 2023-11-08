@@ -10,6 +10,7 @@ CREATE TABLE `users` (
   `delete_at` timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP
 );
 ALTER TABLE `users` ADD FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`);
+ALTER TABLE `users` MODIFY COLUMN `deleted_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
 
 -- migrate:down
 DROP TABLE `users`
