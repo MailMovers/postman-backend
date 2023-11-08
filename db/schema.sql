@@ -10,6 +10,32 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `address`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `address` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `send_address` varchar(50) NOT NULL,
+  `delivery_address` varchar(50) NOT NULL,
+  `send_address_detail` varchar(30) NOT NULL,
+  `delivery_address_detail` varchar(30) NOT NULL,
+  `send_phone` varchar(20) NOT NULL,
+  `delivery_phone` varchar(20) NOT NULL,
+  `send_name` varchar(10) NOT NULL,
+  `delivery_name` varchar(10) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `address_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `customer_service`
 --
 
@@ -153,7 +179,7 @@ CREATE TABLE `roles` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `schema_migrations` (
-  `version` varchar(255) COLLATE latin1_bin NOT NULL,
+  `version` varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   PRIMARY KEY (`version`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -259,6 +285,7 @@ INSERT INTO `schema_migrations` (version) VALUES
   ('20231107052550'),
   ('20231107052600'),
   ('20231107052612'),
+  ('20231107052619'),
   ('20231107052636'),
   ('20231107052648'),
   ('20231107052655'),
