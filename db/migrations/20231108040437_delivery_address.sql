@@ -11,6 +11,6 @@ CREATE TABLE `delivery_address` (
   `deleted_at` timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP
 );
 ALTER TABLE `delivery_address` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
-
+ALTER TABLE `delivery_address` MODIFY COLUMN `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
 -- migrate:down
 DROP TABLE `delivery_address`
