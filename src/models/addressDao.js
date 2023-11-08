@@ -43,7 +43,7 @@ const insertSendAddressDao = async (
   sendPhone,
   sendName
 ) => {
-  await dataSource.query(
+  await AppDataSource.query(
     `
           INSERT INTO send_address
           (
@@ -59,7 +59,7 @@ const insertSendAddressDao = async (
               ?,
               ?,
               ?,
-              ?,
+              ?
           )
           `,
     [userId, sendAddress, sendAddressDetail, sendPhone, sendName]
@@ -67,9 +67,9 @@ const insertSendAddressDao = async (
 };
 
 const deleteSendAddressDao = async (userId, addressId) => {
-  return await dataSource.query(
+  return await AppDataSource.query(
     `
-    UPDATE address
+    UPDATE send_address
     SET
       send_address_detail = NULL,
       send_address = NULL,
@@ -82,19 +82,19 @@ const deleteSendAddressDao = async (userId, addressId) => {
   );
 };
 
-const deleteDeliveryAddressDao = async (userId, addressId) => {
-  return await dataSource.query(
+const deleteDeliveryAddressDao = async (userId, deliveryAddressId) => {
+  return await AppDataSource.query(
     `
-      UPDATE address
+      UPDATE delivery_address
       SET
         delivery_address_detail = NULL,
         delivery_address = NULL,
         delivery_phone = NULL,
         delivery_name = NULL
-      WHERE user_id = ? AND id = ?;
+      WHERE user_id = ? AND delivery_address.id = ?;
       `,
     [userId],
-    [addressId]
+    [deliveryAddressId]
   );
 };
 

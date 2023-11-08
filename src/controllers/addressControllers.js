@@ -5,6 +5,7 @@ const {
   deleteDeliveryAddressService,
 } = require("../services/addressServices");
 
+//받는사람 주소등록
 const insertAddressController = async (req, res, next) => {
   try {
     const {
@@ -14,7 +15,7 @@ const insertAddressController = async (req, res, next) => {
       deliveryPhone,
       deliveryName,
     } = req.body;
-    if (!userId) {
+    if (userId.length === 0 || !userId) {
       return res.status(400).json({ message: "KEY_ERROR" });
     } else if (!deliveryAddress) {
       return res.status(400).json({ message: "배송주소를 입력해주세요" });
@@ -41,10 +42,10 @@ const insertAddressController = async (req, res, next) => {
     next(err);
   }
 };
-
+//보내는사람 주소등록
 const insertSendAddressController = async (req, res, next) => {
   try {
-    const userId = userId;
+    const userId = 2;
     const { sendAddress, sendAddressDetail, sendPhone, sendName } = req.body;
     if (!userId) return res.status(400).json({ message: "KEY_ERROR" });
     if (!sendAddress)
@@ -73,7 +74,7 @@ const insertSendAddressController = async (req, res, next) => {
 
 const deleteSendAddressController = async (req, res, next) => {
   try {
-    const userId = req.userId;
+    const userId = 2;
     const addressId = req.body;
     if (!userId) return res.status(400).json({ message: "KEY_ERROR" });
     if (!addressId)
@@ -90,7 +91,7 @@ const deleteSendAddressController = async (req, res, next) => {
 
 const deleteDeliveryAddressController = async (req, res, next) => {
   try {
-    const userId = req.userId;
+    const userId = 2;
     const addressId = req.body;
     if (!userId) return res.status(400).json({ message: "KEY_ERROR" });
     if (!addressId)
@@ -100,7 +101,7 @@ const deleteDeliveryAddressController = async (req, res, next) => {
       data: await deleteDeliveryAddressService(userId, addressId),
     });
   } catch (err) {
-    console.errror(err);
+    console.error(err);
     next(err);
   }
 };

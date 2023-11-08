@@ -41,8 +41,8 @@ const deleteSendAddressService = async (userId, addressId) => {
   return await deleteSendAddressDao(userId, addressId);
 };
 
-const deleteDeliveryAddressService = async (userId, addressId) => {
-  return await deleteDeliveryAddressDao(userId, addressId);
+const deleteDeliveryAddressService = async (userId, deliveryAddressId) => {
+  return await deleteDeliveryAddressDao(userId, deliveryAddressId);
 };
 
 module.exports = {
