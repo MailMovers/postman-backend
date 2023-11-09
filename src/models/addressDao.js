@@ -63,15 +63,10 @@ const deleteSendAddressDao = async (userId, sendAddressId) => {
   const deleteSendAddress = await AppDataSource.query(
     `
     UPDATE send_address
-    SET
-      send_address_detail = NULL,
-      send_address = NULL,
-      send_phone = NULL,
-      send_name = NULL
+    SET deleted_at = NOW()
     WHERE user_id = ? AND id = ?;
     `,
-    [userId],
-    [sendAddressId]
+    [userId, sendAddressId]
   );
   return deleteSendAddress;
 };
@@ -80,12 +75,11 @@ const deleteDeliveryAddressDao = async (userId, deliveryAddressId) => {
   const deleteDeliveryAddress = await AppDataSource.query(
     `
     UPDATE delivery_address
-    SET deleted_at = NULL
+    SET deleted_at = NOW()
     WHERE user_id = ? AND id = ?;
-    
-      `,
-    [userId],
-    [deliveryAddressId]
+
+    `,
+    [userId, deliveryAddressId]
   );
   return deleteDeliveryAddress;
 };
@@ -99,7 +93,7 @@ const getSendListAddressDao = async (userId) => {
     send_address,
     send_phone,
     send_name,
-    deleted_at
+    send_address.deleted_at
     FROM send_Address
     LEFT JOIN users ON users.id = send_address.user_id
     WHERE user_id = ?
@@ -118,7 +112,7 @@ const getDeliveryListAddressDao = async (userId) => {
     delivery_address,
     delivery_phone,
     delivery_name,
-    deleted_at
+    delivery_address.deleted_at
     FROM delivery_address
     LEFT JOIN users ON users.id = delivery_address.user_id
     WHERE user_id  = ?

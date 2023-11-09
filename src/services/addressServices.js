@@ -3,12 +3,9 @@ const {
   insertSendAddressDao,
   deleteSendAddressDao,
   deleteDeliveryAddressDao,
-<<<<<<< HEAD
   getSendListAddressDao,
   getDeliveryListAddressDao,
   getSendAddressDao,
-=======
->>>>>>> d79eb7b (스테이징)
 } = require("../models/addressDao");
 
 const insertAddressService = async (
@@ -43,45 +40,43 @@ const insertSendAddressService = async (
   );
 };
 
-<<<<<<< HEAD
 const deleteSendAddressService = async (userId, sendAddressId) => {
   return await deleteSendAddressDao(userId, sendAddressId);
 };
 
 const deleteDeliveryAddressService = async (userId, deliveryAddressId) => {
-  return await deleteDeliveryAddressDao(userId, deliveryAddressId);
+  const deleteDeliveryAddress = await deleteDeliveryAddressDao(
+    userId,
+    deliveryAddressId
+  );
+  return deleteDeliveryAddress;
 };
 
 const getSendListAddressService = async (userId) => {
-  return await getSendListAddressDao(userId);
+  const addressList = await getSendListAddressDao(userId);
+  const filteredAddressList = addressList.filter(
+    (address) => address.deleted_at === null
+  );
+  return filteredAddressList;
 };
 
 const getDeliveryListAddressService = async (userId) => {
-  return await getDeliveryListAddressDao(userId);
+  const addressList = await getDeliveryListAddressDao(userId);
+  const filteredAddressList = addressList.filter(
+    (address) => address.deleted_at === null
+  );
+  return filteredAddressList;
 };
 
 const getSendAddressService = async (userId, sendAddressId) => {
   return await getSendAddressDao(userId, sendAddressId);
 };
-=======
-const deleteSendAddressService = async (userId, addressId) => {
-  return await deleteSendAddressDao(userId, addressId);
-};
-
-const deleteDeliveryAddressService = async (userId, addressId) => {
-  return await deleteDeliveryAddressDao(userId, addressId);
-};
-
->>>>>>> d79eb7b (스테이징)
 module.exports = {
   insertAddressService,
   insertSendAddressService,
   deleteSendAddressService,
   deleteDeliveryAddressService,
-<<<<<<< HEAD
   getSendListAddressService,
   getDeliveryListAddressService,
   getSendAddressService,
-=======
->>>>>>> d79eb7b (스테이징)
 };
