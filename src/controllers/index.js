@@ -3,6 +3,9 @@ const {
   insertSendAddressController,
   deleteSendAddressController,
   deleteDeliveryAddressController,
+  getSendAddressListController,
+  getDeliveryAddressListController,
+  getSendAddressController,
 } = require("./addressControllers");
 
 module.exports = {
@@ -11,5 +14,8 @@ module.exports = {
     insertSendAddressController,
     deleteSendAddressController,
     deleteDeliveryAddressController,
+    getSendAddressListController,
+    getDeliveryAddressListController,
+    getSendAddressController,
   },
 };

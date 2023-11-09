@@ -3,6 +3,9 @@ const {
   insertSendAddressDao,
   deleteSendAddressDao,
   deleteDeliveryAddressDao,
+  getSendListAddressDao,
+  getDeliveryListAddressDao,
+  getSendAddressDao,
 } = require("../models/addressDao");
 
 const insertAddressService = async (
@@ -37,17 +40,31 @@ const insertSendAddressService = async (
   );
 };
 
-const deleteSendAddressService = async (userId, addressId) => {
-  return await deleteSendAddressDao(userId, addressId);
+const deleteSendAddressService = async (userId, sendAddressId) => {
+  return await deleteSendAddressDao(userId, sendAddressId);
 };
 
 const deleteDeliveryAddressService = async (userId, deliveryAddressId) => {
   return await deleteDeliveryAddressDao(userId, deliveryAddressId);
 };
 
+const getSendListAddressService = async (userId) => {
+  return await getSendListAddressDao(userId);
+};
+
+const getDeliveryListAddressService = async (userId) => {
+  return await getDeliveryListAddressDao(userId);
+};
+
+const getSendAddressService = async (userId, sendAddressId) => {
+  return await getSendAddressDao(userId, sendAddressId);
+};
 module.exports = {
   insertAddressService,
   insertSendAddressService,
   deleteSendAddressService,
   deleteDeliveryAddressService,
+  getSendListAddressService,
+  getDeliveryListAddressService,
+  getSendAddressService,
 };

@@ -3,6 +3,9 @@ const {
   insertSendAddressService,
   deleteSendAddressService,
   deleteDeliveryAddressService,
+  getSendListAddressService,
+  getDeliveryListAddressService,
+  getSendAddressService,
 } = require("./addressServices");
 
 module.exports = {
@@ -10,4 +13,7 @@ module.exports = {
   insertSendAddressService,
   deleteSendAddressService,
   deleteDeliveryAddressService,
+  getSendListAddressService,
+  getDeliveryListAddressService,
+  getSendAddressService,
 };

@@ -3,6 +3,9 @@ const {
   insertSendAddressDao,
   deleteSendAddressDao,
   deleteDeliveryAddressDao,
+  getSendListAddressDao,
+  getDeliveryListAddressDao,
+  getSendAddressDao,
 } = require("./addressDao");
 
 module.exports = {
@@ -10,4 +13,7 @@ module.exports = {
   insertSendAddressDao,
   deleteSendAddressDao,
   deleteDeliveryAddressDao,
+  getSendListAddressDao,
+  getDeliveryListAddressDao,
+  getSendAddressDao,
 };
