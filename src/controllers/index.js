@@ -1,5 +1,5 @@
 const {
-  insertAddressController,
+  insertDeliveryAddressController,
   insertSendAddressController,
   deleteSendAddressController,
   deleteDeliveryAddressController,
@@ -9,9 +9,11 @@ const {
   getDeliveryAddressController,
 } = require("./addressControllers");
 
+const { letterContoller, photoContoller, confirmLetterContoller, stampController } = require("./writingLetterControllers")
+
 module.exports = {
   addressController: {
-    insertAddressController,
+    insertDeliveryAddressController,
     insertSendAddressController,
     deleteSendAddressController,
     deleteDeliveryAddressController,
@@ -20,4 +22,10 @@ module.exports = {
     getSendAddressController,
     getDeliveryAddressController,
   },
+  writingLetterController: {
+    letterContoller,
+    photoContoller,
+    stampController,
+    confirmLetterContoller,
+  }
 };
