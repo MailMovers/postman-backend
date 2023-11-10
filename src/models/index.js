@@ -6,6 +6,7 @@ const {
   getSendListAddressDao,
   getDeliveryListAddressDao,
   getSendAddressDao,
+  getDeliveryAddressDao,
 } = require("./addressDao");
 
 module.exports = {
@@ -16,4 +17,5 @@ module.exports = {
   getSendListAddressDao,
   getDeliveryListAddressDao,
   getSendAddressDao,
+  getDeliveryAddressDao,
 };

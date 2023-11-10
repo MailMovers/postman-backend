@@ -6,6 +6,7 @@ const {
   getSendListAddressService,
   getDeliveryListAddressService,
   getSendAddressService,
+  getDeliveryAddressService,
 } = require("./addressServices");
 
 module.exports = {
@@ -16,4 +17,5 @@ module.exports = {
   getSendListAddressService,
   getDeliveryListAddressService,
   getSendAddressService,
+  getDeliveryAddressService,
 };

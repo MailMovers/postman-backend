@@ -6,6 +6,7 @@ const {
   getSendListAddressService,
   getDeliveryListAddressService,
   getSendAddressService,
+  getDeliveryAddressService,
 } = require("../services/addressServices");
 
 //받는사람 주소등록
@@ -139,13 +140,30 @@ const getDeliveryAddressListController = async (req, res, next) => {
 const getSendAddressController = async (req, res, next) => {
   try {
     const userId = 2;
-    const sendAddressId = req.body;
+    const sendAddressId = req.query;
     if (!userId) return res.status(400).json({ message: "KEY_ERROR" });
     if (!sendAddressId)
       return res.status(400).json({ message: "주소가 없습니다" });
     return res.status(200).json({
       message: "GET_SEND_ADDRESS",
-      data: await getSendAddressService(userId, sendAddressId),
+      data: await getSendAddressService(userId),
+    });
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+};
+
+const getDeliveryAddressController = async (req, res, next) => {
+  try {
+    const userId = 2;
+    const deliveryAddressId = req.body;
+    if (!userId) return res.status(400).json({ message: "KEY_ERROR" });
+    if (!deliveryAddressId)
+      return res.status(400).json({ message: "주소가 없습니다" });
+    return res.status(200).json({
+      message: "GET_DELIVERY_ADDRESS",
+      data: await getDeliveryAddressService(userId),
     });
   } catch (err) {
     console.error(err);
@@ -160,4 +178,5 @@ module.exports = {
   getSendAddressListController,
   getDeliveryAddressListController,
   getSendAddressController,
+  getDeliveryAddressController,
 };
