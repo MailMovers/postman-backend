@@ -121,7 +121,7 @@ const getDeliveryListAddressDao = async (userId) => {
   return deliveryAddressList;
 };
 
-const getSendAddressDao = async (userId, sendAddressId) => {
+const getSendAddressDao = async (userId) => {
   const sendAddressList = await AppDataSource.query(
     `
     SELECT
@@ -129,18 +129,17 @@ const getSendAddressDao = async (userId, sendAddressId) => {
     send_address,
     send_phone,
     send_name,
-    deleted_at
+    send_address.deleted_at
     FROM send_address
     LEFT JOIN users ON users.id = send_address.user_id
-    WHERE user_id  = ? AND ?
+    WHERE user_id  = ? AND send_address.deleted_at IS NULL;
     `,
-    [userId],
-    [sendAddressId[0]]
+    [userId]
   );
   return sendAddressList;
 };
 
-const getDeliveryAddressDao = async (userId, deliveryAddressId) => {
+const getDeliveryAddressDao = async (userId) => {
   const deliveryAddressList = await AppDataSource.query(
     `
     SELECT
@@ -148,13 +147,12 @@ const getDeliveryAddressDao = async (userId, deliveryAddressId) => {
     delivery_address,
     delivery_phone,
     delivery_name,
-    deleted_at
+    delivery_address.deleted_at
     FROM delivery_address
     LEFT JOIN users ON users.id = delivery_address.user_id
-    WHERE user_id  = ? AND id = ?
+    WHERE user_id  = ? AND delivery_address.deleted_at IS NULL;
     `,
-    [userId],
-    [deliveryAddressId[0]]
+    [userId]
   );
   return deliveryAddressList;
 };
@@ -167,4 +165,5 @@ module.exports = {
   getSendListAddressDao,
   getDeliveryListAddressDao,
   getSendAddressDao,
+  getDeliveryAddressDao,
 };

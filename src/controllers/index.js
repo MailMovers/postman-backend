@@ -6,6 +6,7 @@ const {
   getSendAddressListController,
   getDeliveryAddressListController,
   getSendAddressController,
+  getDeliveryAddressController,
 } = require("./addressControllers");
 
 module.exports = {
@@ -17,5 +18,6 @@ module.exports = {
     getSendAddressListController,
     getDeliveryAddressListController,
     getSendAddressController,
+    getDeliveryAddressController,
   },
 };

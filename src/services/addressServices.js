@@ -6,6 +6,7 @@ const {
   getSendListAddressDao,
   getDeliveryListAddressDao,
   getSendAddressDao,
+  getDeliveryAddressDao,
 } = require("../models/addressDao");
 
 const insertAddressService = async (
@@ -68,9 +69,21 @@ const getDeliveryListAddressService = async (userId) => {
   return filteredAddressList;
 };
 
-const getSendAddressService = async (userId, sendAddressId) => {
-  return await getSendAddressDao(userId, sendAddressId);
+const getSendAddressService = async (userId) => {
+  const addressList = await getSendAddressDao(userId);
+  const filteredAddressList = addressList.filter(
+    (address) => address.deleted_at === null
+  );
+  return filteredAddressList;
 };
+const getDeliveryAddressService = async (userId) => {
+  const addressList = await getDeliveryAddressDao(userId);
+  const filteredAddressList = addressList.filter(
+    (address) => address.deleted_at === null
+  );
+  return filteredAddressList;
+};
+
 module.exports = {
   insertAddressService,
   insertSendAddressService,
@@ -79,4 +92,5 @@ module.exports = {
   getSendListAddressService,
   getDeliveryListAddressService,
   getSendAddressService,
+  getDeliveryAddressService,
 };

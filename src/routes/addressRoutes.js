@@ -8,6 +8,7 @@ const {
   getSendAddressListController,
   getDeliveryAddressListController,
   getSendAddressController,
+  getDeliveryAddressController,
 } = addressController;
 const addressRoute = express.Router();
 
@@ -18,5 +19,6 @@ addressRoute.post("/sand/delete", deleteSendAddressController);
 addressRoute.get("/send", getSendAddressListController);
 addressRoute.get("/", getDeliveryAddressListController);
 addressRoute.get("/default/send", getSendAddressController);
+addressRoute.get("/default/", getDeliveryAddressController);
 
 module.exports = { addressRoute };
