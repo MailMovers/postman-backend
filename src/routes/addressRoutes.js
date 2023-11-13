@@ -1,7 +1,7 @@
 const express = require("express");
 const { addressController } = require("../controllers");
 const {
-  insertAddressController,
+  insertDeliveryAddressController,
   insertSendAddressController,
   deleteSendAddressController,
   deleteDeliveryAddressController,
@@ -12,13 +12,13 @@ const {
 } = addressController;
 const addressRoute = express.Router();
 
-addressRoute.post("/", insertAddressController);
+addressRoute.post("/delivery", insertDeliveryAddressController);
 addressRoute.post("/send", insertSendAddressController);
 addressRoute.post("/delete", deleteDeliveryAddressController);
 addressRoute.post("/delete/send", deleteSendAddressController);
 addressRoute.get("/send", getSendAddressListController);
-addressRoute.get("/", getDeliveryAddressListController);
+addressRoute.get("/delivery", getDeliveryAddressListController);
 addressRoute.get("/default/send", getSendAddressController);
-addressRoute.get("/default/", getDeliveryAddressController);
+addressRoute.get("/default/delivery", getDeliveryAddressController);
 
 module.exports = { addressRoute };

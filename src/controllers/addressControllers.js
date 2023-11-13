@@ -10,7 +10,7 @@ const {
 } = require("../services/addressServices");
 
 //받는사람 주소등록
-const insertAddressController = async (req, res, next) => {
+const insertDeliveryAddressController = async (req, res, next) => {
   try {
     const {
       userId,
@@ -166,7 +166,7 @@ const getDeliveryAddressController = async (req, res, next) => {
   }
 };
 module.exports = {
-  insertAddressController,
+  insertDeliveryAddressController,
   insertSendAddressController,
   deleteSendAddressController,
   deleteDeliveryAddressController,

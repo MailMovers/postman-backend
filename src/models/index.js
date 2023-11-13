@@ -1,5 +1,5 @@
 const {
-  insertAddressDao,
+  insertDeliveryAddressDao,
   insertSendAddressDao,
   deleteSendAddressDao,
   deleteDeliveryAddressDao,
@@ -9,8 +9,10 @@ const {
   getDeliveryAddressDao,
 } = require("./addressDao");
 
+const { letterDao, photoDao, countPhotoDao, stampDao, confirmLetterDao } = require("./writingLetterDao")
+
 module.exports = {
-  insertAddressDao,
+  insertDeliveryAddressDao,
   insertSendAddressDao,
   deleteSendAddressDao,
   deleteDeliveryAddressDao,
@@ -18,4 +20,9 @@ module.exports = {
   getDeliveryListAddressDao,
   getSendAddressDao,
   getDeliveryAddressDao,
+  letterDao,
+  photoDao,
+  countPhotoDao,
+  stampDao,
+  confirmLetterDao
 };

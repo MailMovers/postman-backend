@@ -1,13 +1,13 @@
 const { AppDataSource } = require("./dataSource");
 //받는사람 주소입력
-const insertAddressDao = async (
+const insertDeliveryAddressDao = async (
   userId,
   deliveryAddress,
   deliveryAddressDetail,
   deliveryPhone,
   deliveryName
 ) => {
-  await AppDataSource.query(
+  const insertDeliveryAddress = await AppDataSource.query(
     `
         INSERT INTO delivery_address
         (
@@ -157,7 +157,7 @@ const getDeliveryAddressDao = async (userId) => {
 };
 
 module.exports = {
-  insertAddressDao,
+  insertDeliveryAddressDao,
   insertSendAddressDao,
   deleteSendAddressDao,
   deleteDeliveryAddressDao,
