@@ -75,28 +75,28 @@ const insertSendAddressController = async (req, res, next) => {
     next(err);
   }
 };
-
+//보내는 사람 주소 삭제
 const deleteSendAddressController = async (req, res, next) => {
   try {
     const userId = 2;
-    const sendAddressId = req.body;
+    const sendAddressId = req.body.sendAddressId;
     if (!userId) return res.status(400).json({ message: "KEY_ERROR" });
     if (!sendAddressId)
       return res.status(400).json({ message: "주소가 옳바르지 않습니다" });
     return res.status(200).json({
       message: "주소 삭제가 완료되었습니다",
-      data: await deleteSendAddressService(userId, addressId),
+      data: await deleteSendAddressService(userId, sendAddressId),
     });
   } catch (err) {
-    console.errror(err);
+    console.error(err);
     next(err);
   }
 };
-
+//받는사람 주소 삭제
 const deleteDeliveryAddressController = async (req, res, next) => {
   try {
-    const userId = 2;
-    const deliveryAddressId = req.body;
+    const userId = 1;
+    const deliveryAddressId = req.body.deliveryAddressId;
     if (!userId) return res.status(400).json({ message: "KEY_ERROR" });
     if (!deliveryAddressId)
       return res.status(400).json({ message: "주소가 옳바르지 않습니다" });
@@ -109,7 +109,7 @@ const deleteDeliveryAddressController = async (req, res, next) => {
     next(err);
   }
 };
-
+//보내는 사람 주소목록 보기
 const getSendAddressListController = async (req, res, next) => {
   try {
     const userId = 2;
@@ -123,10 +123,10 @@ const getSendAddressListController = async (req, res, next) => {
     next(err);
   }
 };
-
+//받는사람 주소 목록보기
 const getDeliveryAddressListController = async (req, res, next) => {
   try {
-    const userId = 2;
+    const userId = 1;
     if (!userId) return res.status(400).json({ message: "KEY_ERROR" });
     return res.status(200).json({
       message: "GET_DELIVERY_ADDRESS",
@@ -137,13 +137,11 @@ const getDeliveryAddressListController = async (req, res, next) => {
     next(err);
   }
 };
+//보내는 사람 기본 배송주소
 const getSendAddressController = async (req, res, next) => {
   try {
     const userId = 2;
-    const sendAddressId = req.query;
     if (!userId) return res.status(400).json({ message: "KEY_ERROR" });
-    if (!sendAddressId)
-      return res.status(400).json({ message: "주소가 없습니다" });
     return res.status(200).json({
       message: "GET_SEND_ADDRESS",
       data: await getSendAddressService(userId),
@@ -153,14 +151,11 @@ const getSendAddressController = async (req, res, next) => {
     next(err);
   }
 };
-
+//받는사람 기본배송주소
 const getDeliveryAddressController = async (req, res, next) => {
   try {
-    const userId = 2;
-    const deliveryAddressId = req.body;
+    const userId = 1;
     if (!userId) return res.status(400).json({ message: "KEY_ERROR" });
-    if (!deliveryAddressId)
-      return res.status(400).json({ message: "주소가 없습니다" });
     return res.status(200).json({
       message: "GET_DELIVERY_ADDRESS",
       data: await getDeliveryAddressService(userId),

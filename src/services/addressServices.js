@@ -70,18 +70,10 @@ const getDeliveryListAddressService = async (userId) => {
 };
 
 const getSendAddressService = async (userId) => {
-  const addressList = await getSendAddressDao(userId);
-  const filteredAddressList = addressList.filter(
-    (address) => address.deleted_at === null
-  );
-  return filteredAddressList;
+  return await getSendAddressDao(userId);
 };
 const getDeliveryAddressService = async (userId) => {
-  const addressList = await getDeliveryAddressDao(userId);
-  const filteredAddressList = addressList.filter(
-    (address) => address.deleted_at === null
-  );
-  return filteredAddressList;
+  return getDeliveryAddressDao(userId);
 };
 
 module.exports = {
