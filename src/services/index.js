@@ -9,7 +9,7 @@ const {
   getDeliveryAddressService,
 } = require("./addressServices");
 
-const { letterService, PhotoService, stampService, confirmLetterService } = require("./writingLetterServices")
+const { letterService, PhotoService, stampService, confirmLetterService, saveOrUpdateAddressService } = require("./writingLetterServices")
 
 module.exports = {
   insertAddressService,
@@ -20,8 +20,9 @@ module.exports = {
   getDeliveryListAddressService,
   getSendAddressService,
   getDeliveryAddressService,
-  letterService, 
-  PhotoService, 
-  stampService, 
+  letterService,
+  PhotoService,
+  stampService,
+  saveOrUpdateAddressService,
   confirmLetterService
 };
