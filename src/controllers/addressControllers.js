@@ -11,9 +11,9 @@ const {
 
 //받는사람 주소등록
 const insertDeliveryAddressController = async (req, res, next) => {
+  const userId = 1;
   try {
     const {
-      userId,
       deliveryAddress,
       deliveryAddressDetail,
       deliveryPhone,
@@ -51,7 +51,8 @@ const insertSendAddressController = async (req, res, next) => {
   try {
     const userId = 2;
     const { sendAddress, sendAddressDetail, sendPhone, sendName } = req.body;
-    if (!userId) return res.status(400).json({ message: "KEY_ERROR" });
+    if (userId.length === 0 || !userId)
+      return res.status(400).json({ message: "KEY_ERROR" });
     if (!sendAddress)
       return res.status(400).json({ message: "배송주소를 입력해주세요" });
     if (!sendAddressDetail)
@@ -80,7 +81,8 @@ const deleteSendAddressController = async (req, res, next) => {
   try {
     const userId = 2;
     const sendAddressId = req.body.sendAddressId;
-    if (!userId) return res.status(400).json({ message: "KEY_ERROR" });
+    if (userId.length === 0 || !userId)
+      return res.status(400).json({ message: "KEY_ERROR" });
     if (!sendAddressId)
       return res.status(400).json({ message: "주소가 옳바르지 않습니다" });
     return res.status(200).json({
@@ -97,7 +99,8 @@ const deleteDeliveryAddressController = async (req, res, next) => {
   try {
     const userId = 1;
     const deliveryAddressId = req.body.deliveryAddressId;
-    if (!userId) return res.status(400).json({ message: "KEY_ERROR" });
+    if (userId.length === 0 || !userId)
+      return res.status(400).json({ message: "KEY_ERROR" });
     if (!deliveryAddressId)
       return res.status(400).json({ message: "주소가 옳바르지 않습니다" });
     return res.status(200).json({
@@ -113,7 +116,8 @@ const deleteDeliveryAddressController = async (req, res, next) => {
 const getSendAddressListController = async (req, res, next) => {
   try {
     const userId = 2;
-    if (!userId) return res.status(400).json({ message: "KEY_ERROR" });
+    if (userId.length === 0 || !userId)
+      return res.status(400).json({ message: "KEY_ERROR" });
     return res.status(200).json({
       message: "GET_SEND_ADDRESS",
       data: await getSendListAddressService(userId),
@@ -127,7 +131,8 @@ const getSendAddressListController = async (req, res, next) => {
 const getDeliveryAddressListController = async (req, res, next) => {
   try {
     const userId = 1;
-    if (!userId) return res.status(400).json({ message: "KEY_ERROR" });
+    if (userId.length === 0 || !userId)
+      return res.status(400).json({ message: "KEY_ERROR" });
     return res.status(200).json({
       message: "GET_DELIVERY_ADDRESS",
       data: await getDeliveryListAddressService(userId),
@@ -141,7 +146,8 @@ const getDeliveryAddressListController = async (req, res, next) => {
 const getSendAddressController = async (req, res, next) => {
   try {
     const userId = 2;
-    if (!userId) return res.status(400).json({ message: "KEY_ERROR" });
+    if (userId.length === 0 || !userId)
+      return res.status(400).json({ message: "KEY_ERROR" });
     return res.status(200).json({
       message: "GET_SEND_ADDRESS",
       data: await getSendAddressService(userId),
@@ -155,7 +161,8 @@ const getSendAddressController = async (req, res, next) => {
 const getDeliveryAddressController = async (req, res, next) => {
   try {
     const userId = 1;
-    if (!userId) return res.status(400).json({ message: "KEY_ERROR" });
+    if (userId.length === 0 || !userId)
+      return res.status(400).json({ message: "KEY_ERROR" });
     return res.status(200).json({
       message: "GET_DELIVERY_ADDRESS",
       data: await getDeliveryAddressService(userId),

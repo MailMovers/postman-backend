@@ -55,8 +55,8 @@ describe("CREATE DELIVERY ADDRESS", () => {
         deliveryAddressDetail: "선릉로 위코드",
         deliveryPhone: "010-0000-0000",
         deliveryName: "김아무게",
-      }) // body를 작성합니다.
-      .expect(200); // expect()로 예상되는 statusCode, response를 넣어 테스트할 수 있습니다.
+      }); // body를 작성합니다.
+    expect(200); // expect()로 예상되는 statusCode, response를 넣어 테스트할 수 있습니다.
     expect({ message: "주소등록이 완료되었습니다" });
   });
 
@@ -70,8 +70,8 @@ describe("CREATE DELIVERY ADDRESS", () => {
         deliveryAddressDetail: "30-8",
         deliveryPhone: "010-0000-0000",
         deliveryName: "박아무개",
-      }) // body를 작성합니다.
-      .expect(200); // expect()로 예상되는 statusCode, response를 넣어 테스트할 수 있습니다.
+      }); // body를 작성합니다.
+    expect(200); // expect()로 예상되는 statusCode, response를 넣어 테스트할 수 있습니다.
     expect({ message: "주소등록이 완료되었습니다" });
   });
 
