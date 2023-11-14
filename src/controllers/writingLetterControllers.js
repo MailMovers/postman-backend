@@ -1,4 +1,4 @@
-const { letterService, PhotoService, confirmLetterService, stampService } = require("../services/writingLetterServices")
+const { letterService, PhotoService, confirmLetterService, stampService, saveOrUpdateAddressService } = require("../services/writingLetterServices")
 
 const letterContoller = async (req, res, next) => {
     try {
@@ -45,6 +45,25 @@ const stampController = async (req, res, next) => {
     }
 }
 
+const saveOrUpdateAddressController = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const addressData = req.body;
+
+        await saveOrUpdateAddressService(userId, addressData);
+        return {
+            success: true,
+            message: 'Address saved or updated successfully.',
+            data: await saveOrUpdateAddressService(userId, addressData)
+        }
+    } catch (error) {
+        console.error('Error in saveOrUpdateAddressController :', error)
+        return { success: false, message: 'Error in saveOrUpdateAddressController. Please try again later.' };
+    }
+
+};
+
+
 const confirmLetterContoller = async (req, res, next) => {
     try {
         const userId = req.param.userId
@@ -59,4 +78,10 @@ const confirmLetterContoller = async (req, res, next) => {
     }
 }
 
-module.exports = { letterContoller, photoContoller, confirmLetterContoller, stampController }
+module.exports = {
+    letterContoller,
+    photoContoller,
+    confirmLetterContoller,
+    stampController,
+    saveOrUpdateAddressController
+}

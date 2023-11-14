@@ -9,7 +9,13 @@ const {
   getDeliveryAddressController,
 } = require("./addressControllers");
 
-const { letterContoller, photoContoller, confirmLetterContoller, stampController } = require("./writingLetterControllers")
+const {
+  letterContoller,
+  photoContoller,
+  confirmLetterContoller,
+  stampController,
+  saveOrUpdateAddressController
+} = require("./writingLetterControllers")
 
 module.exports = {
   addressController: {
@@ -26,6 +32,7 @@ module.exports = {
     letterContoller,
     photoContoller,
     stampController,
+    saveOrUpdateAddressController,
     confirmLetterContoller,
   }
 };
