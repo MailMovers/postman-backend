@@ -81,14 +81,23 @@ CREATE TABLE `letters` (
   `user_id` int NOT NULL,
   `writing_pad_id` int NOT NULL,
   `font_id` int NOT NULL,
+  `stamp_id` int NOT NULL,
+  `send_address_id` int NOT NULL,
+  `delivery_address_id` int NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `writing_pad_id` (`writing_pad_id`),
   KEY `font_id` (`font_id`),
+  KEY `stamp_id` (`stamp_id`),
+  KEY `send_address_id` (`send_address_id`),
+  KEY `delivery_address_id` (`delivery_address_id`),
   CONSTRAINT `letters_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
   CONSTRAINT `letters_ibfk_2` FOREIGN KEY (`writing_pad_id`) REFERENCES `writing_pads` (`id`),
-  CONSTRAINT `letters_ibfk_3` FOREIGN KEY (`font_id`) REFERENCES `fonts` (`id`)
+  CONSTRAINT `letters_ibfk_3` FOREIGN KEY (`font_id`) REFERENCES `fonts` (`id`),
+  CONSTRAINT `letters_ibfk_4` FOREIGN KEY (`stamp_id`) REFERENCES `stamps` (`id`),
+  CONSTRAINT `letters_ibfk_5` FOREIGN KEY (`send_address_id`) REFERENCES `send_address` (`id`),
+  CONSTRAINT `letters_ibfk_6` FOREIGN KEY (`delivery_address_id`) REFERENCES `delivery_address` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -260,10 +269,10 @@ INSERT INTO `schema_migrations` (version) VALUES
   ('20231107052600'),
   ('20231107052612'),
   ('20231107052636'),
+  ('20231107052637'),
+  ('20231107052638'),
+  ('20231107052639'),
   ('20231107052648'),
-  ('20231107052655'),
   ('20231107052701'),
-  ('20231107052707'),
-  ('20231108040402'),
-  ('20231108040437');
+  ('20231107052707');
 UNLOCK TABLES;

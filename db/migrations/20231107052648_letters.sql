@@ -8,12 +8,17 @@ CREATE TABLE `letters` (
   `user_id` int NOT NULL,
   `writing_pad_id` int NOT NULL,
   `font_id` int NOT NULL,
+  `stamp_id` int NOT NULL,
+  `send_address_id` int NOT NULL,
+  `delivery_address_id` int NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 ALTER TABLE `letters` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 ALTER TABLE `letters` ADD FOREIGN KEY (`writing_pad_id`) REFERENCES `writing_pads` (`id`);
 ALTER TABLE `letters` ADD FOREIGN KEY (`font_id`) REFERENCES `fonts` (`id`);
-ALTER TABLE `letters` ADD FOREIGN KEY (`stamp_id`) REFERENCES `stamp` (`id`);
+ALTER TABLE `letters` ADD FOREIGN KEY (`stamp_id`) REFERENCES `stamps` (`id`);
+ALTER TABLE `letters` ADD FOREIGN KEY (`send_address_id`) REFERENCES `send_address` (`id`);
+ALTER TABLE `letters` ADD FOREIGN KEY (`delivery_address_id`) REFERENCES `delivery_address` (`id`);
 
 -- migrate:down
 DROP TABLE `letters`
