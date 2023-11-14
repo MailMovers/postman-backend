@@ -85,9 +85,9 @@ describe("CREATE DELIVERY ADDRESS", () => {
         delieveryAddressDetail: "",
         deliveryPhone: "null",
         deliveryName: "김동언",
-      }) // body를 작성합니다.
-      .expect(400) // expect()로 예상되는 statusCode, response를 넣어 테스트할 수 있습니다.
-      .expect({ message: "배송상세주소를 입력해주세요" });
+      }); // body를 작성합니다.
+    expect(400); // expect()로 예상되는 statusCode, response를 넣어 테스트할 수 있습니다.
+    expect({ message: "배송상세주소를 입력해주세요" });
   });
 
   test("SUCCESS, get delivery address", async () => {
