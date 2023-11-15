@@ -14,8 +14,8 @@ const {
   photoContoller,
   confirmLetterContoller,
   stampController,
-  saveOrUpdateAddressController
-} = require("./writingLetterControllers")
+  saveOrUpdateAddressController,
+} = require("./writingLetterControllers");
 
 module.exports = {
   addressController: {
@@ -34,5 +34,5 @@ module.exports = {
     stampController,
     saveOrUpdateAddressController,
     confirmLetterContoller,
-  }
+  },
 };
