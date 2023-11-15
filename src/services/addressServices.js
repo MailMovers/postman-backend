@@ -1,5 +1,5 @@
 const {
-  insertAddressDao,
+  insertDeliveryAddressDao,
   insertSendAddressDao,
   deleteSendAddressDao,
   deleteDeliveryAddressDao,
@@ -16,7 +16,7 @@ const insertAddressService = async (
   deliveryPhone,
   deliveryName
 ) => {
-  return await insertAddressDao(
+  return await insertDeliveryAddressDao(
     userId,
     deliveryAddress,
     deliveryAddressDetail,
@@ -70,18 +70,10 @@ const getDeliveryListAddressService = async (userId) => {
 };
 
 const getSendAddressService = async (userId) => {
-  const addressList = await getSendAddressDao(userId);
-  const filteredAddressList = addressList.filter(
-    (address) => address.deleted_at === null
-  );
-  return filteredAddressList;
+  return await getSendAddressDao(userId);
 };
 const getDeliveryAddressService = async (userId) => {
-  const addressList = await getDeliveryAddressDao(userId);
-  const filteredAddressList = addressList.filter(
-    (address) => address.deleted_at === null
-  );
-  return filteredAddressList;
+  return getDeliveryAddressDao(userId);
 };
 
 module.exports = {
