@@ -7,6 +7,7 @@ CREATE TABLE `writing_pads` (
   `add_price` SMALLINT NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+ALTER TABLE `posts` ADD `discription` VARCHAR(500) NULL;
 
 -- migrate:down
 DROP TABLE `writing_pads`
