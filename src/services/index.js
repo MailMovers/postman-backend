@@ -17,6 +17,10 @@ const {
   saveOrUpdateAddressService,
 } = require("./writingLetterServices");
 
+const {
+  paymentSuccessService,
+} = require("./paymentServices")
+
 module.exports = {
   insertAddressService,
   insertSendAddressService,
@@ -31,4 +35,6 @@ module.exports = {
   stampService,
   saveOrUpdateAddressService,
   confirmLetterService,
+  paymentSuccessService,
+
 };

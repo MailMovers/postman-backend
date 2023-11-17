@@ -17,6 +17,10 @@ const {
   saveOrUpdateAddressController,
 } = require("./writingLetterControllers");
 
+const {
+  paymentSuccessController,
+} = require("./paymentControllers")
+
 module.exports = {
   addressController: {
     insertDeliveryAddressController,
@@ -35,4 +39,7 @@ module.exports = {
     saveOrUpdateAddressController,
     confirmLetterContoller,
   },
+  paymentController: {
+    paymentSuccessController,
+  }
 };
