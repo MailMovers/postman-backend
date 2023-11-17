@@ -1,12 +1,10 @@
-const express = require("express")
+const express = require("express");
+const { paymentController } = require("../controllers");
 
-const { 
-    paymentSuccessController, 
-
-} = require("../controllers/paymentControllers")
+const { paymentSuccessController } = paymentController;
 
 const paymentRoute = express.Router();
 
-paymentRoute.get("/success", paymentSuccessController)
+paymentRoute.get("/success", paymentSuccessController);
 
-module.exports = { paymentRoute }
+module.exports = { paymentRoute };

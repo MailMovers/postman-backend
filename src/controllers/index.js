@@ -19,7 +19,7 @@ const {
 
 const {
   paymentSuccessController,
-} = require("./paymentControllers")
+} = require("./paymentControllers.js")
 
 module.exports = {
   addressController: {

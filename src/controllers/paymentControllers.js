@@ -1,11 +1,12 @@
-const got = require("got");
+const axios = require("axios")
 
-const { paymentSuccessService } = require("../services/paymentServices")
+const { paymentSuccessService } = require("../services/paymentServices");
 
+const secretKey = process.env.TOSSPAYMENTS_SECRET_KEY;
 
 const paymentSuccessController = async (req, res) => {
-    got
-        .post("https://api.tosspayments.com/v1/payments/confirm", {
+    try {
+        const response = await axios.post("https://api.tosspayments.com/v1/payments/confirm", {
             headers: {
                 Authorization:
                     "Basic " + Buffer.from(secretKey + ":").toString("base64"),
@@ -17,24 +18,24 @@ const paymentSuccessController = async (req, res) => {
                 paymentKey: req.query.paymentKey,
             },
             responseType: "json",
-        })
-        .then(function (response) {
-            console.log(response.body)
-            paymentSuccessService(response)
-            res.status(201).json({
-                "message": 'DONE'
-            })
-        })
-        .catch(function (error) {
-            // TODO: 구매 실패 비즈니스 로직 구현
-            res.redirect(
-                `/fail?code=${error.response?.body?.code}&message=${error.response?.body?.message}`
-            );
         });
-}
 
+        console.log(response.body);
+        paymentSuccessService(response);
+
+        res.status(201).json({
+            "message": '완료'
+        });
+    } catch (error) {
+        console.error('결제 성공 컨트롤러에서 오류:', error);
+
+        // TODO: 결제 실패 비즈니스 로직 처리
+        res.redirect(
+            `/fail?code=${error.response?.body?.code}&message=${error.response?.body?.message}`
+        );
+    }
+};
 
 module.exports = {
     paymentSuccessController,
-
-}
+};
