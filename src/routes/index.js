@@ -1,11 +1,12 @@
-const express = require("express");
-
-const { addressRoute } = require("./addressRoutes");
-const { writingLetterRoute } = require("./writingLetterRoutes");
-
+const express = require('express');
 const router = express.Router();
 
-router.use("/address", addressRoute);
-router.use("/letter", writingLetterRoute);
+const { addressRoute } = require('./addressRoutes');
+const { writingLetterRoute } = require('./writingLetterRoutes');
+const userRoute = require('./userRoutes');
+
+router.use('/user', userRoute);
+router.use('/address', addressRoute);
+router.use('/letter', writingLetterRoute);
 
 module.exports = router;
