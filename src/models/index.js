@@ -17,7 +17,13 @@ const {
   confirmLetterDao,
 } = require("./writingLetterDao");
 
-const { insertProductDao, getUserByIdDao } = require("./productDao");
+const {
+  insertProductDao,
+  getUserByIdDao,
+  deleteProductDao,
+  getProductDao,
+  getProductListDao,
+} = require("./productDao");
 
 module.exports = {
   insertDeliveryAddressDao,
@@ -36,5 +42,8 @@ module.exports = {
   productDao: {
     insertProductDao,
     getUserByIdDao,
+    deleteProductDao,
+    getProductDao,
+    getProductListDao,
   },
 };
