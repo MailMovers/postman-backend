@@ -58,13 +58,14 @@ const stampDao = async (stampId, letterId) => {
 const confirmLetterDao = async (userId) => {
     const letterInfo = await AppDataSource.query(`
     SELECT
-        letters.id
+        letters.id,
         letters.page,
         letters.content,
         letters.font_file_path,
         letters.photo_count,
         photos.img_url AS photo_img_url,
         writing_pads.img_url AS writing_pad_img_url,
+        writing_pads.id AS writing_pad_id,
         letters.stamp_id,
         send_address.send_address,
         send_address.send_address_detail,
