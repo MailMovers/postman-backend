@@ -17,6 +17,8 @@ const {
   confirmLetterDao,
 } = require("./writingLetterDao");
 
+const { insertProductDao, getUserByIdDao } = require("./productDao");
+
 module.exports = {
   insertDeliveryAddressDao,
   insertSendAddressDao,
@@ -31,4 +33,8 @@ module.exports = {
   countPhotoDao,
   stampDao,
   confirmLetterDao,
+  productDao: {
+    insertProductDao,
+    getUserByIdDao,
+  },
 };

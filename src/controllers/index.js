@@ -17,6 +17,8 @@ const {
   saveOrUpdateAddressController,
 } = require("./writingLetterControllers");
 
+const { insertProductController } = require("./productControllers");
+
 module.exports = {
   addressController: {
     insertDeliveryAddressController,
@@ -34,5 +36,9 @@ module.exports = {
     stampController,
     saveOrUpdateAddressController,
     confirmLetterContoller,
+  },
+
+  productController: {
+    insertProductController,
   },
 };
