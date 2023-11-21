@@ -63,10 +63,11 @@ const confirmLetterDao = async (userId) => {
         letters.content,
         letters.font_file_path,
         letters.photo_count,
+        letters.stamp_id,
         photos.img_url AS photo_img_url,
         writing_pads.img_url AS writing_pad_img_url,
         writing_pads.id AS writing_pad_id,
-        letters.stamp_id,
+        stamps.id AS stamps_id,
         send_address.send_address,
         send_address.send_address_detail,
         send_address.send_phone,
@@ -79,6 +80,7 @@ const confirmLetterDao = async (userId) => {
         letters
     LEFT JOIN photos ON letters.id = photos.letter_id
     LEFT JOIN writing_pads ON letters.writing_pad_id = writing_pads.id
+    LEFT JOIN stamps ON letters.stamp_id = stamps.id
     LEFT JOIN send_address ON send_address.user_id = letters.user_id
     LEFT JOIN delivery_address ON delivery_address.user_id = letters.user_id
     WHERE

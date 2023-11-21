@@ -1,38 +1,40 @@
+const PAGE_PRICE = 500;
+const PHOTO_PRICE = 500;
+const MAX_FREE_PAGES = 3;
+const ERROR_STATUS = 400;
 
-const paymentSuccessService = async (response) => {
-    try {
-        const check = await confirmLettersDao(userId);
-        let total = 0;
-        for(let i = 0; i < check.length; i++) {
-            if(check[i].page > 3) {
-                total += 500 * 3 + 500 * (check[i].page - 3);
-            } else {
-                total += check[i].page * 500;
-            }
-            total += check[i].photocount * 500;
-            if(check[i].writing_pad_id) {
-                const writingPadPrice = await getWritingPadPriceDao(check[i].writing_pad_id);
-                total += writingPadPrice;
-            }
-        }
-        // 구매완료 비즈니스 로직 구현
-        // letters 에 있는 page 수량으로 편지지 추가 과금 장당 500원
-        // letters 에 있는 product 로 price 꺼내와서 가격 추가 
-        // letters 에 있는 우표 가져와서 상태별로 가격추가
+const paymentSuccessService = async (response, res) => {
+  try {
+    const check = await confirmLettersDao(userId);
+    let total = 0;
 
+    const writingPadId = check.map((letter) => letter.writing_pad_id);
+    const stampId = check.map((letter) => letter.stamps_id);
 
-        
-        await paymentInsertInfoDao(response)
+    const prices = await getPricesDao(writingPadId, stampId);
 
-    } catch {
-        console.error("Error in paymentService :", error);
-        return {
-            success: false,
-            message: "Error in paymentService. Please try again later.",
-        };
+    for (let i = 0; i < check.length; i++) {
+      const pagePrice = prices[i].writingPadPrice;
+      if (check[i].page > MAX_FREE_PAGES) {
+        total += pagePrice + PAGE_PRICE * (check[i].page - MAX_FREE_PAGES);
+      } else {
+        total += pagePrice;
+      }
+      total += check[i].photoCount * PHOTO_PRICE;
+      total += prices[i].stampFee;
     }
+    if (total === response.totalAmount) {
+      await paymentInsertInfoDao(response);
+    } else {
+      res.status(ERROR_STATUS).json({ message: "결제오류" });
+    }
+  } catch (error) {
+    console.error("Error in paymentService :", error);
+    return {
+      success: false,
+      message: "Error in paymentService. Please try again later.",
+    };
+  }
+};
 
-
-}
-
-module.exports = { paymentSuccessService }
+module.exports = { paymentSuccessService };
