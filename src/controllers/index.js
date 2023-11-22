@@ -17,12 +17,11 @@ const {
     saveOrUpdateAddressController,
 } = require('./writingLetterControllers');
 
-const { signUpController } = require('./userControllers');
+// user controller class
+const UserController = require('./userControllers');
 
 module.exports = {
-    userController: {
-        signUpController,
-    },
+    UserController,
     addressController: {
         insertDeliveryAddressController,
         insertSendAddressController,
