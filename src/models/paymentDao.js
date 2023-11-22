@@ -1,39 +1,68 @@
 const { AppDataSource } = require("./dataSource");
 
 const getPricesDao = async (writingPadId, stampId) => {
-    const writingPadPrices = await AppDataSource.query(`
+  const writingPadPrices = await AppDataSource.query(
+    `
       SELECT id, price AS writingPadPrice
       FROM writing_pads
       WHERE id IN (?)
-    `, [writingPadId]);
-  
-    const stampFees = await AppDataSource.query(`
+    `,
+    [writingPadId]
+  );
+
+  const stampFees = await AppDataSource.query(
+    `
       SELECT id, price AS stampFee
       FROM stamps
       WHERE id IN (?)
-    `, [stampId]);
-  
-    const prices = writingPadIds.map((id, index) => ({
-      writingPadPrice: writingPadPrices.find(price => price.id === id).writingPadPrice,
-      stampFee: stampFees.find(fee => fee.id === stampIds[index]).stampFee,
-    }));
-  
-    return prices;
-  };
+    `,
+    [stampId]
+  );
 
-const paymentInsertInfoDao = async (response, letterId) => {
-  const responseJson = JSON.stringify(response);
+  const prices = writingPadIds.map((id, index) => ({
+    writingPadPrice: writingPadPrices.find((price) => price.id === id)
+      .writingPadPrice,
+    stampFee: stampFees.find((fee) => fee.id === stampId[index]).stampFee,
+  }));
+
+  return prices;
+};
+
+const paymentInsertInfoDao = async (response, userId, letterId) => {
+  const {
+    orderName,
+    orderId,
+    paymentKey,
+    method,
+    totalAmount,
+    vat,
+    suppliedAmount,
+    approvedAt,
+    status,
+  } = response;
   const result = await AppDataSource.query(
     `
-    INSERT INTO responses (
-        response_data, letter_id
+    INSERT INTO orders (
+        order_name, order_id, payment_key, method, total_amount, vat, supplied_amount, approved_at, status, user_id, letter_id
     ) VALUES (
-        ?, ?
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
     );
     `,
-    [responseJson, letterId]
+    [
+      orderName,
+      orderId,
+      paymentKey,
+      method,
+      totalAmount,
+      vat,
+      suppliedAmount,
+      approvedAt,
+      status,
+      userId,
+      letterId,
+    ]
   );
   return result;
 };
 
-module.exports = { paymentInsertInfoDao, getPricesDao};
+module.exports = { paymentInsertInfoDao, getPricesDao };

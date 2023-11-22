@@ -1,11 +1,17 @@
+const confirmLettersDao = require("../models/writingLetterDao");
+const { getPricesDao, paymentInsertInfoDao } = require("../models/paymentDao");
+
 const PAGE_PRICE = 500;
 const PHOTO_PRICE = 500;
 const MAX_FREE_PAGES = 3;
 const ERROR_STATUS = 400;
 
-const paymentSuccessService = async (response, res) => {
+const paymentSuccessService = async (req, res) => {
   try {
+    const userId = req.param.userId;
+    const response = req.body;
     const check = await confirmLettersDao(userId);
+    const letterId = check.id
     let total = 0;
 
     const writingPadId = check.map((letter) => letter.writing_pad_id);
@@ -24,15 +30,16 @@ const paymentSuccessService = async (response, res) => {
       total += prices[i].stampFee;
     }
     if (total === response.totalAmount) {
-      await paymentInsertInfoDao(response);
+      await paymentInsertInfoDao(response,userId,letterId);
+      return { message: "success" };
     } else {
       res.status(ERROR_STATUS).json({ message: "결제오류" });
     }
   } catch (error) {
-    console.error("Error in paymentService :", error);
+    console.error("결제 서비스에서 오류 :", error);
     return {
       success: false,
-      message: "Error in paymentService. Please try again later.",
+      message: "결제 서비스에서 오류가 발생했습니다. 나중에 다시 시도해주세요.",
     };
   }
 };
