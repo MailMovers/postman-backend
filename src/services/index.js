@@ -22,6 +22,9 @@ const {
   deleteProductService,
   getProductService,
   getProductListService,
+  insertReviewService,
+  getReviewService,
+  deleteReviewService,
 } = require("./productServices");
 
 module.exports = {
@@ -43,5 +46,8 @@ module.exports = {
     deleteProductService,
     getProductService,
     getProductListService,
+    insertReviewService,
+    getReviewService,
+    deleteReviewService,
   },
 };

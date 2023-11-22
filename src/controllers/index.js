@@ -22,6 +22,9 @@ const {
   deleteProductController,
   getProductController,
   getProductListController,
+  insertReviewController,
+  getReviewController,
+  deleteReviewController,
 } = require("./productControllers");
 
 module.exports = {
@@ -48,5 +51,8 @@ module.exports = {
     deleteProductController,
     getProductController,
     getProductListController,
+    insertReviewController,
+    getReviewController,
+    deleteReviewController,
   },
 };

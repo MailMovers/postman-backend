@@ -23,6 +23,10 @@ const {
   deleteProductDao,
   getProductDao,
   getProductListDao,
+  getUserByReviewDao,
+  insertReviewDao,
+  getReviewDao,
+  deleteReviewDao,
 } = require("./productDao");
 
 module.exports = {
@@ -45,5 +49,9 @@ module.exports = {
     deleteProductDao,
     getProductDao,
     getProductListDao,
+    getUserByReviewDao,
+    insertReviewDao,
+    getReviewDao,
+    deleteReviewDao,
   },
 };

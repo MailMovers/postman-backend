@@ -142,6 +142,32 @@ CREATE TABLE `photos` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `reviews`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `reviews` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `content` text NOT NULL,
+  `user_id` int NOT NULL,
+  `writing_pad_id` int NOT NULL,
+  `order_id` int NOT NULL,
+  `score` int NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `writing_pad_id` (`writing_pad_id`),
+  KEY `order_id` (`order_id`),
+  CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`writing_pad_id`) REFERENCES `writing_pads` (`id`),
+  CONSTRAINT `reviews_ibfk_3` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `roles`
 --
 
@@ -162,9 +188,9 @@ CREATE TABLE `roles` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `schema_migrations` (
-  `version` varchar(255) COLLATE latin1_bin NOT NULL,
+  `version` varchar(128) NOT NULL,
   PRIMARY KEY (`version`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -247,7 +273,7 @@ CREATE TABLE `writing_pads` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping routines for database 'postman'
+-- Dumping routines for database 'postman3'
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -277,5 +303,6 @@ INSERT INTO `schema_migrations` (version) VALUES
   ('20231107052639'),
   ('20231107052648'),
   ('20231107052701'),
-  ('20231107052707');
+  ('20231107052707'),
+  ('20231116095747');
 UNLOCK TABLES;
