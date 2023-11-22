@@ -17,7 +17,8 @@ const {
     saveOrUpdateAddressService,
 } = require('./writingLetterServices');
 
-const { signUpServices } = require('./userServices');
+// user service class
+const UserService = require('./userServices');
 
 module.exports = {
     insertAddressService,
@@ -33,5 +34,5 @@ module.exports = {
     stampService,
     saveOrUpdateAddressService,
     confirmLetterService,
-    signUpServices,
+    UserService,
 };
