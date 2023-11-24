@@ -37,7 +37,7 @@ const paymentSuccessController = async (req, res) => {
     }
 
     res.status(201).json({
-      message: "완료",
+      message: "success",
     });
   } catch (error) {
     console.error("결제 성공 컨트롤러에서 오류:", error);

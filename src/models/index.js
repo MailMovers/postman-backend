@@ -17,7 +17,11 @@ const {
   confirmLetterDao,
 } = require("./writingLetterDao");
 
-const { paymentInsertInfoDao, getPricesDao } = require("./paymentDao");
+const {
+  paymentInsertInfoDao,
+  getPricesDao,
+  addPointDao,
+} = require("./paymentDao");
 
 module.exports = {
   insertDeliveryAddressDao,
@@ -35,4 +39,5 @@ module.exports = {
   confirmLetterDao,
   paymentInsertInfoDao,
   getPricesDao,
+  addPointDao,
 };

@@ -19,7 +19,7 @@ const getPricesDao = async (writingPadId, stampId) => {
     [stampId]
   );
 
-  const prices = writingPadIds.map((id, index) => ({
+  const prices = writingPadId.map((id, index) => ({
     writingPadPrice: writingPadPrices.find((price) => price.id === id)
       .writingPadPrice,
     stampFee: stampFees.find((fee) => fee.id === stampId[index]).stampFee,
@@ -64,5 +64,16 @@ const paymentInsertInfoDao = async (response, userId, letterId) => {
   );
   return result;
 };
+const addPointDao = async (point, userId) => {
+  const result = await AppDataSource.query(
+    `
+    UPDATE users
+    SET point = point + ?
+    WHERE id = ?
+    `,
+    [point, userId]
+  );
+  return result;
+};
 
-module.exports = { paymentInsertInfoDao, getPricesDao };
+module.exports = { paymentInsertInfoDao, getPricesDao, addPointDao };
