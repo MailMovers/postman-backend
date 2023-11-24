@@ -12,6 +12,5 @@ CREATE TABLE `reviews` (
 ALTER TABLE `reviews` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 ALTER TABLE `reviews` ADD FOREIGN KEY (`writing_pad_id`) REFERENCES `writing_pads` (`id`);
 
-
 -- migrate:down
 DROP TABLE `reviews`
