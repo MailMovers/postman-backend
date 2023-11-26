@@ -28,6 +28,7 @@ class UserService {
 
             // 인증번호 생성
             const authNumber = Math.floor(Math.random() * 888888) + 111111;
+            console.log(authNumber);
             // 인증번호 암호화
             const hashedAuthNumber = await bcrypt.hashSync(authNumber.toString(), 10);
 
@@ -48,6 +49,22 @@ class UserService {
                 }
             });
             return { hashedAuthNumber };
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    verifyAuthNumber = async ({ authNumber, HAN }) => {
+        try {
+            // 입력받은 인증번호와 암호화된 인증번호를 비교
+            const isVerified = await bcrypt.compareSync(authNumber, HAN);
+
+            if (!isVerified) {
+                throw new CustomError(
+                    ErrorNames.AuthNumberFailedVerifyError,
+                    '인증번호가 일치하지 않습니다.'
+                );
+            }
         } catch (error) {
             throw error;
         }
