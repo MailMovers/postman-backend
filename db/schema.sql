@@ -110,11 +110,18 @@ CREATE TABLE `letters` (
 CREATE TABLE `orders` (
   `id` int NOT NULL AUTO_INCREMENT,
   `total_price` smallint NOT NULL,
-  `status` enum('ready_to_delivery','cancel','shipping','delivery completed') DEFAULT 'ready_to_delivery',
+  `status` varchar(50) NOT NULL,
   `payment` varchar(255) NOT NULL,
-  `stamp_id` int NOT NULL,
   `user_id` int NOT NULL,
   `letter_id` int NOT NULL,
+  `order_name` varchar(400) NOT NULL,
+  `order_id` varchar(500) NOT NULL,
+  `payment_key` varchar(500) NOT NULL,
+  `method` varchar(255) NOT NULL,
+  `total_amount` int NOT NULL,
+  `vat` int NOT NULL,
+  `supplied_amount` int NOT NULL,
+  `approved_at` date NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
@@ -152,7 +159,6 @@ CREATE TABLE `reviews` (
   `content` text NOT NULL,
   `user_id` int NOT NULL,
   `writing_pad_id` int NOT NULL,
-  `order_id` int NOT NULL,
   `score` int NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -160,10 +166,8 @@ CREATE TABLE `reviews` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `writing_pad_id` (`writing_pad_id`),
-  KEY `order_id` (`order_id`),
   CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`writing_pad_id`) REFERENCES `writing_pads` (`id`),
-  CONSTRAINT `reviews_ibfk_3` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`)
+  CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`writing_pad_id`) REFERENCES `writing_pads` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -175,7 +179,7 @@ CREATE TABLE `reviews` (
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `roles` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `role` enum('admin','print','user','cs') NOT NULL,
+  `role` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -239,15 +243,16 @@ CREATE TABLE `stamps` (
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(10) NOT NULL,
-  `email` varchar(30) NOT NULL,
-  `phone` varchar(20) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `phone` varchar(255) NOT NULL,
   `role_id` int NOT NULL,
-  `point` varchar(255) DEFAULT NULL,
+  `point` int NOT NULL DEFAULT '0',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
   `password` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`),
   KEY `role_id` (`role_id`),
   CONSTRAINT `users_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -268,6 +273,7 @@ CREATE TABLE `writing_pads` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `discription` varchar(200) DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

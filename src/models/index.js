@@ -29,6 +29,12 @@ const {
   deleteReviewDao,
 } = require("./productDao");
 
+const {
+  paymentInsertInfoDao,
+  getPricesDao,
+  addPointDao,
+} = require("./paymentDao");
+
 module.exports = {
   insertDeliveryAddressDao,
   insertSendAddressDao,
@@ -43,15 +49,16 @@ module.exports = {
   countPhotoDao,
   stampDao,
   confirmLetterDao,
-  productDao: {
-    insertProductDao,
-    getUserByIdDao,
-    deleteProductDao,
-    getProductDao,
-    getProductListDao,
-    getUserByReviewDao,
-    insertReviewDao,
-    getReviewDao,
-    deleteReviewDao,
-  },
+  paymentInsertInfoDao,
+  getPricesDao,
+  addPointDao,
+  insertProductDao,
+  getUserByIdDao,
+  deleteProductDao,
+  getProductDao,
+  getProductListDao,
+  getUserByReviewDao,
+  insertReviewDao,
+  getReviewDao,
+  deleteReviewDao,
 };

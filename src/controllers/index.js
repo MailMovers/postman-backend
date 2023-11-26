@@ -27,6 +27,8 @@ const {
   deleteReviewController,
 } = require("./productControllers");
 
+const { paymentSuccessController } = require("./paymentControllers.js");
+
 module.exports = {
   addressController: {
     insertDeliveryAddressController,
@@ -54,5 +56,6 @@ module.exports = {
     insertReviewController,
     getReviewController,
     deleteReviewController,
+    paymentSuccessController,
   },
 };
