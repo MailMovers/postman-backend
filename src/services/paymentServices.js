@@ -17,8 +17,7 @@ const calculateTotal = (userLetters, prices) => {
   for (let i = 0; i < userLetters.length; i++) {
     const pagePrice = prices[i].writingPadPrice;
     if (userLetters[i].page > MAX_FREE_PAGES) {
-      total +=
-        pagePrice + PAGE_PRICE * (userLetters[i].page - MAX_FREE_PAGES);
+      total += pagePrice + PAGE_PRICE * (userLetters[i].page - MAX_FREE_PAGES);
     } else {
       total += pagePrice;
     }
@@ -28,10 +27,9 @@ const calculateTotal = (userLetters, prices) => {
   return total;
 };
 
-const paymentSuccessService = async (req, res, next) => { // next parameter added
+const paymentSuccessService = async (userId, paymentInfo) => {
+  // next parameter added
   try {
-    const userId = req.params.userId;
-    const paymentInfo = req.body;
     const userLetters = await confirmLettersDao(userId);
     const letterId = userLetters[0].id;
 
@@ -48,11 +46,11 @@ const paymentSuccessService = async (req, res, next) => { // next parameter adde
       await addPointDao(userId, point);
       return { message: "success" };
     } else {
-      res.status(ERROR_STATUS).json({ message: "결제오류" });
+      throw new Error("결제오류");
     }
   } catch (error) {
     console.error("결제 서비스에서 오류 :", error);
-    next(error);
+    throw error;
   }
 };
 
