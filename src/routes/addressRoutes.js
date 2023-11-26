@@ -14,8 +14,8 @@ const addressRoute = express.Router();
 
 addressRoute.post("/delivery", insertDeliveryAddressController);
 addressRoute.post("/send", insertSendAddressController);
-addressRoute.post("/delivery/delete", deleteDeliveryAddressController);
-addressRoute.post("/sand/delete", deleteSendAddressController);
+addressRoute.post("/delete", deleteDeliveryAddressController);
+addressRoute.post("/delete/send", deleteSendAddressController);
 addressRoute.get("/send", getSendAddressListController);
 addressRoute.get("/delivery", getDeliveryAddressListController);
 addressRoute.get("/default/send", getSendAddressController);

@@ -7,6 +7,9 @@ CREATE TABLE `writing_pads` (
   `add_price` SMALLINT NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+ALTER TABLE `writing_pads` ADD `discription` VARCHAR(200) NULL;
+ALTER TABLE `writing_pads` ADD `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+ALTER TABLE `writing_pads` ADD `deleted_at` TIMESTAMP DEFAULT NULL; 
 
 -- migrate:down
 DROP TABLE `writing_pads`

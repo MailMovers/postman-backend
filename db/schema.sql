@@ -110,11 +110,18 @@ CREATE TABLE `letters` (
 CREATE TABLE `orders` (
   `id` int NOT NULL AUTO_INCREMENT,
   `total_price` smallint NOT NULL,
-  `status` enum('ready_to_delivery','cancel','shipping','delivery completed') DEFAULT 'ready_to_delivery',
+  `status` varchar(50) NOT NULL,
   `payment` varchar(255) NOT NULL,
-  `stamp_id` int NOT NULL,
   `user_id` int NOT NULL,
   `letter_id` int NOT NULL,
+  `order_name` varchar(400) NOT NULL,
+  `order_id` varchar(500) NOT NULL,
+  `payment_key` varchar(500) NOT NULL,
+  `method` varchar(255) NOT NULL,
+  `total_amount` int NOT NULL,
+  `vat` int NOT NULL,
+  `supplied_amount` int NOT NULL,
+  `approved_at` date NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
@@ -138,6 +145,29 @@ CREATE TABLE `photos` (
   PRIMARY KEY (`id`),
   KEY `letter_id` (`letter_id`),
   CONSTRAINT `photos_ibfk_1` FOREIGN KEY (`letter_id`) REFERENCES `letters` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `reviews`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `reviews` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `content` text NOT NULL,
+  `user_id` int NOT NULL,
+  `writing_pad_id` int NOT NULL,
+  `score` int NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `writing_pad_id` (`writing_pad_id`),
+  CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`writing_pad_id`) REFERENCES `writing_pads` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -220,6 +250,7 @@ CREATE TABLE `users` (
   `point` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
+  `password` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `role_id` (`role_id`),
   CONSTRAINT `users_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`)
@@ -239,6 +270,8 @@ CREATE TABLE `writing_pads` (
   `price` smallint NOT NULL,
   `add_price` smallint NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `discription` varchar(200) DEFAULT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -274,5 +307,6 @@ INSERT INTO `schema_migrations` (version) VALUES
   ('20231107052639'),
   ('20231107052648'),
   ('20231107052701'),
-  ('20231107052707');
+  ('20231107052707'),
+  ('20231116095747');
 UNLOCK TABLES;
