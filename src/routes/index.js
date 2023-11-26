@@ -1,7 +1,7 @@
 const express = require('express');
-const { paymentRoute } = require('./paymentRoutes');
 const router = express.Router();
 
+const { paymentRoute } = require('./paymentRoutes');
 const { addressRoute } = require('./addressRoutes');
 const { writingLetterRoute } = require('./writingLetterRoutes');
 const userRoute = require('./userRoutes');
