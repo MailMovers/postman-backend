@@ -48,6 +48,15 @@ const signUpSchema = Joi.object({
         .messages({ 'any.only': '비밀번호가 일치하지 않습니다.' }),
 });
 
+// 이메일 인증 유효성검사
+const emailAuthSchema = Joi.object({
+    email: Joi.string().email().required().messages({
+        'string.base': '이메일은 문자열이어야 합니다.',
+        'any.required': '이메일을 입력해주세요.',
+        'string.email': '이메일이 유효하지 않습니다.',
+    }),
+});
+
 const customMessages = {
     'any.required': '{{#label}} is required.',
     'string.base': '{{#label}} must be a string.',
@@ -58,4 +67,5 @@ module.exports = {
     letterSchema,
     customMessages,
     signUpSchema,
+    emailAuthSchema,
 };
