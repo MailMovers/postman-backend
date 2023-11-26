@@ -1,4 +1,4 @@
-const { DataSource } = require('typeorm');
+const { DataSource } = require("typeorm");
 
 const AppDataSource = new DataSource({
   type: process.env.TYPEORM_CONNECTION,
