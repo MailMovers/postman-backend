@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const { UserDao } = require('../models');
 const { ErrorNames, CustomError } = require('../utils/customErrors');
+const smtpTransport = require('../config/email.config');
 
 class UserService {
     userDao = new UserDao();
@@ -24,6 +25,29 @@ class UserService {
             if (isEmailExist.length > 0) {
                 throw new CustomError(ErrorNames.EmailExistError, '이미 가입된 이메일입니다.');
             }
+
+            // 인증번호 생성
+            const authNumber = Math.floor(Math.random() * 888888) + 111111;
+            // 인증번호 암호화
+            const hashedAuthNumber = await bcrypt.hashSync(authNumber.toString(), 10);
+
+            const mailOptions = {
+                from: process.env.NODEMAILER_USER, // 발신자 이메일 주소
+                to: email,
+                subject: '[MailMovers] 인증 관련 메일입니다.',
+                html: `<h1>아래 인증번호를 확인하여 이메일 인증을 완료해주세요.</h1><br>
+                <p>인증번호 ${authNumber}</p>`,
+            };
+
+            smtpTransport.sendMail(mailOptions, async (error, response) => {
+                if (error) {
+                    smtpTransport.close();
+                    throw error;
+                } else {
+                    smtpTransport.close();
+                }
+            });
+            return { hashedAuthNumber };
         } catch (error) {
             throw error;
         }

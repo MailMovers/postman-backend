@@ -27,7 +27,11 @@ class UserController {
         try {
             const { email } = await emailAuthSchema.validateAsync(req.body);
 
-            await this.userService.sendEmail({ email });
+            const { hashedAuthNumber } = await this.userService.sendEmail({ email });
+
+            // 암호화된 인증번호 쿠키
+            res.cookie('HAN', hashedAuthNumber);
+            return res.status(200).json({ success: true, message: '인증번호를 발송하였습니다.' });
         } catch (error) {
             console.log(error);
             // Joi
@@ -38,6 +42,10 @@ class UserController {
             if (error.name === 'EmailExistError') {
                 return res.status(400).json({ success: false, message: error.message });
             }
+            return res.status(400).json({
+                success: false,
+                message: '인증번호 발송에 실패했습니다. 다시 확인해주세요.',
+            });
         }
     };
 }
