@@ -20,6 +20,8 @@ const {
 // user service class
 const UserService = require('./userServices');
 
+const { paymentSuccessService } = require('./paymentServices');
+
 module.exports = {
     insertAddressService,
     insertSendAddressService,
@@ -35,4 +37,5 @@ module.exports = {
     saveOrUpdateAddressService,
     confirmLetterService,
     UserService,
+    paymentSuccessService,
 };

@@ -20,6 +20,8 @@ const {
 // user controller class
 const UserController = require('./userControllers');
 
+const { paymentSuccessController } = require('./paymentControllers.js');
+
 module.exports = {
     UserController,
     addressController: {
@@ -38,5 +40,8 @@ module.exports = {
         stampController,
         saveOrUpdateAddressController,
         confirmLetterContoller,
+    },
+    paymentController: {
+        paymentSuccessController,
     },
 };

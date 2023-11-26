@@ -20,6 +20,8 @@ const {
 // user dao
 const UserDao = require('./userDao');
 
+const { paymentInsertInfoDao, getPricesDao, addPointDao } = require('./paymentDao');
+
 module.exports = {
     insertDeliveryAddressDao,
     insertSendAddressDao,
@@ -35,4 +37,7 @@ module.exports = {
     stampDao,
     confirmLetterDao,
     UserDao,
+    paymentInsertInfoDao,
+    getPricesDao,
+    addPointDao,
 };
