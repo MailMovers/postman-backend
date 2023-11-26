@@ -1,37 +1,41 @@
 const {
-  insertAddressService,
-  insertSendAddressService,
-  deleteSendAddressService,
-  deleteDeliveryAddressService,
-  getSendListAddressService,
-  getDeliveryListAddressService,
-  getSendAddressService,
-  getDeliveryAddressService,
-} = require("./addressServices");
+    insertAddressService,
+    insertSendAddressService,
+    deleteSendAddressService,
+    deleteDeliveryAddressService,
+    getSendListAddressService,
+    getDeliveryListAddressService,
+    getSendAddressService,
+    getDeliveryAddressService,
+} = require('./addressServices');
 
 const {
-  letterService,
-  PhotoService,
-  stampService,
-  confirmLetterService,
-  saveOrUpdateAddressService,
-} = require("./writingLetterServices");
+    letterService,
+    PhotoService,
+    stampService,
+    confirmLetterService,
+    saveOrUpdateAddressService,
+} = require('./writingLetterServices');
 
-const { paymentSuccessService } = require("./paymentServices");
+// user service class
+const UserService = require('./userServices');
+
+const { paymentSuccessService } = require('./paymentServices');
 
 module.exports = {
-  insertAddressService,
-  insertSendAddressService,
-  deleteSendAddressService,
-  deleteDeliveryAddressService,
-  getSendListAddressService,
-  getDeliveryListAddressService,
-  getSendAddressService,
-  getDeliveryAddressService,
-  letterService,
-  PhotoService,
-  stampService,
-  saveOrUpdateAddressService,
-  confirmLetterService,
-  paymentSuccessService,
+    insertAddressService,
+    insertSendAddressService,
+    deleteSendAddressService,
+    deleteDeliveryAddressService,
+    getSendListAddressService,
+    getDeliveryListAddressService,
+    getSendAddressService,
+    getDeliveryAddressService,
+    letterService,
+    PhotoService,
+    stampService,
+    saveOrUpdateAddressService,
+    confirmLetterService,
+    UserService,
+    paymentSuccessService,
 };
