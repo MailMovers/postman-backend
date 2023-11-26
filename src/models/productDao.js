@@ -101,7 +101,6 @@ const getUserByReviewDao = async (userId) => {
   `,
     [userId]
   );
-  ç;
   const user = resultUser[0];
   return user;
 };
