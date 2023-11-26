@@ -17,6 +17,8 @@ const {
   saveOrUpdateAddressController,
 } = require("./writingLetterControllers");
 
+const { paymentSuccessController } = require("./paymentControllers.js");
+
 module.exports = {
   addressController: {
     insertDeliveryAddressController,
@@ -34,5 +36,8 @@ module.exports = {
     stampController,
     saveOrUpdateAddressController,
     confirmLetterContoller,
+  },
+  paymentController: {
+    paymentSuccessController,
   },
 };
