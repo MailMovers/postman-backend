@@ -1,5 +1,6 @@
 const ErrorNames = {
     EmailExistError: 'EmailExistError',
+    AuthNumberFailedVerifyError: 'AuthNumberFailedVerifyError',
 };
 
 class CustomError extends Error {
