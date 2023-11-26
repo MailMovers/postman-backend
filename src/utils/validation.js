@@ -57,6 +57,15 @@ const emailAuthSchema = Joi.object({
     }),
 });
 
+// 인증번호 유효성검사
+const authNumberSchema = Joi.object({
+    authNumber: Joi.string().required().length(6).message({
+        'string.base': '인증번호는 문자열이어야 합니다.',
+        'any.required': '인증번호를 입력해주세요.',
+        'string.length': '인증번호는 6자리입니다.',
+    }),
+});
+
 const customMessages = {
     'any.required': '{{#label}} is required.',
     'string.base': '{{#label}} must be a string.',
@@ -68,4 +77,5 @@ module.exports = {
     customMessages,
     signUpSchema,
     emailAuthSchema,
+    authNumberSchema,
 };
