@@ -10,6 +10,24 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `cs_answer`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `cs_answer` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `content` varchar(500) NOT NULL,
+  `user_id` int NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `cs_answer_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `customer_service`
 --
 
@@ -20,10 +38,14 @@ CREATE TABLE `customer_service` (
   `title` varchar(30) NOT NULL,
   `content` varchar(50) NOT NULL,
   `user_id` int NOT NULL,
+  `cs_answer_id` int DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `customer_service_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+  KEY `cs_answer_id` (`cs_answer_id`),
+  CONSTRAINT `customer_service_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `customer_service_ibfk_2` FOREIGN KEY (`cs_answer_id`) REFERENCES `cs_answer` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -179,7 +201,7 @@ CREATE TABLE `reviews` (
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `roles` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `role` enum('admin','print','user','cs') NOT NULL,
+  `role` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -243,15 +265,16 @@ CREATE TABLE `stamps` (
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(10) NOT NULL,
-  `email` varchar(30) NOT NULL,
-  `phone` varchar(20) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `phone` varchar(255) NOT NULL,
   `role_id` int NOT NULL,
-  `point` varchar(255) DEFAULT NULL,
+  `point` int NOT NULL DEFAULT '0',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
   `password` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`),
   KEY `role_id` (`role_id`),
   CONSTRAINT `users_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -272,6 +295,7 @@ CREATE TABLE `writing_pads` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `discription` varchar(200) DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -301,6 +325,7 @@ INSERT INTO `schema_migrations` (version) VALUES
   ('20231107052550'),
   ('20231107052600'),
   ('20231107052612'),
+  ('20231107052635'),
   ('20231107052636'),
   ('20231107052637'),
   ('20231107052638'),
