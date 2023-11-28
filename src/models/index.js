@@ -17,6 +17,9 @@ const {
   confirmLetterDao,
 } = require("./writingLetterDao");
 
+// user dao
+const UserDao = require("./userDao");
+
 const {
   insertProductDao,
   getUserByIdDao,
@@ -49,6 +52,7 @@ module.exports = {
   countPhotoDao,
   stampDao,
   confirmLetterDao,
+  UserDao,
   paymentInsertInfoDao,
   getPricesDao,
   addPointDao,

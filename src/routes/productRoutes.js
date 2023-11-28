@@ -13,12 +13,11 @@ const {
 const productRoute = express.Router();
 
 productRoute.post("/", insertProductController);
-productRoute.delete("/", deleteProductController);
+productRoute.post("/delete", deleteProductController);
 productRoute.get("/:productId", getProductController);
 productRoute.get("/", getProductListController);
 productRoute.post("/:productId", insertReviewController);
 productRoute.get("/:productId/review", getReviewController);
-//테스트중
 productRoute.post("/:productId/review/delete", deleteReviewController);
 
 module.exports = { productRoute };

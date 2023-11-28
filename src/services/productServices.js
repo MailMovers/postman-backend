@@ -28,7 +28,16 @@ const getProductService = async (productId) => {
 };
 //상품 리스트 불러오기
 const getProductListService = async (startItem, pageSize) => {
-  return await getProductListDao(startItem, pageSize);
+  try {
+    const productList = await getProductListDao(startItem, pageSize);
+    const filterProductList = productList.filter(
+      (writing_pads) => writing_pads.deleted_at === null
+    );
+    return filterProductList;
+  } catch (error) {
+    console.error("getProductListService에서 오류:", error);
+    throw error; // 이 부분에서 오류를 다시 throw하여 상위에서 처리할 수 있도록 함
+  }
 };
 //상품 리뷰작성
 const insertReviewService = async (userId, productId, score, content) => {

@@ -89,22 +89,23 @@ const getProductController = async (req, res, next) => {
 //상품의 목록을 페이지 기준 20개씩 보내줍니다.
 const getProductListController = async (req, res, next) => {
   try {
-    const page = req.query.page || 1; // 기본값은 1로 설정
-    const pageSize = 20; // 페이지당 아이템 수
+    const page = req.query.page || 1;
+    const pageSize = 20;
     const startItem = (page - 1) * pageSize;
     const productList = await getProductListService(startItem, pageSize);
+
     if (!productList || productList.length === 0) {
-      return res
-        .status(400)
-        .json({ message: "상품 목록을 불러올 수 없습니다" });
+      return res.status(400).json({
+        message: "상품 목록을 불러올 수 없습니다",
+      });
     }
     return res.status(200).json({
       message: "상품 목록을 불러왔습니다",
       data: productList,
     });
   } catch (err) {
-    console.error(err);
-    next(err);
+    console.error("getProductListController에서 오류:", err);
+    next(err); // 에러를 다음 미들웨어로 전달
   }
 };
 //상품이 배송완료가 되었을때 리뷰를 작성할수 있습니다.

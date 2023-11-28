@@ -39,15 +39,22 @@ const getUserByIdDao = async (userId) => {
 };
 //상품 삭제
 const deleteProductDao = async (productId) => {
-  const deleteProduct = await AppDataSource.query(
-    `
-    DELETE FROM writing_pads WHERE id = ?
-    `,
-    [productId]
-  );
-  return deleteProduct;
+  try {
+    const deleteProduct = await AppDataSource.query(
+      `
+      UPDATE writing_pads SET writing_pads.deleted_at = NOW()
+      WHERE writing_pads.id = ?
+      `,
+      [productId]
+    );
+    return deleteProduct;
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    throw error;
+  }
 };
-//상품 정보 불러오기
+
+//상품 상세정보 불러오기
 const getProductDao = async (productId) => {
   const getProduct = await AppDataSource.query(
     `
@@ -67,25 +74,33 @@ const getProductDao = async (productId) => {
   );
   return getProduct;
 };
-//상품 상세정보 가져오기
+//상품 리스트 가져오기
 const getProductListDao = async (startItem, pageSize) => {
-  const productList = await AppDataSource.query(
-    `
-    SELECT
-      name,
-      img_url,
-      price,
-      add_price,
-      discription
-    FROM
-      writing_pads
-    LIMIT ? OFFSET ?;
-    `,
-    [pageSize, startItem]
-  );
-  return productList;
+  try {
+    const productList = await AppDataSource.query(
+      `
+      SELECT
+        name,
+        img_url,
+        price,
+        add_price,
+        discription,
+        deleted_at
+      FROM
+        writing_pads
+      WHERE
+        deleted_at IS NULL
+      LIMIT ? OFFSET ?;
+      `,
+      [pageSize, startItem]
+    );
+    return productList;
+  } catch (error) {
+    console.error("getProductListDao에서 오류:", error);
+    throw error; // 이 부분에서 오류를 다시 throw하여 상위에서 처리할 수 있도록 함
+  }
 };
-
+//리뷰 작성가능한 유저확인
 const getUserByReviewDao = async (userId) => {
   const resultUser = await AppDataSource.query(
     `
@@ -104,7 +119,7 @@ const getUserByReviewDao = async (userId) => {
   const user = resultUser[0];
   return user;
 };
-
+//리뷰작성
 const insertReviewDao = async (userId, productId, score, content) => {
   const insertReview = await AppDataSource.query(
     `

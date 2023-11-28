@@ -279,7 +279,7 @@ CREATE TABLE `writing_pads` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping routines for database 'postman3'
+-- Dumping routines for database 'postman2'
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
