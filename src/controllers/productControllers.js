@@ -10,25 +10,31 @@ const {
 const { getUserByIdDao, getUserByReviewDao } = require("../models/productDao");
 const { AppDataSource } = require("../models/dataSource");
 //어드민 계정일 경우에만 상품을 등록할수있습니다.
-const insertProductController = async (req, res, next) => {
+const insertProductController = async (req, res) => {
   try {
     const userId = 1;
     const { name, img_url, price, add_price, discription } = req.body;
-    if (!userId || userId.length === 0)
+    if (!userId) {
       return res.status(400).json({ message: "KEY_ERROR" });
+    }
     const user = await getUserByIdDao(userId);
     console.log("controller", user);
     console.log(user.user_role_id);
-    if (user && user.user_role_id !== 3) {
+    if (!user || user.user_role_id !== 3) {
       return res.status(400).json({ message: "게시글 작성 권한이 없습니다" });
     }
-    if (!name)
+    if (!name) {
       return res.status(400).json({ message: "상품이름을 작성해주세요" });
-    if (!img_url)
+    }
+    if (!img_url) {
       return res.status(400).json({ message: "상품이미지를 넣어주세요" });
-    if (!price) return res.status(400).json({ message: "가격을 작성해주세요" });
-    if (!discription)
+    }
+    if (!price) {
+      return res.status(400).json({ message: "가격을 작성해주세요" });
+    }
+    if (!discription) {
       return res.status(400).json({ message: "상품설명을 작성해주세요" });
+    }
     return res.status(200).json({
       message: "상품이 등록되었습니다",
       data: await insertProductService(
@@ -40,36 +46,37 @@ const insertProductController = async (req, res, next) => {
       ),
     });
   } catch (err) {
-    console.error(err);
-    next(err);
+    console.error("insertProductController에서 생긴 오류", err);
+    throw err;
   }
 };
+
 //어드민 계정일 경우에만 상품을 삭제 할수있습니다.
-const deleteProductController = async (req, res, next) => {
+const deleteProductController = async (req, res) => {
   try {
     const userId = 1;
     const productId = req.body.productId;
-
-    if (!userId || userId.length === 0)
+    if (!userId) {
       return res.status(400).json({ message: "KEY_ERROR" });
+    }
     const user = await getUserByIdDao(userId);
-
-    if (user && user.user_role_id !== 3) {
+    if (!user || user.user_role_id !== 3) {
       return res.status(400).json({ message: "게시글 삭제 권한이 없습니다" });
     }
-    if (!productId || productId.length === 0)
+    if (!productId) {
       return res.status(400).json({ message: "삭제할 상품을 선택해주세요" });
+    }
     return res.status(200).json({
-      message: "상품삭제가 완료되었습니다",
+      message: "상품 삭제가 완료되었습니다",
       data: await deleteProductService(productId),
     });
   } catch (err) {
-    console.error(err);
-    next(err);
+    console.error("deleteProductController에서 생긴 오류", err);
+    throw err;
   }
 };
 //상품의 상세정보를 가져옵니다.
-const getProductController = async (req, res, next) => {
+const getProductController = async (req, res) => {
   try {
     const productId = req.params.productId;
     if (!productId || productId.length === 0) {
@@ -82,12 +89,12 @@ const getProductController = async (req, res, next) => {
       data: await getProductService(productId),
     });
   } catch (err) {
-    console.error(err);
-    next(err);
+    console.error("getProductController에서 생긴 오류", err);
+    throw err;
   }
 };
 //상품의 목록을 페이지 기준 20개씩 보내줍니다.
-const getProductListController = async (req, res, next) => {
+const getProductListController = async (req, res) => {
   try {
     const page = req.query.page || 1;
     const pageSize = 20;
@@ -105,11 +112,11 @@ const getProductListController = async (req, res, next) => {
     });
   } catch (err) {
     console.error("getProductListController에서 오류:", err);
-    next(err); // 에러를 다음 미들웨어로 전달
+    throw err; // 에러를 다음 미들웨어로 전달
   }
 };
 //상품이 배송완료가 되었을때 리뷰를 작성할수 있습니다.
-const insertReviewController = async (req, res, next) => {
+const insertReviewController = async (req, res) => {
   try {
     const userId = 3;
     const productId = req.params.productId;
@@ -132,12 +139,12 @@ const insertReviewController = async (req, res, next) => {
       data: await insertReviewService(userId, productId, score, content),
     });
   } catch (err) {
-    console.error(err);
-    next(err);
+    console.error("insertReviewController에서 생긴 에러", err);
+    throw err;
   }
 };
 //상품 리뷰를 한 페이지당 20개의 댓글을 보여줍니다.
-const getReviewController = async (req, res, next) => {
+const getReviewController = async (req, res) => {
   try {
     const page = req.query.page || 1;
     const pageSize = 20;
@@ -156,12 +163,12 @@ const getReviewController = async (req, res, next) => {
       data: reviewList,
     });
   } catch (err) {
-    console.error(err);
-    next(err);
+    console.error("getReviewController에서 생긴 에러");
+    throw err;
   }
 };
 //유저가 작성한 리뷰를 삭제합니다.
-const deleteReviewController = async (req, res, next) => {
+const deleteReviewController = async (req, res) => {
   try {
     const userId = 1;
     const reviewId = req.body.reviewId;
@@ -175,8 +182,8 @@ const deleteReviewController = async (req, res, next) => {
       data: await deleteReviewService(userId, reviewId),
     });
   } catch (err) {
-    console.error(err);
-    next(err);
+    console.error("deleteReviewController에서 생긴 에러", err);
+    throw err;
   }
 };
 

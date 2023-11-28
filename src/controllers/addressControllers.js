@@ -10,7 +10,7 @@ const {
 } = require("../services/addressServices");
 
 //받는사람 주소등록
-const insertDeliveryAddressController = async (req, res, next) => {
+const insertDeliveryAddressController = async (req, res) => {
   const userId = 1;
   try {
     const {
@@ -19,7 +19,8 @@ const insertDeliveryAddressController = async (req, res, next) => {
       deliveryPhone,
       deliveryName,
     } = req.body;
-    if (userId.length === 0 || !userId) {
+
+    if (!userId) {
       return res.status(400).json({ message: "KEY_ERROR" });
     } else if (!deliveryAddress) {
       return res.status(400).json({ message: "배송주소를 입력해주세요" });
@@ -30,22 +31,24 @@ const insertDeliveryAddressController = async (req, res, next) => {
         .status(400)
         .json({ message: "받으시는 분 성함을 입력해주세요" });
     } else {
+      const result = await insertAddressService(
+        userId,
+        deliveryAddress,
+        deliveryAddressDetail,
+        deliveryPhone,
+        deliveryName
+      );
       return res.status(200).json({
         message: "주소등록이 완료되었습니다",
-        data: await insertAddressService(
-          userId,
-          deliveryAddress,
-          deliveryAddressDetail,
-          deliveryPhone,
-          deliveryName
-        ),
+        data: result,
       });
     }
   } catch (err) {
-    console.error(err);
-    next(err);
+    console.error("insertDeliveryAddressController에서의 오류", err);
+    throw err;
   }
 };
+
 //보내는사람 주소등록
 const insertSendAddressController = async (req, res, next) => {
   try {
