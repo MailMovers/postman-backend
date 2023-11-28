@@ -1,5 +1,3 @@
-// tests/user.test.js
-
 // npm i --save-dev supertest
 const request = require("supertest");
 
@@ -16,15 +14,27 @@ describe("CREATE send ADDRESS", () => {
     app = createApp();
     await AppDataSource.initialize();
 
+    await AppDataSource.query(`
+    INSERT INTO roles (id, role)
+    VALUES (1,"user")`);
+
+    await AppDataSource.query(`
+    INSERT INTO roles (id, role)
+    VALUES (2,"print")`);
+
+    await AppDataSource.query(`
+    INSERT INTO roles (id, role)
+    VALUES (3,"admin")`);
+
     // 새로운 사용자 추가
     await AppDataSource.query(`
-      INSERT INTO users (id, name, email, phone, role_id)
-      VALUES (2, '김동언', 'kimdongeun@gmail.com', '000-0000-00000', 3)
+      INSERT INTO users (id, name, email, phone, role_id, password)
+      VALUES (2, '김동언', 'kimdongeun@gmail.com', '000-0000-00000', 3, "0000")
     `);
 
     await AppDataSource.query(`
-    INSERT INTO users (id, name, email, phone, role_id)
-    VALUES (3, '이재훈', 'dlwogns@gmail.com', '000-0000-00000', 3)
+    INSERT INTO users (id, name, email, phone, role_id, password)
+    VALUES (3, '이재훈', 'dlwogns@gmail.com', '000-0000-00000', 3, "0000")
   `);
     await AppDataSource.query(`
   INSERT INTO send_address
@@ -41,6 +51,7 @@ describe("CREATE send ADDRESS", () => {
     await AppDataSource.query(`SET FOREIGN_KEY_CHECKS = 0;`);
     await AppDataSource.query(`TRUNCATE users`);
     await AppDataSource.query(`TRUNCATE send_address`);
+    await AppDataSource.query(`TRUNCATE roles`);
     await AppDataSource.query(`SET FOREIGN_KEY_CHECKS = 1;`);
 
     await AppDataSource.destroy();

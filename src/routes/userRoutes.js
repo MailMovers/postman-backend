@@ -5,5 +5,7 @@ const { UserController } = require('../controllers');
 const userController = new UserController();
 
 userRoute.post('/signup', userController.signUp);
+userRoute.post('/emailauth', userController.emailAuth);
+userRoute.post('/authnumber-check', userController.checkAuthNumber);
 
 module.exports = userRoute;

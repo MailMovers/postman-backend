@@ -11,6 +11,14 @@ class UserDao {
             throw error;
         }
     };
+
+    checkDuplicatedEmail = async ({ email }) => {
+        try {
+            return await AppDataSource.query(`SELECT * FROM users WHERE email = (?)`, [email]);
+        } catch (error) {
+            throw error;
+        }
+    };
 }
 
 module.exports = UserDao;
