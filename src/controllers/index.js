@@ -32,6 +32,8 @@ const {
 
 const { paymentSuccessController } = require("./paymentControllers.js");
 
+const { insertCsController } = require("./csControllers");
+
 module.exports = {
   UserController,
   addressController: {
@@ -64,4 +66,5 @@ module.exports = {
   paymentController: {
     paymentSuccessController,
   },
+  insertCsController,
 };
