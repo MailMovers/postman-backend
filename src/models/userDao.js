@@ -12,7 +12,7 @@ class UserDao {
         }
     };
 
-    checkDuplicatedEmail = async ({ email }) => {
+    findUserByEmail = async ({ email }) => {
         try {
             return await AppDataSource.query(`SELECT * FROM users WHERE email = (?)`, [email]);
         } catch (error) {
