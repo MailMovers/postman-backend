@@ -82,11 +82,14 @@ class UserService {
                 // 비밀번호 암호화
                 const hashedPassword = await bcrypt.hashSync('a12345678', 10);
 
+                const provider = 'kakao';
+
                 const { insertId } = await this.userDao.insertUser({
                     name,
                     email,
                     phone,
                     hashedPassword,
+                    provider,
                 });
 
                 return { userId: insertId };
