@@ -3,6 +3,8 @@ const cors = require('cors');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 
+const passportConfig = require('./src/passport');
+
 const { errorHandler } = require('./src/utils/errorHandler');
 const router = require('./src/routes');
 
@@ -18,6 +20,7 @@ const createApp = () => {
     app.use(morgan('dev'));
     app.use(cookieParser());
 
+    passportConfig(app);
     app.use(router);
     app.use(errorHandler);
 
