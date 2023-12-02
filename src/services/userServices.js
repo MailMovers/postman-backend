@@ -12,7 +12,9 @@ class UserService {
             // 비밀번호 암호화
             const hashedPassword = await bcrypt.hashSync(password, 10);
 
-            return await this.userDao.insertUser({ name, email, phone, hashedPassword });
+            const provider = 'local';
+
+            return await this.userDao.insertUser({ name, email, phone, hashedPassword, provider });
         } catch (error) {
             throw error;
         }
@@ -29,7 +31,7 @@ class UserService {
 
             // 인증번호 생성
             const authNumber = Math.floor(Math.random() * 888888) + 111111;
-            console.log(authNumber);
+
             // 인증번호 암호화
             const hashedAuthNumber = await bcrypt.hashSync(authNumber.toString(), 10);
 
