@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const { UserDao } = require('../models');
 const { ErrorNames, CustomError } = require('../utils/customErrors');
 const smtpTransport = require('../config/email.config');
@@ -11,7 +12,9 @@ class UserService {
             // 비밀번호 암호화
             const hashedPassword = await bcrypt.hashSync(password, 10);
 
-            return await this.userDao.insertUser({ name, email, phone, hashedPassword });
+            const provider = 'local';
+
+            return await this.userDao.insertUser({ name, email, phone, hashedPassword, provider });
         } catch (error) {
             throw error;
         }
@@ -20,7 +23,7 @@ class UserService {
     sendEmail = async ({ email }) => {
         try {
             // 이메일 중복검사
-            const isEmailExist = await this.userDao.checkDuplicatedEmail({ email });
+            const isEmailExist = await this.userDao.findUserByEmail({ email });
 
             if (isEmailExist.length > 0) {
                 throw new CustomError(ErrorNames.EmailExistError, '이미 가입된 이메일입니다.');
@@ -28,7 +31,7 @@ class UserService {
 
             // 인증번호 생성
             const authNumber = Math.floor(Math.random() * 888888) + 111111;
-            console.log(authNumber);
+
             // 인증번호 암호화
             const hashedAuthNumber = await bcrypt.hashSync(authNumber.toString(), 10);
 
@@ -65,6 +68,69 @@ class UserService {
                     '인증번호가 일치하지 않습니다.'
                 );
             }
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    kakaoSignUp = async ({ name, email, phone_number }) => {
+        try {
+            const [user] = await this.userDao.findUserByEmail({ email });
+
+            if (!user) {
+                // 회원가입
+                const phone = await this.kakaoPhoneFormatting({ phone_number });
+
+                // 비밀번호 암호화
+                const hashedPassword = await bcrypt.hashSync('a12345678', 10);
+
+                const provider = 'kakao';
+
+                const { insertId } = await this.userDao.insertUser({
+                    name,
+                    email,
+                    phone,
+                    hashedPassword,
+                    provider,
+                });
+
+                return { userId: insertId };
+            }
+
+            return { userId: user.id };
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    kakaoPhoneFormatting = async ({ phone_number }) => {
+        // +82, 10-0000-0000
+        const [internationalNumber, phone] = phone_number.split(' ');
+
+        return '0' + phone.split('-').join('');
+    };
+
+    generateAccessToken = async ({ userId }) => {
+        try {
+            return jwt.sign(
+                {
+                    userId,
+                },
+                process.env.JWT_SECRET_KEY,
+                {
+                    expiresIn: '10s',
+                }
+            );
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    generateRefreshToken = async () => {
+        try {
+            return jwt.sign({}, process.env.JWT_SECRET_KEY, {
+                expiresIn: '1d',
+            });
         } catch (error) {
             throw error;
         }
