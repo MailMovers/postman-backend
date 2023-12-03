@@ -23,7 +23,7 @@ class UserService {
     sendEmail = async ({ email }) => {
         try {
             // 이메일 중복검사
-            const isEmailExist = await this.userDao.findUserByEmail({ email });
+            const isEmailExist = await this.userDao.findUserByEmail({ email, provider: 'local' });
 
             if (isEmailExist.length > 0) {
                 throw new CustomError(ErrorNames.EmailExistError, '이미 가입된 이메일입니다.');
@@ -73,9 +73,35 @@ class UserService {
         }
     };
 
+    signIn = async ({ email, password }) => {
+        try {
+            const [user] = await this.userDao.findUserByEmail({ email, provider: 'local' });
+
+            if (!user) {
+                throw new CustomError(
+                    ErrorNames.UserNotFoundError,
+                    '이메일 또는 비밀번호를 다시 확인해주세요.'
+                );
+            }
+
+            const isMatched = await bcrypt.compareSync(password, user.password);
+
+            if (!isMatched) {
+                throw new CustomError(
+                    ErrorNames.PasswordNotMatchedError,
+                    '이메일 또는 비밀번호를 다시 확인해주세요.'
+                );
+            }
+
+            return { userId: user.id };
+        } catch (error) {
+            throw error;
+        }
+    };
+
     kakaoSignUp = async ({ name, email, phone_number }) => {
         try {
-            const [user] = await this.userDao.findUserByEmail({ email });
+            const [user] = await this.userDao.findUserByEmail({ email, provider: 'kakao' });
 
             if (!user) {
                 // 회원가입

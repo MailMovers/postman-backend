@@ -1,6 +1,8 @@
 const ErrorNames = {
     EmailExistError: 'EmailExistError',
     AuthNumberFailedVerifyError: 'AuthNumberFailedVerifyError',
+    UserNotFoundError: 'UserNotFoundError',
+    PasswordNotMatchedError: 'PasswordNotMatchedError',
 };
 
 class CustomError extends Error {

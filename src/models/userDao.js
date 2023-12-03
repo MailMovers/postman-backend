@@ -12,9 +12,12 @@ class UserDao {
         }
     };
 
-    findUserByEmail = async ({ email }) => {
+    findUserByEmail = async ({ email, provider }) => {
         try {
-            return await AppDataSource.query(`SELECT * FROM users WHERE email = (?)`, [email]);
+            return await AppDataSource.query(
+                `SELECT * FROM users WHERE email = (?) AND provider = (?)`,
+                [email, provider]
+            );
         } catch (error) {
             throw error;
         }
