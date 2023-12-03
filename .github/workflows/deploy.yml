@@ -1,0 +1,63 @@
+name: Deploy to cloudtype
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Connect deploy key
+        uses: cloudtype-github-actions/connect@v1
+        with:
+          token: ${{ secrets.CLOUDTYPE_TOKEN }}
+          ghtoken: ${{ secrets.GHP_TOKEN }}
+      - name: Deploy
+        uses: cloudtype-github-actions/deploy@v1
+        with:
+          token: ${{ secrets.CLOUDTYPE_TOKEN }}
+          project: devasherpark/mailmovers-test
+          stage: main
+          yaml: >
+            name: postman-backend
+
+            app: node@18
+
+            options:
+              env:
+                - name: NODE_ENV
+                  value: production
+                - name: TYPEORM_CONNECTION
+                  value: mysql
+                - name: TYPEORM_HOST
+                  value: svc.sel5.cloudtype.app
+                - name: TYPEORM_PORT
+                  value: "31153"
+                - name: TYPEORM_USERNAME
+                  value: root
+                - name: TYPEORM_PASSWORD
+                  value: mailmovers
+                - name: TYPEORM_DATABASE
+                  value: mailmovers
+                - name: DATABASE_URL
+                  value: mysql://root:mailmovers@svc.sel5.cloudtype.app:31153/mailmovers
+                - name: JWT_SECRET_KEY
+                  value: mailmovers
+                - name: SERVER_PORT
+                  value: "3000"
+                - name: NODEMAILER_USER
+                  value: devasherpark@naver.com
+                - name: NODEMAILER_PASS
+                  value: gusals8665!@#
+                - name: KAKAO_KEY
+                  value: bc6ae8924e0d6b4ce40a1f6f78d08be6
+                - name: KAKAO_CALLBACK
+                  value: https://port-0-postman-backend-ysl2bloxw3rzo.sel5.cloudtype.app/user/kakao/callback
+              ports: 3000
+            context:
+              git:
+                url: git@github.com:${{ github.repository }}.git
+                ref: ${{ github.ref }}
+              preset: node
