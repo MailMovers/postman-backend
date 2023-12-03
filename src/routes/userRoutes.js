@@ -8,6 +8,7 @@ const userController = new UserController();
 userRoute.post('/signup', userController.signUp);
 userRoute.post('/emailauth', userController.emailAuth);
 userRoute.post('/authnumber-check', userController.checkAuthNumber);
+userRoute.post('/signin', userController.signIn);
 
 // social login
 userRoute.get('/kakao', passport.authenticate('kakao', { session: false }));

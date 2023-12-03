@@ -1,4 +1,9 @@
-const { signUpSchema, emailAuthSchema, authNumberSchema } = require('../utils/validation');
+const {
+    signUpSchema,
+    emailAuthSchema,
+    authNumberSchema,
+    signInSchema,
+} = require('../utils/validation');
 const { UserService } = require('../services');
 
 class UserController {
@@ -98,6 +103,38 @@ class UserController {
                 refreshToken,
             });
         } catch (error) {
+            return res.status(400).json({ success: false, message: '로그인에 실패했습니다.' });
+        }
+    };
+
+    // 일반 로그인
+    signIn = async (req, res, next) => {
+        try {
+            const { email, password } = await signInSchema.validateAsync(req.body);
+
+            const { userId } = await this.userService.signIn({ email, password });
+
+            const accessToken = await this.userService.generateAccessToken({ userId });
+            const refreshToken = await this.userService.generateRefreshToken();
+
+            res.cookie('accessToken', accessToken, { maxAge: 1000 * 10, httpOnly: true });
+            res.cookie('refreshToken', refreshToken, {
+                maxAge: 1000 * 60 * 60 * 24,
+                httpOnly: true,
+            });
+
+            return res.status(400).json({
+                success: true,
+                message: '로그인에 성공했습니다.',
+                accessToken,
+                refreshToken,
+            });
+        } catch (error) {
+            // Joi
+            if (error.isJoi) {
+                const { message } = error.details[0];
+                return res.status(400).json({ success: false, message });
+            }
             return res.status(400).json({ success: false, message: '로그인에 실패했습니다.' });
         }
     };
