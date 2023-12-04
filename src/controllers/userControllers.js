@@ -90,11 +90,11 @@ class UserController {
             const accessToken = await this.userService.generateAccessToken({ userId });
             const refreshToken = await this.userService.generateRefreshToken();
 
-            res.cookie('accessToken', accessToken, { maxAge: 1000 * 10, httpOnly: true });
-            res.cookie('refreshToken', refreshToken, {
-                maxAge: 1000 * 60 * 60 * 24,
-                httpOnly: true,
-            });
+            // res.cookie('accessToken', accessToken, { maxAge: 1000 * 10, httpOnly: true });
+            // res.cookie('refreshToken', refreshToken, {
+            //     maxAge: 1000 * 60 * 60 * 24,
+            //     httpOnly: true,
+            // });
 
             return res.status(400).json({
                 success: true,
@@ -117,11 +117,11 @@ class UserController {
             const accessToken = await this.userService.generateAccessToken({ userId });
             const refreshToken = await this.userService.generateRefreshToken();
 
-            res.cookie('accessToken', accessToken, { maxAge: 1000 * 10, httpOnly: true });
-            res.cookie('refreshToken', refreshToken, {
-                maxAge: 1000 * 60 * 60 * 24,
-                httpOnly: true,
-            });
+            // res.cookie('accessToken', accessToken, { maxAge: 1000 * 10, httpOnly: true });
+            // res.cookie('refreshToken', refreshToken, {
+            //     maxAge: 1000 * 60 * 60 * 24,
+            //     httpOnly: true,
+            // });
 
             return res.status(400).json({
                 success: true,
