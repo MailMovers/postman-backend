@@ -96,7 +96,7 @@ class UserController {
             //     httpOnly: true,
             // });
 
-            return res.status(400).json({
+            return res.status(200).json({
                 success: true,
                 message: '로그인에 성공했습니다.',
                 accessToken,
@@ -123,7 +123,7 @@ class UserController {
             //     httpOnly: true,
             // });
 
-            return res.status(400).json({
+            return res.status(200).json({
                 success: true,
                 message: '로그인에 성공했습니다.',
                 accessToken,
