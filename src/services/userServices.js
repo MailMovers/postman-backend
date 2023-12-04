@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const { UserDao } = require('../models');
 const { ErrorNames, CustomError } = require('../utils/customErrors');
 const smtpTransport = require('../config/email.config');
+const redisCli = require('../config/redis.config');
 
 class UserService {
     userDao = new UserDao();
@@ -23,7 +24,7 @@ class UserService {
     sendEmail = async ({ email }) => {
         try {
             // 이메일 중복검사
-            const isEmailExist = await this.userDao.findUserByEmail({ email });
+            const isEmailExist = await this.userDao.findUserByEmail({ email, provider: 'local' });
 
             if (isEmailExist.length > 0) {
                 throw new CustomError(ErrorNames.EmailExistError, '이미 가입된 이메일입니다.');
@@ -73,9 +74,35 @@ class UserService {
         }
     };
 
+    signIn = async ({ email, password }) => {
+        try {
+            const [user] = await this.userDao.findUserByEmail({ email, provider: 'local' });
+
+            if (!user) {
+                throw new CustomError(
+                    ErrorNames.UserNotFoundError,
+                    '이메일 또는 비밀번호를 다시 확인해주세요.'
+                );
+            }
+
+            const isMatched = await bcrypt.compareSync(password, user.password);
+
+            if (!isMatched) {
+                throw new CustomError(
+                    ErrorNames.PasswordNotMatchedError,
+                    '이메일 또는 비밀번호를 다시 확인해주세요.'
+                );
+            }
+
+            return { userId: user.id };
+        } catch (error) {
+            throw error;
+        }
+    };
+
     kakaoSignUp = async ({ name, email, phone_number }) => {
         try {
-            const [user] = await this.userDao.findUserByEmail({ email });
+            const [user] = await this.userDao.findUserByEmail({ email, provider: 'kakao' });
 
             if (!user) {
                 // 회원가입
@@ -118,7 +145,7 @@ class UserService {
                 },
                 process.env.JWT_SECRET_KEY,
                 {
-                    expiresIn: '10s',
+                    expiresIn: '1d',
                 }
             );
         } catch (error) {
@@ -129,7 +156,17 @@ class UserService {
     generateRefreshToken = async () => {
         try {
             return jwt.sign({}, process.env.JWT_SECRET_KEY, {
-                expiresIn: '1d',
+                expiresIn: '14d',
+            });
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    setRefreshTokenInRedis = async ({ userId, refreshToken }) => {
+        try {
+            await redisCli.SET(`refresh-${userId}`, refreshToken, {
+                EX: 60 * 60 * 24,
             });
         } catch (error) {
             throw error;

@@ -12,7 +12,7 @@ const createApp = () => {
     const app = express();
 
     app.get('/', (req, res) => {
-        res.send('Hello World!');
+        res.send('Hello World - Github Actions!');
     });
 
     app.use(express.json());
