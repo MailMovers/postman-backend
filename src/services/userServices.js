@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const { UserDao } = require('../models');
 const { ErrorNames, CustomError } = require('../utils/customErrors');
 const smtpTransport = require('../config/email.config');
+const redisCli = require('../config/redis.config');
 
 class UserService {
     userDao = new UserDao();
@@ -144,7 +145,7 @@ class UserService {
                 },
                 process.env.JWT_SECRET_KEY,
                 {
-                    expiresIn: '10s',
+                    expiresIn: '1d',
                 }
             );
         } catch (error) {
@@ -155,7 +156,17 @@ class UserService {
     generateRefreshToken = async () => {
         try {
             return jwt.sign({}, process.env.JWT_SECRET_KEY, {
-                expiresIn: '1d',
+                expiresIn: '14d',
+            });
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    setRefreshTokenInRedis = async ({ userId, refreshToken }) => {
+        try {
+            await redisCli.SET(`refresh-${userId}`, refreshToken, {
+                EX: 60 * 60 * 24,
             });
         } catch (error) {
             throw error;
