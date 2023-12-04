@@ -90,11 +90,8 @@ class UserController {
             const accessToken = await this.userService.generateAccessToken({ userId });
             const refreshToken = await this.userService.generateRefreshToken();
 
-            // res.cookie('accessToken', accessToken, { maxAge: 1000 * 10, httpOnly: true });
-            // res.cookie('refreshToken', refreshToken, {
-            //     maxAge: 1000 * 60 * 60 * 24,
-            //     httpOnly: true,
-            // });
+            // Set RefreshToken in Redis
+            await this.userService.setRefreshTokenInRedis({ userId, refreshToken });
 
             return res.status(200).json({
                 success: true,
@@ -103,6 +100,7 @@ class UserController {
                 refreshToken,
             });
         } catch (error) {
+            console.log(error);
             return res.status(400).json({ success: false, message: '로그인에 실패했습니다.' });
         }
     };
@@ -117,11 +115,8 @@ class UserController {
             const accessToken = await this.userService.generateAccessToken({ userId });
             const refreshToken = await this.userService.generateRefreshToken();
 
-            // res.cookie('accessToken', accessToken, { maxAge: 1000 * 10, httpOnly: true });
-            // res.cookie('refreshToken', refreshToken, {
-            //     maxAge: 1000 * 60 * 60 * 24,
-            //     httpOnly: true,
-            // });
+            // Set RefreshToken in Redis
+            await this.userService.setRefreshTokenInRedis({ userId, refreshToken });
 
             return res.status(200).json({
                 success: true,
