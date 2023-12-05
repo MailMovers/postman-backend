@@ -15,6 +15,7 @@ const {
   countPhotoDao,
   stampDao,
   confirmLetterDao,
+  contentDao,
 } = require("./writingLetterDao");
 
 // user dao
@@ -65,4 +66,5 @@ module.exports = {
   insertReviewDao,
   getReviewDao,
   deleteReviewDao,
+  contentDao,
 };

@@ -1,20 +1,35 @@
+const AWS = require("aws-sdk");
+
+const s3 = new AWS.S3({
+  accessKeyId: process.env.AWS_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION,
+});
+
+const uploadToS3 = async (file) => {
+  const params = {
+    Bucket: process.env.AWS_BUCKET_NAME, // S3 버킷 이름
+    Key: file.originalname, // 파일 이름
+    Body: file.buffer, // 파일 데이터
+  };
+  const { Location } = await s3.upload(params).promise();
+  return Location; // 업로드된 파일의 URL 반환
+};
+
 const {
   letterService,
   PhotoService,
   confirmLetterService,
   stampService,
-  saveOrUpdateAddressService,
 } = require("../services/writingLetterServices");
 
 const letterContoller = async (req, res, next) => {
   try {
-    const { userId, fontId, wriringPadId, content, page } = req.body;
+    const { userId, writingPadId, contents } = req.body;
     const result = await letterService(
       userId,
-      fontId,
-      wriringPadId,
-      content,
-      page
+      writingPadId,
+      contents
     );
     return {
       success: true,
@@ -32,8 +47,10 @@ const letterContoller = async (req, res, next) => {
 
 const photoContoller = async (req, res, next) => {
   try {
-    const { imgUrl, letterId, photoCount, userId } = req.body;
-    const result = await PhotoService(imgUrl, letterId, photoCount, userId);
+    const { letterId, photoCount, userId } = req.body;
+    const file = req.file;
+    const s3Url = await uploadToS3(file);
+    const result = await PhotoService(s3Url, letterId, photoCount, userId);
     return {
       success: true,
       message: "photoContoller pass.",
@@ -62,26 +79,6 @@ const stampController = async (req, res, next) => {
     return {
       success: false,
       message: "Error in stampContoller. Please try again later.",
-    };
-  }
-};
-
-const saveOrUpdateAddressController = async (req, res) => {
-  try {
-    const { userId } = req.params;
-    const addressData = req.body;
-    const result = await saveOrUpdateAddressService(userId, addressData);
-    return {
-      success: true,
-      message: "Address saved or updated successfully.",
-      data: result,
-    };
-  } catch (error) {
-    console.error("Error in saveOrUpdateAddressController :", error);
-    return {
-      success: false,
-      message:
-        "Error in saveOrUpdateAddressController. Please try again later.",
     };
   }
 };

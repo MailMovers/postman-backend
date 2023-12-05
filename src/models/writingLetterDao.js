@@ -1,19 +1,38 @@
 const { AppDataSource } = require("./dataSource");
 
 // 1차 편지 작성 Dao
-const letterDao = async (userId, fontId, writingPadId, content, page) => {
+const letterDao = async (userId, writingPadId, content, page) => {
   try {
     const letter = await AppDataSource.query(
       `
         INSERT INTO letters (
-            user_id, font_id, writing_pad_id, content, page
+            user_id, writing_pad_id, page
         )VALUES(
-            ?,?,?,?,?
+            ?,?,?,
         );    
     `,
-      [userId, fontId, writingPadId, content, page]
+      [userId, writingPadId, page]
     );
-    return letter;
+    return letter.insertId;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+const contentDao = async (letterId, contentCount, content) => {
+  try {
+    const result = await AppDataSource.query(
+      `
+        INSERT INTO content (
+            letter_id, content_count, content
+        ) VALUES (
+            ?,?,?
+        );
+      `,
+      [letterId, contentCount, content]
+    );
+    return result;
   } catch (error) {
     console.error(error);
     throw error;
@@ -21,7 +40,7 @@ const letterDao = async (userId, fontId, writingPadId, content, page) => {
 };
 
 // 2차 사진 첨부 Dao
-const photoDao = async (imgUrl, letterId) => {
+const photoDao = async (s3Url, letterId) => {
   try {
     const photo = await AppDataSource.query(
       `
@@ -31,10 +50,9 @@ const photoDao = async (imgUrl, letterId) => {
             ?, ?
         );
         `,
-      [imgUrl, letterId]
+      [s3Url, letterId]
     );
-    // 필요한 정보만 반환
-    return photo.insertId;
+    return photo;
   } catch (error) {
     console.error(error);
     throw error;
@@ -52,8 +70,7 @@ const countPhotoDao = async (photoCount, letterId) => {
         `,
       [photoCount, letterId]
     );
-    // 필요한 정보만 반환
-    return countPhoto.affectedRows;
+    return countPhoto;
   } catch (error) {
     console.error(error);
     throw error;
@@ -71,8 +88,7 @@ const stampDao = async (stampId, letterId) => {
         `,
       [stampId, letterId]
     );
-    // 필요한 정보만 반환
-    return checkStamp.affectedRows;
+    return checkStamp;
   } catch (error) {
     console.error(error);
     throw error;
@@ -126,4 +142,5 @@ module.exports = {
   countPhotoDao,
   confirmLetterDao,
   stampDao,
+  contentDao,
 };
