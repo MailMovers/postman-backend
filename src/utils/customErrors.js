@@ -3,6 +3,7 @@ const ErrorNames = {
     AuthNumberFailedVerifyError: 'AuthNumberFailedVerifyError',
     UserNotFoundError: 'UserNotFoundError',
     PasswordNotMatchedError: 'PasswordNotMatchedError',
+    AccessTokenNotFoundError: 'AccessTokenNotFoundError',
 };
 
 class CustomError extends Error {
