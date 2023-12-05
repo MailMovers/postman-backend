@@ -137,6 +137,7 @@ class UserService {
         return '0' + phone.split('-').join('');
     };
 
+    // Access Token 생성
     generateAccessToken = async ({ userId }) => {
         try {
             return jwt.sign(
@@ -153,6 +154,7 @@ class UserService {
         }
     };
 
+    // Refresh Token 생성
     generateRefreshToken = async () => {
         try {
             return jwt.sign({}, process.env.JWT_SECRET_KEY, {
@@ -163,11 +165,55 @@ class UserService {
         }
     };
 
+    // Access Token 검증
+    verifyAccessToken = async ({ accessToken }) => {
+        try {
+            return jwt.verify(accessToken, process.env.JWT_SECRET_KEY);
+        } catch (error) {
+            // jwt expired
+            if (error.name === 'TokenExpiredError') {
+                return null;
+            }
+            throw error;
+        }
+    };
+
+    // Refresh Token 검증
+    verifyRefreshToken = async ({ refreshToken, userId }) => {
+        try {
+            // Redis에 저장된 Refresh Token 가져오기
+            const redisRefreshToken = await this.getRefreshTokenInRedis({ userId });
+
+            // 두 Refresh Token이 일치하는지 판별
+            if (refreshToken !== redisRefreshToken) {
+                throw new CustomError(ErrorNames.RefreshTokenNotMatchedError, '잘못된 토큰입니다.');
+            }
+
+            return jwt.verify(refreshToken, process.env.JWT_SECRET_KEY);
+        } catch (error) {
+            // jwt expired
+            if (error.name === 'TokenExpiredError') {
+                return null;
+            }
+            throw error;
+        }
+    };
+
+    // Refresh Token을 Redis에 저장
     setRefreshTokenInRedis = async ({ userId, refreshToken }) => {
         try {
             await redisCli.SET(`refresh-${userId}`, refreshToken, {
                 EX: 60 * 60 * 24,
             });
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    // Refresh Token을 Redis에서 가져오기
+    getRefreshTokenInRedis = async ({ userId }) => {
+        try {
+            return await redisCli.GET(`refresh-${userId}`);
         } catch (error) {
             throw error;
         }
