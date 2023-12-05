@@ -1,7 +1,6 @@
 -- migrate:up
 CREATE TABLE `letters` (
   `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  `content_id` int NOT NULL,
   `page` int DEFAULT 1,
   `status` enum('save','delete') DEFAULT "save",
   `photo_count` int DEFAULT 0,
@@ -19,7 +18,6 @@ ALTER TABLE `letters` ADD FOREIGN KEY (`font_id`) REFERENCES `fonts` (`id`);
 ALTER TABLE `letters` ADD FOREIGN KEY (`stamp_id`) REFERENCES `stamps` (`id`);
 ALTER TABLE `letters` ADD FOREIGN KEY (`send_address_id`) REFERENCES `send_address` (`id`);
 ALTER TABLE `letters` ADD FOREIGN KEY (`delivery_address_id`) REFERENCES `delivery_address` (`id`);
-ALTER TABLE `letters` ADD FOREIGN KEY (`content_id`) REFERENCES `content` (`id`);
 
 -- migrate:down
 DROP TABLE `letters`;
