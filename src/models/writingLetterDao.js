@@ -1,7 +1,7 @@
 const { AppDataSource } = require("./dataSource");
 
 // 1차 편지 작성 Dao
-const letterDao = async (userId, writingPadId, content, page) => {
+const letterDao = async (userId, writingPadId, page) => {
   try {
     const letter = await AppDataSource.query(
       `
