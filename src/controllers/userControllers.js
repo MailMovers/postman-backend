@@ -130,6 +130,9 @@ class UserController {
                 const { message } = error.details[0];
                 return res.status(400).json({ success: false, message });
             }
+            if (error.name === 'UserNotFoundError' || error.name === 'PasswordNotMatchedError') {
+                return res.status(400).json({ success: false, message: error.message });
+            }
             return res.status(400).json({ success: false, message: '로그인에 실패했습니다.' });
         }
     };
