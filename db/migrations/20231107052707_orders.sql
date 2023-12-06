@@ -3,7 +3,6 @@ CREATE TABLE `orders` (
   `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `total_price` SMALLINT NOT NULL,
   `status` varchar(50) NOT NULL,
-  `payment` varchar(255) NOT NULL,
   `user_id` int NOT NULL,
   `letter_id` int NOT NULL,
   `order_name` varchar(400) NOT NULL,
