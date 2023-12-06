@@ -17,9 +17,14 @@
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `content` (
   `id` int NOT NULL AUTO_INCREMENT,
+  `letter_id` int NOT NULL,
   `content` text NOT NULL,
-  `content_count` int DEFAULT '1',
-  PRIMARY KEY (`id`)
+  `content_count` int NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `letter_id` (`letter_id`),
+  CONSTRAINT `content_ibfk_1` FOREIGN KEY (`letter_id`) REFERENCES `letters` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -110,7 +115,6 @@ CREATE TABLE `fonts` (
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `letters` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `content_id` int NOT NULL,
   `page` int DEFAULT '1',
   `status` enum('save','delete') DEFAULT 'save',
   `photo_count` int DEFAULT '0',
@@ -128,14 +132,12 @@ CREATE TABLE `letters` (
   KEY `stamp_id` (`stamp_id`),
   KEY `send_address_id` (`send_address_id`),
   KEY `delivery_address_id` (`delivery_address_id`),
-  KEY `content_id` (`content_id`),
   CONSTRAINT `letters_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
   CONSTRAINT `letters_ibfk_2` FOREIGN KEY (`writing_pad_id`) REFERENCES `writing_pads` (`id`),
   CONSTRAINT `letters_ibfk_3` FOREIGN KEY (`font_id`) REFERENCES `fonts` (`id`),
   CONSTRAINT `letters_ibfk_4` FOREIGN KEY (`stamp_id`) REFERENCES `stamps` (`id`),
   CONSTRAINT `letters_ibfk_5` FOREIGN KEY (`send_address_id`) REFERENCES `send_address` (`id`),
-  CONSTRAINT `letters_ibfk_6` FOREIGN KEY (`delivery_address_id`) REFERENCES `delivery_address` (`id`),
-  CONSTRAINT `letters_ibfk_7` FOREIGN KEY (`content_id`) REFERENCES `content` (`id`)
+  CONSTRAINT `letters_ibfk_6` FOREIGN KEY (`delivery_address_id`) REFERENCES `delivery_address` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -149,7 +151,6 @@ CREATE TABLE `orders` (
   `id` int NOT NULL AUTO_INCREMENT,
   `total_price` smallint NOT NULL,
   `status` varchar(50) NOT NULL,
-  `payment` varchar(255) NOT NULL,
   `user_id` int NOT NULL,
   `letter_id` int NOT NULL,
   `order_name` varchar(400) NOT NULL,
@@ -230,9 +231,9 @@ CREATE TABLE `roles` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `schema_migrations` (
-  `version` varchar(128) NOT NULL,
+  `version` varchar(255) COLLATE latin1_bin NOT NULL,
   PRIMARY KEY (`version`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -318,7 +319,7 @@ CREATE TABLE `writing_pads` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping routines for database 'postman2'
+-- Dumping routines for database 'postman'
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -347,8 +348,8 @@ INSERT INTO `schema_migrations` (version) VALUES
   ('20231107052637'),
   ('20231107052638'),
   ('20231107052639'),
-  ('20231107052647'),
   ('20231107052648'),
+  ('20231107052649'),
   ('20231107052701'),
   ('20231107052707'),
   ('20231116095747');
