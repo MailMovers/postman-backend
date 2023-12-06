@@ -106,5 +106,4 @@ module.exports = {
   photoContoller,
   confirmLetterContoller,
   stampController,
-  saveOrUpdateAddressController,
 };

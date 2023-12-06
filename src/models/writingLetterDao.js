@@ -20,7 +20,7 @@ const letterDao = async (userId, writingPadId, page) => {
   }
 };
 
-const contentDao = async (letterId, contentCount, content) => {
+const contentDao = async (letterId, count, content) => {
   try {
     const result = await AppDataSource.query(
       `
@@ -30,7 +30,7 @@ const contentDao = async (letterId, contentCount, content) => {
             ?,?,?
         );
       `,
-      [letterId, contentCount, content]
+      [letterId, count, content]
     );
     return result;
   } catch (error) {
