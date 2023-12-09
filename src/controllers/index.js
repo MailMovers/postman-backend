@@ -11,7 +11,7 @@ const {
 
 const {
   letterContoller,
-  photoContoller,
+  photoController,
   confirmLetterContoller,
   stampController,
 } = require("./writingLetterControllers");
@@ -45,7 +45,7 @@ module.exports = {
   },
   writingLetterController: {
     letterContoller,
-    photoContoller,
+    photoController,
     stampController,
     confirmLetterContoller,
   },
