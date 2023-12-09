@@ -6,14 +6,14 @@ const s3 = new AWS.S3({
   region: process.env.AWS_REGION,
 });
 
-const uploadToS3 = async (file) => {
+const getPreSignedUrl = async (file) => {
   const params = {
     Bucket: process.env.AWS_BUCKET_NAME, // S3 버킷 이름
     Key: file.originalname, // 파일 이름
-    Body: file.buffer, // 파일 데이터
+    Expires: 60, // url이 만료되는 시간(초)
   };
-  const { Location } = await s3.upload(params).promise();
-  return Location; // 업로드된 파일의 URL 반환
+  const preSignedUrl = await s3.getSignedUrlPromise("putObject", params); // 업로드된 파일의 URL 반환
+  return preSignedUrl;
 };
 
 const {
@@ -25,12 +25,9 @@ const {
 
 const letterContoller = async (req, res, next) => {
   try {
-    const { userId, writingPadId, contents } = req.body;
-    const result = await letterService(
-      userId,
-      writingPadId,
-      contents
-    );
+    const userId = req.param;
+    const { writingPadId, contents } = req.body;
+    const result = await letterService(userId, writingPadId, contents);
     return {
       success: true,
       message: "letterContoller pass.",
@@ -45,22 +42,20 @@ const letterContoller = async (req, res, next) => {
   }
 };
 
-const photoContoller = async (req, res, next) => {
+const photoController = async (req, res, next) => {
   try {
-    const { letterId, photoCount, userId } = req.body;
-    const file = req.file;
-    const s3Url = await uploadToS3(file);
-    const result = await PhotoService(s3Url, letterId, photoCount, userId);
+    const { letterId, photoCount, s3Url } = req.body;
+    const result = await PhotoService(s3Url, letterId, photoCount);
     return {
       success: true,
-      message: "photoContoller pass.",
+      message: "photoController pass.",
       data: result,
     };
   } catch (error) {
-    console.error("Error in photoContoller :", error);
+    console.error("Error in photoController :", error);
     return {
       success: false,
-      message: "Error in photoContoller. Please try again later.",
+      message: "Error in photoController. Please try again later.",
     };
   }
 };
@@ -103,7 +98,8 @@ const confirmLetterContoller = async (req, res, next) => {
 
 module.exports = {
   letterContoller,
-  photoContoller,
+  photoController,
   confirmLetterContoller,
   stampController,
+  getPreSignedUrl,
 };

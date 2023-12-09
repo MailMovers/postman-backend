@@ -13,7 +13,7 @@ const letterService = async (userId, writingPadId, contents) => {
     const letterResult = await letterDao(userId, writingPadId, page);
     const letterId = letterResult.insertId;
     for (let item of contents) {
-      await contentDao(letterId, item.count, item.content);
+      await contentDao(letterId, item.pageNum, item.content); // content id letters테이블에 넣기
     }
 
     return {
