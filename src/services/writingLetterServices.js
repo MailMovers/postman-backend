@@ -18,8 +18,23 @@ const letterService = async (userId, writingPadId, contents) => {
 
     return {
       success: true,
-      message: "편지가 성공적으로 저장되었습니다.",
       data: letterResult,
+    };
+  } catch (error) {
+    console.error("Error in letterService:", error);
+    return {
+      success: false,
+      message: "Error in letterService. Please try again later.",
+    };
+  }
+};
+
+const checkLetterService = async (userId) => {
+  try {
+    const result = await checkLetterDao(userId);
+    return {
+      success: true,
+      data: result,
     };
   } catch (error) {
     console.error("Error in letterService:", error);
@@ -36,7 +51,6 @@ const PhotoService = async (s3Url, letterId, photoCount) => {
     const countResult = await countPhotoDao(photoCount, letterId);
     return {
       success: true,
-      message: "사진이 성공적으로 저장되었습니다.",
       photoData: photoResult,
       countData: countResult,
     };
@@ -54,7 +68,6 @@ const stampService = async (stampId, letterId) => {
     const result = await stampDao(stampId, letterId);
     return {
       success: true,
-      message: "우표가 성공적으로 선택되었습니다.",
       data: result,
     };
   } catch (error) {
@@ -70,7 +83,6 @@ const confirmLetterService = async (userId) => {
   try {
     return {
       success: true,
-      message: "내역이 성공적으로 전달되었습니다.",
       data: await confirmLetterDao(userId),
     };
   } catch (error) {
@@ -87,4 +99,5 @@ module.exports = {
   PhotoService,
   confirmLetterService,
   stampService,
+  checkLetterService,
 };

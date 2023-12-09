@@ -23,6 +23,7 @@ const {
   stampService,
 } = require("../services/writingLetterServices");
 
+// 편지쓰기 내용을 contents로 받고 contents.pageNum => 장 ,contents.content => 내용
 const letterContoller = async (req, res, next) => {
   try {
     const userId = req.param;
@@ -38,6 +39,25 @@ const letterContoller = async (req, res, next) => {
     return {
       success: false,
       message: "Error in letterContoller. Please try again later.",
+    };
+  }
+};
+// 사용자가 작성하던 편지 확인하기
+const checkLetterController = async (req, res, next) => {
+  try {
+    const userId = req.param;
+    const result = await checkLetterService(userId);
+
+    return {
+      success: true,
+      message: "편지내용",
+      data: result,
+    };
+  } catch (error) {
+    console.error("error in continueLetterController", error);
+    return {
+      success: false,
+      message: "error in continueLetterController",
     };
   }
 };
@@ -102,4 +122,5 @@ module.exports = {
   confirmLetterContoller,
   stampController,
   getPreSignedUrl,
+  checkLetterController,
 };

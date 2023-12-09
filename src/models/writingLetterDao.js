@@ -39,6 +39,26 @@ const contentDao = async (letterId, pageNum, content) => {
   }
 };
 
+const checkLetterDao = async (userId) => {
+  try {
+    const letter = await AppDataSource.query(
+      `
+      SELECT 
+        letters.content, letters.content_count, letters.writing_pad_id
+      FROM 
+        letters 
+      LEFT JOIN orders ON letters.id = orders.letter_id 
+      WHERE orders.status IS NULL AND letters.user_id = ?
+      `,
+      [userId]
+    );
+    return letter;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 // 2차 사진 첨부 Dao
 const photoDao = async (s3Url, letterId) => {
   try {
@@ -143,4 +163,5 @@ module.exports = {
   confirmLetterDao,
   stampDao,
   contentDao,
+  checkLetterDao,
 };

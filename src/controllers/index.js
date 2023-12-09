@@ -14,6 +14,7 @@ const {
   photoController,
   confirmLetterContoller,
   stampController,
+  checkLetterController,
 } = require("./writingLetterControllers");
 
 // user controller class
@@ -48,6 +49,7 @@ module.exports = {
     photoController,
     stampController,
     confirmLetterContoller,
+    checkLetterController,
   },
 
   productController: {
