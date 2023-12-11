@@ -39,9 +39,9 @@ const adminDeleteCsService = async (userId, customerServiceId) => {
   return await adminDeleteCsDao(userId, customerServiceId);
 };
 //어드민 답변 삭제
-const adminDeleteCsAnswerService = async (userId, CsAnswerId) => {
+const adminDeleteCsAnswerService = async (userId, csAnswerId) => {
   try {
-    const result = await adminDeleteCsAnswerDao(userId, CsAnswerId);
+    const result = await adminDeleteCsAnswerDao(userId, csAnswerId);
     return result;
   } catch (err) {
     console.error("", err);

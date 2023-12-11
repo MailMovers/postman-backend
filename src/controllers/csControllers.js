@@ -160,7 +160,7 @@ const adminCsDeleteController = async (req, res) => {
 const adminDeleteCsAnswerController = async (req, res) => {
   try {
     const userId = 1;
-    const CsAnswerId = req.body.CsAnswerId;
+    const csAnswerId = req.body.CsAnswerId;
     // 사용자 정보가 없거나 권한이 없는 경우
     const user = await getUserByIdDao(userId);
     if (!user || user.user_role_id !== 3) {
@@ -169,7 +169,7 @@ const adminDeleteCsAnswerController = async (req, res) => {
     if (!CsAnswerId) {
       return res.status(400).json({ message: "삭제할 댓글이 없습니다" });
     }
-    const result = await adminDeleteCsAnswerService(userId, CsAnswerId);
+    const result = await adminDeleteCsAnswerService(userId, csAnswerId);
     console.log(userId, CsAnswerId);
     return res.status(200).json({
       message: "답변을 삭제하였습니다",

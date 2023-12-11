@@ -167,14 +167,14 @@ const adminDeleteCsDao = async (customerServiceId) => {
   return adminCsDelete;
 };
 //어드민 답변 삭제
-const adminDeleteCsAnswerDao = async (userId, CsAnswerId) => {
+const adminDeleteCsAnswerDao = async (userId, csAnswerId) => {
   const deleteCsAnswer = await AppDataSource.query(
     `
     UPDATE cs_answer AS csa
     SET deleted_at = NOW()
     WHERE csa.user_id = ? AND id = ?
     `,
-    [userId, CsAnswerId]
+    [userId, csAnswerId]
   );
   return deleteCsAnswer;
 };
