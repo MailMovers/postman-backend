@@ -59,8 +59,9 @@ const getReviewService = async (postId, pageSize, startItem) => {
 const deleteReviewService = async (userId, reviewId) => {
   await deleteReviewDao(userId, reviewId);
 };
-
+//편지지 이미지 가져오기
 const getWritingPadService = async (productId) => {
+  console.log("getWritingPadService - productId:", productId);
   return await getWritingPadDao(productId);
 };
 

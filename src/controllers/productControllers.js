@@ -9,7 +9,7 @@ const {
   getWritingPadService,
 } = require("../services/productServices");
 const { getUserByIdDao, getUserByReviewDao } = require("../models/productDao");
-const { AppDataSource } = require("../models/dataSource");
+
 //어드민 계정일 경우에만 상품을 등록할수있습니다.
 const insertProductController = async (req, res) => {
   try {
@@ -181,17 +181,17 @@ const deleteReviewController = async (req, res) => {
     throw err;
   }
 };
-
+// getWritingPadController
 const getWritingPadController = async (req, res) => {
   try {
-    const productId = req.body.productId;
-    if (!productId || productId.length === 0)
-      return res.status(400).json({ message: "KEY_ERROR" });
-    return res
-      .status(200)
-      .json({ message: "SUCCES", data: await getWritingPadService(productId) });
+    const productId = req.params.productId; // 수정된 부분
+    if (!productId) return res.status(400).json({ message: "KEY_ERROR" });
+    return res.status(200).json({
+      message: "SUCCESS",
+      data: await getWritingPadService(productId),
+    });
   } catch (err) {
-    console.error("getWritingPadController에서 발생한 오류", err);
+    console.error("getWritingPadControlleㄴr에서 발생한 오류", err);
     throw err;
   }
 };

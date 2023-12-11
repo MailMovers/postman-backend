@@ -168,15 +168,15 @@ const deleteReviewDao = async (userId, reviewId) => {
   );
   return deleteReview;
 };
-
+//편지지 이미지 불러오기
 const getWritingPadDao = async (productId) => {
   const writingPad = await AppDataSource.query(
     `
-  SELECT
-  pad_img_url
-  FROM writing_pads
-  WHERE id = ?
-  `,
+    SELECT
+      pad_img_url
+    FROM writing_pads
+    WHERE id = ?
+    `,
     [productId]
   );
   return writingPad;
