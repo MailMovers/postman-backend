@@ -16,6 +16,9 @@ ALTER TABLE `letters` ADD FOREIGN KEY (`writing_pad_id`) REFERENCES `writing_pad
 ALTER TABLE `letters` ADD FOREIGN KEY (`stamp_id`) REFERENCES `stamps` (`id`);
 ALTER TABLE `letters` ADD FOREIGN KEY (`send_address_id`) REFERENCES `send_address` (`id`);
 ALTER TABLE `letters` ADD FOREIGN KEY (`delivery_address_id`) REFERENCES `delivery_address` (`id`);
+ALTER TABLE `letters` MODIFY `stamp_id` INT NULL;
+ALTER TABLE `letters` MODIFY `send_address_id` INT NULL;
+ALTER TABLE `letters` MODIFY `delivery_address_id` INT NULL;
 
 -- migrate:down
 DROP TABLE `letters`;
