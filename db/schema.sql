@@ -38,11 +38,14 @@ CREATE TABLE `cs_answer` (
   `id` int NOT NULL AUTO_INCREMENT,
   `content` varchar(500) NOT NULL,
   `user_id` int NOT NULL,
+  `customer_service_id` int NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `cs_answer_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+  KEY `customer_service_id` (`customer_service_id`),
+  CONSTRAINT `cs_answer_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `cs_answer_ibfk_2` FOREIGN KEY (`customer_service_id`) REFERENCES `customer_service` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -57,14 +60,11 @@ CREATE TABLE `customer_service` (
   `title` varchar(30) NOT NULL,
   `content` varchar(50) NOT NULL,
   `user_id` int NOT NULL,
-  `cs_answer_id` int DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
-  KEY `cs_answer_id` (`cs_answer_id`),
-  CONSTRAINT `customer_service_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  CONSTRAINT `customer_service_ibfk_2` FOREIGN KEY (`cs_answer_id`) REFERENCES `cs_answer` (`id`)
+  CONSTRAINT `customer_service_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -308,6 +308,7 @@ CREATE TABLE `writing_pads` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL,
   `img_url` varchar(500) NOT NULL,
+  `pad_img_url` varchar(500) NOT NULL,
   `price` smallint NOT NULL,
   `add_price` smallint NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
