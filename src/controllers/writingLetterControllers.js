@@ -26,7 +26,9 @@ const {
 // 편지쓰기 내용을 contents로 받고 contents.pageNum => 장 ,contents.content => 내용
 const letterContoller = async (req, res, next) => {
   try {
-    const userId = req.param;
+    const userId = req.query.userId; // URL의 쿼리 파라미터인 경우
+    // 또는
+    // const userId = req.params.userId; // URL의 경로 파라미터인 경우
     const { writingPadId, contents } = req.body;
     const result = await letterService(userId, writingPadId, contents);
     return {

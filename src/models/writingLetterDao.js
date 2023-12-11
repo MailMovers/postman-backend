@@ -8,7 +8,7 @@ const letterDao = async (userId, writingPadId, page) => {
         INSERT INTO letters (
             user_id, writing_pad_id, page
         )VALUES(
-            ?,?,?,
+            ?,?,?
         );    
     `,
       [userId, writingPadId, page]

@@ -1,4 +1,5 @@
 const express = require("express");
+const auth = require("../middlewares/auth.middleware");
 
 const { writingLetterController } = require("../controllers");
 const {
@@ -11,7 +12,7 @@ const {
 
 const writingLetterRoute = express.Router();
 
-writingLetterRoute.post("/write", auth, letterContoller);
+writingLetterRoute.post("/write", letterContoller);
 writingLetterRoute.get("/check", auth, checkLetterController);
 writingLetterRoute.post("/photo", auth, photoController);
 writingLetterRoute.post("/stamp", auth, stampController);

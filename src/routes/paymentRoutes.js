@@ -5,6 +5,6 @@ const { paymentSuccessController } = paymentController;
 
 const paymentRoute = express.Router();
 
-paymentRoute.get("/success", auth, paymentSuccessController);
+paymentRoute.get("/success", paymentSuccessController);
 
 module.exports = { paymentRoute };
