@@ -13,12 +13,12 @@ const insertCsService = async (title, content, userId) => {
   return await insertCsDao(title, content, userId);
 };
 //답변하기
-const insertCsAnswerService = async (content, userId) => {
-  return await insertCsAnswerDao(content, userId);
+const insertCsAnswerService = async (content, userId, customerServiceId) => {
+  return await insertCsAnswerDao(content, userId, customerServiceId);
 };
 //게시물 상세정보 불러오기
-const getCsDetailSetvice = async (customerServiceId, userId) => {
-  return await getCsDetailDao(customerServiceId, userId);
+const getCsDetailService = async (userId, customerServiceId) => {
+  return await getCsDetailDao(userId, customerServiceId);
 };
 //게시물 목록 불러오기
 const getCsListService = async (startItem, pageSize) => {
@@ -39,9 +39,17 @@ const adminDeleteCsService = async (userId, customerServiceId) => {
   return await adminDeleteCsDao(userId, customerServiceId);
 };
 //어드민 답변 삭제
-const adminDeleteCsAnswerService = async (userId, csAnswerId) => {
+const adminDeleteCsAnswerService = async (
+  userId,
+  csAnswerId,
+  customerServiceId
+) => {
   try {
-    const result = await adminDeleteCsAnswerDao(userId, csAnswerId);
+    const result = await adminDeleteCsAnswerDao(
+      userId,
+      csAnswerId,
+      customerServiceId
+    );
     return result;
   } catch (err) {
     console.error("", err);
@@ -61,7 +69,7 @@ const getCsAnswerListService = async (customerServiceId) => {
 module.exports = {
   insertCsService,
   insertCsAnswerService,
-  getCsDetailSetvice,
+  getCsDetailService,
   getCsListService,
   deleteCsService,
   adminDeleteCsService,

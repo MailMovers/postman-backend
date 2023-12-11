@@ -35,7 +35,7 @@ const {
 const {
   insertCsService,
   insertCsAnswerService,
-  getCsDetailSetvice,
+  getCsDetailService,
   getCsListService,
   deleteCsService,
   adminDeleteCsService,
@@ -69,7 +69,7 @@ module.exports = {
   cs: {
     insertCsService,
     insertCsAnswerService,
-    getCsDetailSetvice,
+    getCsDetailService,
     getCsListService,
     deleteCsService,
     adminDeleteCsService,

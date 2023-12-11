@@ -1,7 +1,7 @@
 const {
   insertCsService,
   insertCsAnswerService,
-  getCsDetailSetvice,
+  getCsDetailService,
   getCsListService,
   deleteCsService,
   adminDeleteCsService,
@@ -15,6 +15,7 @@ const insertCsController = async (req, res) => {
   try {
     const userId = 1;
     const { title, content } = req.body;
+    await insertCsService(title, content, userId);
 
     if (!userId) {
       return res.status(400).json({ messge: "로그인이 필요합니다" });
@@ -27,7 +28,6 @@ const insertCsController = async (req, res) => {
     }
     return res.status(200).json({
       messge: "게시글이 작성되었습니다",
-      data: await insertCsService(title, content, userId),
     });
   } catch (err) {
     console.error("insertCsController에서 발생한 에러", err);
@@ -37,22 +37,24 @@ const insertCsController = async (req, res) => {
 //답변달기 유저는 수정해야함
 const insertCsAnswerController = async (req, res) => {
   try {
-    const content = req.body.content;
     const userId = 1;
+    const { content, customerServiceId } = req.body;
     if (!userId) {
       return res.status(400).json({ message: "KEY_ERROR" });
     }
     const user = await getUserByIdDao(userId);
+    await insertCsAnswerService(content, userId, customerServiceId);
     if (!user || user.user_role_id !== 3) {
       return res.status(400).json({ message: "답변 권한이 없습니다" });
     }
-
     if (!content || content.length === 0) {
       return res.status(400).json({ message: "답변 글을 작성해주세요" });
     }
+    if (!customerServiceId) {
+      return res.status(400).json({ message: "게시물이 없습니다" });
+    }
     return res.status(200).json({
       message: "답변이 작성되었습니다",
-      data: await insertCsAnswerService(content, userId),
     });
   } catch (err) {
     console.error("insertCsAnswerController에서 생긴 에러", err);
@@ -64,17 +66,14 @@ const insertCsAnswerController = async (req, res) => {
 const getCsDetailController = async (req, res) => {
   try {
     const userId = 1;
-    const customerServiceId = req.params.customerServiceId;
-
+    const customerServiceId = req.body.customerServiceId;
     if (!userId) {
       return res.status(400).json({ message: "게시글 열람 권한이 없습니다" });
     }
-
     if (!customerServiceId) {
       return res.status(400).json({ message: "게시글이 삭제 되었습니다" });
     }
-
-    const csDetail = await getCsDetailSetvice(customerServiceId, userId);
+    const csDetail = await getCsDetailService(userId, customerServiceId);
 
     return res.status(200).json({
       message: "게시글을 불러왔습니다",
@@ -121,6 +120,7 @@ const deleteCsController = async (req, res) => {
   try {
     const userId = 1;
     const customerServiceId = req.body.customerServiceId;
+    await deleteCsService(userId, customerServiceId);
 
     if (!userId) {
       return res.status(400).json({ message: "게시글 열람 권한이 없습니다" });
@@ -130,7 +130,6 @@ const deleteCsController = async (req, res) => {
     }
     return res.status(200).json({
       message: "게시글이 삭제되었습니다",
-      data: await deleteCsService(userId, customerServiceId),
     });
   } catch (err) {
     console.error("deleteCsService에서 생긴 오류", err);
@@ -142,13 +141,13 @@ const deleteCsController = async (req, res) => {
 const adminCsDeleteController = async (req, res) => {
   try {
     const customerServiceId = req.body.customerServiceId;
+    await adminDeleteCsService(customerServiceId);
 
     if (!customerServiceId || customerServiceId.length === 0) {
       return res.status(400).json({ message: "삭제할 게시물이 없습니다" });
     }
     return res.status(200).json({
-      message: "삭제할 게시글이 존재하지 않습니다",
-      data: await adminDeleteCsService(customerServiceId),
+      message: "게시글을 삭제했습니다",
     });
   } catch (err) {
     console.error("adminCsDeleteController에서 발생한 오류", err);
@@ -160,34 +159,36 @@ const adminCsDeleteController = async (req, res) => {
 const adminDeleteCsAnswerController = async (req, res) => {
   try {
     const userId = 1;
-    const csAnswerId = req.body.CsAnswerId;
+    const { csAnswerId, customerServiceId } = req.body;
+
     // 사용자 정보가 없거나 권한이 없는 경우
     const user = await getUserByIdDao(userId);
+    await adminDeleteCsAnswerService(userId, csAnswerId, customerServiceId);
     if (!user || user.user_role_id !== 3) {
       return res.status(400).json({ message: "답변 권한이 없습니다" });
     }
-    if (!CsAnswerId) {
+    if (!csAnswerId) {
       return res.status(400).json({ message: "삭제할 댓글이 없습니다" });
     }
-    const result = await adminDeleteCsAnswerService(userId, csAnswerId);
-    console.log(userId, CsAnswerId);
+    if (!customerServiceId) {
+      return res.status(400).json({ message: "게시글이 삭제되었습니다" });
+    }
     return res.status(200).json({
       message: "답변을 삭제하였습니다",
-      data: result,
     });
   } catch (err) {
     console.error("adminDeleteCsAnswerController에서 발생한 오류", err);
     throw err;
   }
 };
-
-const getCsAnswerListController = async (customerServiceId) => {
+//답변 목록 가져오기
+const getCsAnswerListController = async (req, res) => {
   try {
-    const customerServiceId = req.params.customerServiceId;
+    const customerServiceId = req.body.customerServiceId;
     if (!customerServiceId) {
       return res.status(400).json({ message: "게시글이 없습니다" });
     }
-    return res.status(200).jsomn({
+    return res.status(200).json({
       message: "SUCCES",
       data: await getCsAnswerListService(customerServiceId),
     });

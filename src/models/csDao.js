@@ -15,57 +15,56 @@ const insertCsDao = async (title, content, userId) => {
 };
 
 //답변달기
-const insertCsAnswerDao = async (content, userId) => {
+const insertCsAnswerDao = async (content, userId, customerServiceId) => {
   const insertCsA = await AppDataSource.query(
     `
     INSERT INTO cs_answer
-    (content, user_id)
+    (content, user_id, customer_service_id)
     VALUES
-    (?,?)
+    (?,?,?)
     `,
-    [content, userId]
+    [content, userId, customerServiceId]
   );
   return insertCsA;
 };
 
-//문의 상세 내역보기
-const getCsDetailDao = async (customerServiceId, userId) => {
+const getCsDetailDao = async (userId, customerServiceId) => {
   try {
-    // 글을 가져오는 로직
     const csDetail = await AppDataSource.query(
       `
       SELECT
-        customer_service.id,
-        customer_service.title,
-        customer_service.content,
-        customer_service.user_id,
-        customer_service.cs_answer_id,
-        customer_service.created_at,
-        cs_answer.id AS csa_id,
-        cs_answer.content AS csa_content,
-        cs_answer.user_id AS csa_user_id,
-        cs_answer.created_at AS csa_created_at
-      FROM customer_service
-      LEFT JOIN cs_answer ON customer_service.cs_answer_id = cs_answer.id
-      LEFT JOIN users ON customer_service.user_id = users.id
-      WHERE customer_service.id = ? AND customer_service.deleted_at IS NULL
+      customer_service.id,
+      customer_service.title,
+      customer_service.content,
+      customer_service.user_id,
+      customer_service.created_at,
+      cs_answer.id AS csa_id,
+      cs_answer.content AS csa_content,
+      cs_answer.user_id AS csa_user_id,
+      cs_answer.created_at AS csa_created_at
+  FROM customer_service
+  LEFT JOIN cs_answer ON customer_service.id = cs_answer.id
+  LEFT JOIN users ON customer_service.user_id = users.id
+  WHERE users.id = ? AND customer_service.id = ? AND customer_service.deleted_at IS NULL;
       `,
-      [customerServiceId]
+      [userId, customerServiceId]
     );
-    // 글이 존재하지 않는 경우
+
     if (!csDetail || csDetail.length === 0) {
       throw new Error("게시글을 찾을 수 없습니다");
     }
-    // 사용자가 글의 작성자가 아닌 경우
+
     if (csDetail[0].user_id !== userId) {
       throw new Error("게시글 열람 권한이 없습니다");
     }
+
     return csDetail[0];
   } catch (err) {
     console.error("getCsDetailDao에서 발생한 에러", err);
     throw err;
   }
 };
+
 //고객센터 문의 리스트
 const CsListDao = async (startItem, pageSize) => {
   try {
@@ -167,14 +166,18 @@ const adminDeleteCsDao = async (customerServiceId) => {
   return adminCsDelete;
 };
 //어드민 답변 삭제
-const adminDeleteCsAnswerDao = async (userId, csAnswerId) => {
+const adminDeleteCsAnswerDao = async (
+  userId,
+  csAnswerId,
+  customerServiceId
+) => {
   const deleteCsAnswer = await AppDataSource.query(
     `
     UPDATE cs_answer AS csa
     SET deleted_at = NOW()
-    WHERE csa.user_id = ? AND id = ?
+    WHERE csa.user_id = ? AND id = ? AND customer_service_id = ?
     `,
-    [userId, csAnswerId]
+    [userId, csAnswerId, customerServiceId]
   );
   return deleteCsAnswer;
 };
