@@ -1,12 +1,6 @@
 const { AppDataSource } = require("./dataSource");
 //상품 등록
-const insertProductDao = async (
-  name,
-  img_url,
-  price,
-  add_price,
-  discription
-) => {
+const insertProductDao = async (name, imgUrl, price, addPrice, discription) => {
   const insertProduct = await AppDataSource.query(
     `
         INSERT INTO writing_pads
@@ -14,7 +8,7 @@ const insertProductDao = async (
         VALUES
         (?,?,?,?,?)
         `,
-    [name, img_url, price, add_price, discription]
+    [name, imgUrl, price, addPrice, discription]
   );
   return insertProduct;
 };
@@ -175,6 +169,19 @@ const deleteReviewDao = async (userId, reviewId) => {
   return deleteReview;
 };
 
+const getWritingPadDao = async (productId) => {
+  const writingPad = await AppDataSource.query(
+    `
+  SELECT
+  pad_img_url
+  FROM writing_pads
+  WHERE id = ?
+  `,
+    [productId]
+  );
+  return writingPad;
+};
+
 module.exports = {
   insertProductDao,
   getUserByIdDao,
@@ -185,4 +192,5 @@ module.exports = {
   insertReviewDao,
   getReviewDao,
   deleteReviewDao,
+  getWritingPadDao,
 };

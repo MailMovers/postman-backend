@@ -29,6 +29,7 @@ const {
   insertReviewService,
   getReviewService,
   deleteReviewService,
+  getWritingPadService,
 } = require("./productServices");
 
 const {
@@ -63,6 +64,7 @@ module.exports = {
   getReviewService,
   deleteReviewService,
   paymentSuccessService,
+  getWritingPadService,
   cs: {
     insertCsService,
     insertCsAnswerService,
