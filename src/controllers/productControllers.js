@@ -10,7 +10,6 @@ const {
 } = require("../services/productServices");
 const { getUserByIdDao, getUserByReviewDao } = require("../models/productDao");
 const { AppDataSource } = require("../models/dataSource");
-const { getWritingPadService } = require("../services");
 //어드민 계정일 경우에만 상품을 등록할수있습니다.
 const insertProductController = async (req, res) => {
   try {
@@ -190,7 +189,7 @@ const getWritingPadController = async (req, res) => {
       return res.status(400).json({ message: "KEY_ERROR" });
     return res
       .status(200)
-      .json({ message: "SUCCES", data: getWritingPadService(productId) });
+      .json({ message: "SUCCES", data: await getWritingPadService(productId) });
   } catch (err) {
     console.error("getWritingPadController에서 발생한 오류", err);
     throw err;
