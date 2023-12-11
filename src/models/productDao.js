@@ -140,7 +140,7 @@ const insertReviewDao = async (userId, productId, score, content) => {
 };
 
 //상품리뷰 불러오기
-const getReviewDao = async (startItem, pageSize, postId) => {
+const getReviewDao = async (startItem, pageSize, productId) => {
   const getReview = await AppDataSource.query(
     `
     SELECT
@@ -158,7 +158,7 @@ const getReviewDao = async (startItem, pageSize, postId) => {
       created_at DESC
     LIMIT ? OFFSET ?;
   `,
-    [postId, pageSize, startItem]
+    [productId, pageSize, startItem]
   );
   return getReview;
 };

@@ -40,7 +40,6 @@ const insertDeliveryAddressController = async (req, res) => {
       );
       return res.status(200).json({
         message: "주소등록이 완료되었습니다",
-        data: result,
       });
     }
   } catch (err) {
@@ -54,6 +53,13 @@ const insertSendAddressController = async (req, res, next) => {
   try {
     const userId = 1;
     const { sendAddress, sendAddressDetail, sendPhone, sendName } = req.body;
+    await insertSendAddressService(
+      userId,
+      sendAddress,
+      sendAddressDetail,
+      sendPhone,
+      sendName
+    );
     if (userId.length === 0 || !userId)
       return res.status(400).json({ message: "KEY_ERROR" });
     if (!sendAddress)
@@ -66,13 +72,6 @@ const insertSendAddressController = async (req, res, next) => {
         .json({ message: "보내시는 분 성함을 입력해주세요" });
     return res.status(200).json({
       message: "주소등록이 완료되었습니다",
-      data: await insertSendAddressService(
-        userId,
-        sendAddress,
-        sendAddressDetail,
-        sendPhone,
-        sendName
-      ),
     });
   } catch (err) {
     console.error(err);
@@ -84,13 +83,13 @@ const deleteSendAddressController = async (req, res, next) => {
   try {
     const userId = 1;
     const sendAddressId = req.body.sendAddressId;
+    await deleteSendAddressService(userId, sendAddressId);
     if (userId.length === 0 || !userId)
       return res.status(400).json({ message: "KEY_ERROR" });
     if (!sendAddressId)
       return res.status(400).json({ message: "주소가 옳바르지 않습니다" });
     return res.status(200).json({
       message: "주소 삭제가 완료되었습니다",
-      data: await deleteSendAddressService(userId, sendAddressId),
     });
   } catch (err) {
     console.error(err);
@@ -102,13 +101,13 @@ const deleteDeliveryAddressController = async (req, res, next) => {
   try {
     const userId = 1;
     const deliveryAddressId = req.body.deliveryAddressId;
+    await deleteDeliveryAddressService(userId, deliveryAddressId);
     if (userId.length === 0 || !userId)
       return res.status(400).json({ message: "KEY_ERROR" });
     if (!deliveryAddressId)
       return res.status(400).json({ message: "주소가 옳바르지 않습니다" });
     return res.status(200).json({
       message: "주소 삭제가 완료되었습니다",
-      data: await deleteDeliveryAddressService(userId, deliveryAddressId),
     });
   } catch (err) {
     console.error(err);

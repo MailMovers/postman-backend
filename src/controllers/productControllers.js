@@ -146,9 +146,9 @@ const getReviewController = async (req, res) => {
     const startItem = (page - 1) * pageSize;
 
     // 여기서 postId 가져오는 부분 확인
-    const postId = req.params.productId; // 수정된 부분
+    const productId = req.params.productId; // 수정된 부분
 
-    const reviewList = await getReviewService(postId, pageSize, startItem);
+    const reviewList = await getReviewService(productId, pageSize, startItem);
 
     if (!reviewList || reviewList.length === 0)
       return res.status(400).json({ message: "리뷰를 불러올 수 없습니다" });
