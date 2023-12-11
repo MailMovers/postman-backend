@@ -115,6 +115,15 @@ const stampDao = async (stampId, letterId) => {
   }
 };
 
+const selectAddressDao = async () => {
+  try {
+    
+  } catch (error) {
+    console.error(error)
+    throw error;
+  }
+}
+
 // 최종확인
 const confirmLetterDao = async (userId) => {
   try {
