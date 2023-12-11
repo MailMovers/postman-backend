@@ -47,6 +47,7 @@ const {
   deleteCsDao,
   adminDeleteCsDao,
   adminDeleteCsAnswerDao,
+  getCsAlistDao,
 } = require("./csDao");
 
 module.exports = {
@@ -84,5 +85,6 @@ module.exports = {
     deleteCsDao,
     adminDeleteCsDao,
     adminDeleteCsAnswerDao,
+    getCsAlistDao,
   },
 };

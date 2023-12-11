@@ -91,22 +91,23 @@ const CsListDao = async (startItem, pageSize) => {
     throw err;
   }
 };
-// cs_answer table에 customer_service_id 컬럼을 추가해야함
-
-// const getCsAlistDao = async (customerServiceId) => {
-//   const CsAlist = await AppDataSource.query(
-//   `
-//   SELECT
-//   cs_answer.id,
-//   cs_answer.content,
-//   cs_answer.user_id,
-//   cs_answer.created_at,
-//   cs_answer.deleted_at
-//   FROM cs_answer
-//   WHERE cs_answer.deleted_at IS NULL
-//   `
-//   )
-// }
+//답변 목록 불러오기
+const getCsAlistDao = async (customerServiceId) => {
+  const CsAlist = await AppDataSource.query(
+    `
+  SELECT
+  cs_answer.id,
+  cs_answer.content,
+  cs_answer.user_id,
+  cs_answer.created_at,
+  cs_answer.deleted_at
+  FROM cs_answer
+  WHERE cs_answer.deleted_at IS NULL
+  `,
+    [customerServiceId]
+  );
+  return CsAlist;
+};
 
 //게시글 삭제
 const deleteCsDao = async (userId, customerServiceId) => {
@@ -186,4 +187,5 @@ module.exports = {
   deleteCsDao,
   adminDeleteCsDao,
   adminDeleteCsAnswerDao,
+  getCsAlistDao,
 };

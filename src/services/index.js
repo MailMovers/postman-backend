@@ -40,6 +40,7 @@ const {
   deleteCsService,
   adminDeleteCsService,
   adminDeleteCsAnswerService,
+  getCsAnswerListService,
 } = require("./csServices");
 
 module.exports = {
@@ -73,5 +74,6 @@ module.exports = {
     deleteCsService,
     adminDeleteCsService,
     adminDeleteCsAnswerService,
+    getCsAnswerListService,
   },
 };

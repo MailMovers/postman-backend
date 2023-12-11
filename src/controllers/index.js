@@ -40,6 +40,7 @@ const {
   deleteCsController,
   adminCsDeleteController,
   adminDeleteCsAnswerController,
+  getCsAnswerListController,
 } = require("./csControllers");
 
 module.exports = {
@@ -82,5 +83,6 @@ module.exports = {
     deleteCsController,
     adminCsDeleteController,
     adminDeleteCsAnswerController,
+    getCsAnswerListController,
   },
 };

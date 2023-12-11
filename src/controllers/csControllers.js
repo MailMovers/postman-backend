@@ -6,6 +6,7 @@ const {
   deleteCsService,
   adminDeleteCsService,
   adminDeleteCsAnswerService,
+  getCsAnswerListService,
 } = require("../services/csServices");
 const { getUserByIdDao } = require("../models/productDao");
 
@@ -63,7 +64,7 @@ const insertCsAnswerController = async (req, res) => {
 const getCsDetailController = async (req, res) => {
   try {
     const userId = 1;
-    const customerServiceId = req.body.customerServiceId;
+    const customerServiceId = req.params.customerServiceId;
 
     if (!userId) {
       return res.status(400).json({ message: "게시글 열람 권한이 없습니다" });
@@ -180,6 +181,22 @@ const adminDeleteCsAnswerController = async (req, res) => {
   }
 };
 
+const getCsAnswerListController = async (customerServiceId) => {
+  try {
+    const customerServiceId = req.params.customerServiceId;
+    if (!customerServiceId) {
+      return res.status(400).json({ message: "게시글이 없습니다" });
+    }
+    return res.status(200).jsomn({
+      message: "SUCCES",
+      data: await getCsAnswerListService(customerServiceId),
+    });
+  } catch (err) {
+    console.error("getCsAnswerListController에서 발생한 에러", err);
+    throw err;
+  }
+};
+
 module.exports = {
   insertCsController,
   insertCsAnswerController,
@@ -188,4 +205,5 @@ module.exports = {
   deleteCsController,
   adminCsDeleteController,
   adminDeleteCsAnswerController,
+  getCsAnswerListController,
 };

@@ -7,6 +7,7 @@ const {
   deleteCsController,
   adminCsDeleteController,
   adminDeleteCsAnswerController,
+  getCsAnswerListController,
 } = require("../controllers/csControllers");
 
 const csRoute = express.Router();
@@ -24,5 +25,7 @@ csRoute.post("/delete", deleteCsController);
 csRoute.post("/admin/delete", adminCsDeleteController);
 //어드민 답변 삭제
 csRoute.post("/admin/delete/answer", adminDeleteCsAnswerController);
+//답변 불러오기
+csRoute.get("/answer", getCsAnswerListController);
 
 module.exports = csRoute;

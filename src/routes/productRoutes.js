@@ -12,15 +12,14 @@ const {
   getWritingPadController,
 } = productController;
 const productRoute = express.Router();
-const auth = require("../middlewares/auth.middleware");
 
-productRoute.post("/", auth, insertProductController);
-productRoute.post("/delete", auth, deleteProductController);
-productRoute.get("/:productId", auth, getProductController);
-productRoute.get("/", auth, getProductListController);
-productRoute.post("/:productId", auth, insertReviewController);
-productRoute.get("/:productId/review", auth, getReviewController);
-productRoute.post("/:productId/review/delete", auth, deleteReviewController);
-productRoute.get("/writing/:productId", auth, getWritingPadController);
+productRoute.post("/", insertProductController);
+productRoute.post("/delete", deleteProductController);
+productRoute.get("/:productId", getProductController);
+productRoute.get("/", getProductListController);
+productRoute.post("/:productId", insertReviewController);
+productRoute.get("/:productId/review", getReviewController);
+productRoute.post("/:productId/review/delete", deleteReviewController);
+productRoute.get("/writing/:productId", getWritingPadController);
 
 module.exports = { productRoute };

@@ -13,11 +13,12 @@ const {
 const insertProductService = async (
   name,
   imgUrl,
+  padImgUrl,
   price,
   addPrice,
   discription
 ) => {
-  await insertProductDao(name, imgUrl, price, addPrice, discription);
+  await insertProductDao(name, imgUrl, padImgUrl, price, addPrice, discription);
 };
 //상품삭제
 const deleteProductService = async (productId) => {
@@ -61,7 +62,6 @@ const deleteReviewService = async (userId, reviewId) => {
 };
 //편지지 이미지 가져오기
 const getWritingPadService = async (productId) => {
-  console.log("getWritingPadService - productId:", productId);
   return await getWritingPadDao(productId);
 };
 

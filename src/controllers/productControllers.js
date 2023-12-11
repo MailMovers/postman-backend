@@ -14,7 +14,7 @@ const { getUserByIdDao, getUserByReviewDao } = require("../models/productDao");
 const insertProductController = async (req, res) => {
   try {
     const userId = req.userId;
-    const { name, imgUrl, price, addPrice, discription } = req.body;
+    const { name, imgUrl, padImgUrl, price, addPrice, discription } = req.body;
     await insertProductService(userId, name, imgUrl, addPrice, discription);
     if (!userId) {
       return res.status(400).json({ message: "KEY_ERROR" });

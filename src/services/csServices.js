@@ -6,6 +6,7 @@ const {
   deleteCsDao,
   adminDeleteCsDao,
   adminDeleteCsAnswerDao,
+  getCsAlistDao,
 } = require("../models/csDao");
 //문의하기
 const insertCsService = async (title, content, userId) => {
@@ -47,6 +48,15 @@ const adminDeleteCsAnswerService = async (userId, CsAnswerId) => {
     throw err;
   }
 };
+const getCsAnswerListService = async (customerServiceId) => {
+  try {
+    const csAnswerList = await getCsAlistDao(customerServiceId);
+    return csAnswerList;
+  } catch (err) {
+    console.error("getCsAnswerListService에서 생긴 오류", err);
+    throw err;
+  }
+};
 
 module.exports = {
   insertCsService,
@@ -56,4 +66,5 @@ module.exports = {
   deleteCsService,
   adminDeleteCsService,
   adminDeleteCsAnswerService,
+  getCsAnswerListService,
 };

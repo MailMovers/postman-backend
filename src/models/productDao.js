@@ -1,14 +1,21 @@
 const { AppDataSource } = require("./dataSource");
 //상품 등록
-const insertProductDao = async (name, imgUrl, price, addPrice, discription) => {
+const insertProductDao = async (
+  name,
+  imgUrl,
+  padImgUrl,
+  price,
+  addPrice,
+  discription
+) => {
   const insertProduct = await AppDataSource.query(
     `
         INSERT INTO writing_pads
-        (name,img_url,price,add_price,discription)
+        (name,img_url,pad_img_url,price,add_price,discription)
         VALUES
-        (?,?,?,?,?)
+        (?,?,?,?,?,?)
         `,
-    [name, imgUrl, price, addPrice, discription]
+    [name, imgUrl, padImgUrl, price, addPrice, discription]
   );
   return insertProduct;
 };

@@ -52,7 +52,7 @@ const insertDeliveryAddressController = async (req, res) => {
 //보내는사람 주소등록
 const insertSendAddressController = async (req, res, next) => {
   try {
-    const userId = 2;
+    const userId = 1;
     const { sendAddress, sendAddressDetail, sendPhone, sendName } = req.body;
     if (userId.length === 0 || !userId)
       return res.status(400).json({ message: "KEY_ERROR" });
@@ -82,7 +82,7 @@ const insertSendAddressController = async (req, res, next) => {
 //보내는 사람 주소 삭제
 const deleteSendAddressController = async (req, res, next) => {
   try {
-    const userId = 2;
+    const userId = 1;
     const sendAddressId = req.body.sendAddressId;
     if (userId.length === 0 || !userId)
       return res.status(400).json({ message: "KEY_ERROR" });
@@ -118,7 +118,7 @@ const deleteDeliveryAddressController = async (req, res, next) => {
 //보내는 사람 주소목록 보기
 const getSendAddressListController = async (req, res, next) => {
   try {
-    const userId = 2;
+    const userId = 1;
     if (userId.length === 0 || !userId)
       return res.status(400).json({ message: "KEY_ERROR" });
     return res.status(200).json({
@@ -148,7 +148,7 @@ const getDeliveryAddressListController = async (req, res, next) => {
 //보내는 사람 기본 배송주소
 const getSendAddressController = async (req, res, next) => {
   try {
-    const userId = 2;
+    const userId = 1;
     if (userId.length === 0 || !userId)
       return res.status(400).json({ message: "KEY_ERROR" });
     return res.status(200).json({
