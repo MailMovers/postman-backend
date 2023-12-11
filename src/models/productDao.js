@@ -112,7 +112,7 @@ const getUserByReviewDao = async (userId) => {
    LEFT JOIN orders o ON o.user_id = u.id
    LEFT JOIN letters l ON l.id = o.letter_id
    LEFT JOIN writing_pads wp ON wp.id = l.writing_pad_id 
-   WHERE o.status = "delivery completed" AND u.id = ?
+   WHERE o.status = "done" AND u.id = ?
   `,
     [userId]
   );

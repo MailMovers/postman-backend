@@ -32,7 +32,15 @@ const {
   deleteReviewService,
 } = require("./productServices");
 
-const { insertCsService } = require("./csServices");
+const {
+  insertCsService,
+  insertCsAnswerService,
+  getCsDetailSetvice,
+  getCsListService,
+  deleteCsService,
+  adminDeleteCsService,
+  adminDeleteCsAnswerService,
+} = require("./csServices");
 
 module.exports = {
   insertAddressService,
@@ -57,5 +65,13 @@ module.exports = {
   getReviewService,
   deleteReviewService,
   paymentSuccessService,
-  cs: { insertCsService },
+  cs: {
+    insertCsService,
+    insertCsAnswerService,
+    getCsDetailSetvice,
+    getCsListService,
+    deleteCsService,
+    adminDeleteCsService,
+    adminDeleteCsAnswerService,
+  },
 };

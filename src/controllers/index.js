@@ -32,7 +32,15 @@ const {
 
 const { paymentSuccessController } = require("./paymentControllers.js");
 
-const { insertCsController } = require("./csControllers");
+const {
+  insertCsController,
+  insertCsAnswerController,
+  getCsDetailController,
+  getCslistController,
+  deleteCsController,
+  adminCsDeleteController,
+  adminDeleteCsAnswerController,
+} = require("./csControllers");
 
 module.exports = {
   UserController,
@@ -66,5 +74,13 @@ module.exports = {
   paymentController: {
     paymentSuccessController,
   },
-  insertCsController,
+  csController: {
+    insertCsController,
+    insertCsAnswerController,
+    getCsDetailController,
+    getCslistController,
+    deleteCsController,
+    adminCsDeleteController,
+    adminDeleteCsAnswerController,
+  },
 };

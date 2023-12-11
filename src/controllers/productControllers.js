@@ -54,7 +54,7 @@ const insertProductController = async (req, res) => {
 //어드민 계정일 경우에만 상품을 삭제 할수있습니다.
 const deleteProductController = async (req, res) => {
   try {
-    const userId = 1;
+    const userId = 2;
     const productId = req.body.productId;
     if (!userId) {
       return res.status(400).json({ message: "KEY_ERROR" });
@@ -118,10 +118,15 @@ const getProductListController = async (req, res) => {
 //상품이 배송완료가 되었을때 리뷰를 작성할수 있습니다.
 const insertReviewController = async (req, res) => {
   try {
-    const userId = 3;
+    const userId = 1;
     const productId = req.params.productId;
     const { score, content } = req.body;
 
+    const user = await getUserByReviewDao(userId);
+    if (user.orderStatus !== "done") {
+      console.log("리뷰 권한이 없습니다. 주문 상태:", user.oderStatus);
+      return res.status(400).json({ message: "리뷰 권한이 없습니다" });
+    }
     if (!userId || userId.length === 0)
       return res.status(400).json({ message: "KEY_ERROR" });
     if (!productId || productId.length === 0)
@@ -129,11 +134,6 @@ const insertReviewController = async (req, res) => {
     if (!content || content.length === 0)
       return res.status(400).json({ message: "글을 작성해주십시요" });
 
-    const user = await getUserByReviewDao(userId);
-    if (user.orderStatus !== "delivery completed") {
-      console.log("리뷰 권한이 없습니다. 주문 상태:", user.oderStatus);
-      return res.status(400).json({ message: "리뷰 권한이 없습니다" });
-    }
     return res.status(200).json({
       message: "리뷰가 작성되었습니다",
       data: await insertReviewService(userId, productId, score, content),
