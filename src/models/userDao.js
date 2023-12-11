@@ -1,20 +1,23 @@
 const { AppDataSource } = require('./dataSource');
 
 class UserDao {
-    insertUser = async ({ name, email, phone, hashedPassword }) => {
+    insertUser = async ({ name, email, phone, hashedPassword, provider }) => {
         try {
             return await AppDataSource.query(
-                `INSERT INTO users(name, email, password, phone, role_id) VALUES (?,?,?,?,?)`,
-                [name, email, hashedPassword, phone, 1]
+                `INSERT INTO users(name, email, password, phone, role_id, provider) VALUES (?,?,?,?,?,?)`,
+                [name, email, hashedPassword, phone, 1, provider]
             );
         } catch (error) {
             throw error;
         }
     };
 
-    checkDuplicatedEmail = async ({ email }) => {
+    findUserByEmail = async ({ email, provider }) => {
         try {
-            return await AppDataSource.query(`SELECT * FROM users WHERE email = (?)`, [email]);
+            return await AppDataSource.query(
+                `SELECT * FROM users WHERE email = (?) AND provider = (?)`,
+                [email, provider]
+            );
         } catch (error) {
             throw error;
         }

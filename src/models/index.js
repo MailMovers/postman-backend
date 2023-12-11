@@ -15,6 +15,7 @@ const {
   countPhotoDao,
   stampDao,
   confirmLetterDao,
+  contentDao,
 } = require("./writingLetterDao");
 
 // user dao

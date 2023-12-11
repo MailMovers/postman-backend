@@ -1,7 +1,6 @@
 -- migrate:up
 CREATE TABLE `letters` (
   `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  `content` text NOT NULL,
   `page` int DEFAULT 1,
   `status` enum('save','delete') DEFAULT "save",
   `photo_count` int DEFAULT 0,
@@ -21,4 +20,4 @@ ALTER TABLE `letters` ADD FOREIGN KEY (`send_address_id`) REFERENCES `send_addre
 ALTER TABLE `letters` ADD FOREIGN KEY (`delivery_address_id`) REFERENCES `delivery_address` (`id`);
 
 -- migrate:down
-DROP TABLE `letters`
+DROP TABLE `letters`;
