@@ -5,13 +5,14 @@ const {
   countPhotoDao,
   stampDao,
   contentDao,
+  checkLetterDao,
 } = require("../models/writingLetterDao");
 
 const letterService = async (userId, writingPadId, contents) => {
   try {
     const page = contents.length;
     const letterResult = await letterDao(userId, writingPadId, page);
-    const letterId = letterResult.insertId;
+    const letterId = letterResult.id;
     for (let item of contents) {
       await contentDao(letterId, item.pageNum, item.content); // content id letters테이블에 넣기
     }

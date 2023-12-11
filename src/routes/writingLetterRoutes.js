@@ -13,7 +13,7 @@ const {
 const writingLetterRoute = express.Router();
 
 writingLetterRoute.post("/write", letterContoller);
-writingLetterRoute.get("/check", auth, checkLetterController);
+writingLetterRoute.get("/check",  checkLetterController);
 writingLetterRoute.post("/photo", auth, photoController);
 writingLetterRoute.post("/stamp", auth, stampController);
 writingLetterRoute.get("/confirm", auth, confirmLetterContoller);

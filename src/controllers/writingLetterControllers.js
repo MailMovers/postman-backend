@@ -21,21 +21,22 @@ const {
   PhotoService,
   confirmLetterService,
   stampService,
+  checkLetterService
 } = require("../services/writingLetterServices");
 
 // 편지쓰기 내용을 contents로 받고 contents.pageNum => 장 ,contents.content => 내용
 const letterContoller = async (req, res, next) => {
   try {
-    const userId = req.query.userId; // URL의 쿼리 파라미터인 경우
+    // const userId = req.query.userId; // URL의 쿼리 파라미터인 경우
     // 또는
     // const userId = req.params.userId; // URL의 경로 파라미터인 경우
-    const { writingPadId, contents } = req.body;
+    const { writingPadId, contents, userId } = req.body;
     const result = await letterService(userId, writingPadId, contents);
-    return {
+    return res.status(201).json({
       success: true,
-      message: "letterContoller pass.",
       data: result,
-    };
+      message: "편지저장완료",
+    });
   } catch (error) {
     console.error("Error in letterController :", error);
     return {
@@ -47,14 +48,14 @@ const letterContoller = async (req, res, next) => {
 // 사용자가 작성하던 편지 확인하기
 const checkLetterController = async (req, res, next) => {
   try {
-    const userId = req.param;
+    const userId = req.query.userId;
     const result = await checkLetterService(userId);
 
-    return {
+    return res.status(201).json({
       success: true,
       message: "편지내용",
       data: result,
-    };
+    });
   } catch (error) {
     console.error("error in continueLetterController", error);
     return {
@@ -68,11 +69,11 @@ const photoController = async (req, res, next) => {
   try {
     const { letterId, photoCount, s3Url } = req.body;
     const result = await PhotoService(s3Url, letterId, photoCount);
-    return {
+    return res.status(201).json({
       success: true,
       message: "photoController pass.",
       data: result,
-    };
+    });
   } catch (error) {
     console.error("Error in photoController :", error);
     return {
@@ -86,11 +87,11 @@ const stampController = async (req, res, next) => {
   try {
     const { stampId, letterId } = req.body;
     const result = await stampService(stampId, letterId);
-    return {
+    return res.status(201).json({
       success: true,
       message: "stampContoller pass.",
       data: result,
-    };
+    });
   } catch (error) {
     console.error("Error in stampContoller :", error);
     return {
@@ -104,11 +105,11 @@ const confirmLetterContoller = async (req, res, next) => {
   try {
     const userId = req.param.userId;
     const result = await confirmLetterService(userId);
-    return {
+    return res.status(201).json({
       success: true,
       message: "confirmLetterContoller pass.",
       data: result,
-    };
+    });
   } catch (error) {
     console.error("Error in confirmLetterContoller :", error);
     return {

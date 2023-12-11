@@ -13,7 +13,8 @@ const letterDao = async (userId, writingPadId, page) => {
     `,
       [userId, writingPadId, page]
     );
-    return letter.insertId;
+    const id = letter.insertId;
+    return { id, letter };
   } catch (error) {
     console.error(error);
     throw error;
@@ -44,11 +45,12 @@ const checkLetterDao = async (userId) => {
     const letter = await AppDataSource.query(
       `
       SELECT 
-        letters.content, letters.content_count, letters.writing_pad_id
+        letters.id as letter_id, content.content, content.content_count, letters.writing_pad_id
       FROM 
         letters 
+      LEFT JOIN content ON letters.id = content.letter_id 
       LEFT JOIN orders ON letters.id = orders.letter_id 
-      WHERE orders.status IS NULL AND letters.user_id = ?
+      WHERE orders.letter_id IS NULL AND letters.user_id = ?
       `,
       [userId]
     );
@@ -117,12 +119,11 @@ const stampDao = async (stampId, letterId) => {
 
 const selectAddressDao = async () => {
   try {
-    
   } catch (error) {
-    console.error(error)
+    console.error(error);
     throw error;
   }
-}
+};
 
 // 최종확인
 const confirmLetterDao = async (userId) => {
