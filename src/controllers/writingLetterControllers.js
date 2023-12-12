@@ -21,24 +21,51 @@ const {
   PhotoService,
   confirmLetterService,
   stampService,
+  checkLetterService,
 } = require("../services/writingLetterServices");
 
 const letterContoller = async (req, res, next) => {
   try {
-    const userId = req.param;
-    const { writingPadId, contents } = req.body;
+    // const userId = req.query.userId; // URL의 쿼리 파라미터인 경우
+    // 또는
+    // const userId = req.params.userId; // URL의 경로 파라미터인 경우
+    const { writingPadId, contents, userId } = req.body;
     const result = await letterService(userId, writingPadId, contents);
-    return {
+    return res.status(201).json({
       success: true,
-      message: "letterContoller pass.",
       data: result,
-    };
+      message: "편지저장완료",
+    });
   } catch (error) {
     console.error("Error in letterController :", error);
-    return {
+    return res.status(500).json({
       success: false,
       message: "Error in letterContoller. Please try again later.",
-    };
+    });
+  }
+};
+// 사용자가 작성하던 편지 확인하기
+const checkLetterController = async (req, res, next) => {
+  try {
+    const userId = req.query.userId;
+    const result = await checkLetterService(userId);
+    if(result.length === 0){
+      return res.status(400).json({
+        success: false,
+        message: "작성하던 편지가 없습니다."
+      })
+    }
+    return res.status(201).json({
+      success: true,
+      message: "편지내용",
+      data: result,
+    });
+  } catch (error) {
+    console.error("error in continueLetterController", error);
+    return res.status(500)({
+      success: false,
+      message: "error in continueLetterController",
+    });
   }
 };
 
@@ -46,17 +73,17 @@ const photoController = async (req, res, next) => {
   try {
     const { letterId, photoCount, s3Url } = req.body;
     const result = await PhotoService(s3Url, letterId, photoCount);
-    return {
+    return res.status(201).json({
       success: true,
       message: "photoController pass.",
       data: result,
-    };
+    });
   } catch (error) {
     console.error("Error in photoController :", error);
-    return {
+    return res.status(500).json({
       success: false,
       message: "Error in photoController. Please try again later.",
-    };
+    });
   }
 };
 
@@ -64,17 +91,17 @@ const stampController = async (req, res, next) => {
   try {
     const { stampId, letterId } = req.body;
     const result = await stampService(stampId, letterId);
-    return {
+    return res.status(201).json({
       success: true,
       message: "stampContoller pass.",
       data: result,
-    };
+    });
   } catch (error) {
     console.error("Error in stampContoller :", error);
-    return {
+    return res.status(500).json({
       success: false,
       message: "Error in stampContoller. Please try again later.",
-    };
+    });
   }
 };
 
@@ -82,17 +109,17 @@ const confirmLetterContoller = async (req, res, next) => {
   try {
     const userId = req.param.userId;
     const result = await confirmLetterService(userId);
-    return {
+    return res.status(201).json({
       success: true,
       message: "confirmLetterContoller pass.",
       data: result,
-    };
+    });
   } catch (error) {
     console.error("Error in confirmLetterContoller :", error);
-    return {
+    return res.status(500).json({
       success: false,
       message: "Error in confirmLetterContoller. Please try again later.",
-    };
+    });
   }
 };
 
@@ -102,4 +129,5 @@ module.exports = {
   confirmLetterContoller,
   stampController,
   getPreSignedUrl,
+  checkLetterController,
 };

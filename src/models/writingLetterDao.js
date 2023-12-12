@@ -8,12 +8,13 @@ const letterDao = async (userId, writingPadId, page) => {
         INSERT INTO letters (
             user_id, writing_pad_id, page
         )VALUES(
-            ?,?,?,
+            ?,?,?
         );    
     `,
       [userId, writingPadId, page]
     );
-    return letter.insertId;
+    const id = letter.insertId;
+    return { id, letter };
   } catch (error) {
     console.error(error);
     throw error;
@@ -38,7 +39,26 @@ const contentDao = async (letterId, pageNum, content) => {
     throw error;
   }
 };
-
+const checkLetterDao = async (userId) => {
+  try {
+    const result = await AppDataSource.query(
+      `
+      SELECT 
+        letters.id as letter_id, content.content, content.content_count, letters.writing_pad_id
+      FROM 
+        letters 
+      LEFT JOIN content ON letters.id = content.letter_id 
+      LEFT JOIN orders ON letters.id = orders.letter_id 
+      WHERE orders.letter_id IS NULL AND letters.user_id = ?
+      `,
+      [userId]
+    );
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 // 2차 사진 첨부 Dao
 const photoDao = async (s3Url, letterId) => {
   try {
@@ -95,6 +115,14 @@ const stampDao = async (stampId, letterId) => {
   }
 };
 
+const selectAddressDao = async () => {
+  try {
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 // 최종확인
 const confirmLetterDao = async (userId) => {
   try {
@@ -143,4 +171,5 @@ module.exports = {
   confirmLetterDao,
   stampDao,
   contentDao,
+  checkLetterDao,
 };

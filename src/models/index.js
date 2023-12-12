@@ -16,6 +16,7 @@ const {
   stampDao,
   confirmLetterDao,
   contentDao,
+  checkLetterDao,
 } = require("./writingLetterDao");
 
 // user dao
@@ -90,4 +91,6 @@ module.exports = {
     getCsAlistDao,
   },
   admin: { upDateProductDao, getLetterAddressDao },
+  contentDao,
+  checkLetterDao,
 };
