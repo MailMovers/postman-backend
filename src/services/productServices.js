@@ -7,20 +7,22 @@ const {
   insertReviewDao,
   getReviewDao,
   deleteReviewDao,
+  getWritingPadDao,
 } = require("../models/productDao");
 
 const insertProductService = async (
   name,
-  img_url,
+  imgUrl,
+  padImgUrl,
   price,
-  add_price,
+  addPrice,
   discription
 ) => {
-  return await insertProductDao(name, img_url, price, add_price, discription);
+  await insertProductDao(name, imgUrl, padImgUrl, price, addPrice, discription);
 };
 //상품삭제
 const deleteProductService = async (productId) => {
-  return await deleteProductDao(productId);
+  await deleteProductDao(productId);
 };
 //상품상세불러오기
 const getProductService = async (productId) => {
@@ -41,7 +43,7 @@ const getProductListService = async (startItem, pageSize) => {
 };
 //상품 리뷰작성
 const insertReviewService = async (userId, productId, score, content) => {
-  return await insertReviewDao(userId, productId, score, content);
+  await insertReviewDao(userId, productId, score, content);
 };
 //상품 리뷰 불러오기
 const getReviewService = async (postId, pageSize, startItem) => {
@@ -56,7 +58,11 @@ const getReviewService = async (postId, pageSize, startItem) => {
 
 //상품 리뷰 삭제
 const deleteReviewService = async (userId, reviewId) => {
-  return await deleteReviewDao(userId, reviewId);
+  await deleteReviewDao(userId, reviewId);
+};
+//편지지 이미지 가져오기
+const getWritingPadService = async (productId) => {
+  return await getWritingPadDao(productId);
 };
 
 module.exports = {
@@ -67,4 +73,5 @@ module.exports = {
   insertReviewService,
   getReviewService,
   deleteReviewService,
+  getWritingPadService,
 };

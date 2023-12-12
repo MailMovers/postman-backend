@@ -30,7 +30,19 @@ const {
   insertReviewService,
   getReviewService,
   deleteReviewService,
+  getWritingPadService,
 } = require("./productServices");
+
+const {
+  insertCsService,
+  insertCsAnswerService,
+  getCsDetailService,
+  getCsListService,
+  deleteCsService,
+  adminDeleteCsService,
+  adminDeleteCsAnswerService,
+  getCsAnswerListService,
+} = require("./csServices");
 
 module.exports = {
   insertAddressService,
@@ -54,5 +66,16 @@ module.exports = {
   getReviewService,
   deleteReviewService,
   paymentSuccessService,
+  getWritingPadService,
+  cs: {
+    insertCsService,
+    insertCsAnswerService,
+    getCsDetailService,
+    getCsListService,
+    deleteCsService,
+    adminDeleteCsService,
+    adminDeleteCsAnswerService,
+    getCsAnswerListService,
+  },
   checkLetterService,
 };

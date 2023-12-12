@@ -28,9 +28,21 @@ const {
   insertReviewController,
   getReviewController,
   deleteReviewController,
+  getWritingPadController,
 } = require("./productControllers");
 
 const { paymentSuccessController } = require("./paymentControllers.js");
+
+const {
+  insertCsController,
+  insertCsAnswerController,
+  getCsDetailController,
+  getCslistController,
+  deleteCsController,
+  adminCsDeleteController,
+  adminDeleteCsAnswerController,
+  getCsAnswerListController,
+} = require("./csControllers");
 
 module.exports = {
   UserController,
@@ -60,8 +72,19 @@ module.exports = {
     insertReviewController,
     getReviewController,
     deleteReviewController,
+    getWritingPadController,
   },
   paymentController: {
     paymentSuccessController,
+  },
+  csController: {
+    insertCsController,
+    insertCsAnswerController,
+    getCsDetailController,
+    getCslistController,
+    deleteCsController,
+    adminCsDeleteController,
+    adminDeleteCsAnswerController,
+    getCsAnswerListController,
   },
 };

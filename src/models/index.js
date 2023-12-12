@@ -40,6 +40,17 @@ const {
   addPointDao,
 } = require("./paymentDao");
 
+const {
+  insertCsDao,
+  insertCsAnswerDao,
+  getCsDetailDao,
+  CsListDao,
+  deleteCsDao,
+  adminDeleteCsDao,
+  adminDeleteCsAnswerDao,
+  getCsAlistDao,
+} = require("./csDao");
+
 module.exports = {
   insertDeliveryAddressDao,
   insertSendAddressDao,
@@ -67,6 +78,16 @@ module.exports = {
   insertReviewDao,
   getReviewDao,
   deleteReviewDao,
+  cs: {
+    insertCsDao,
+    insertCsAnswerDao,
+    getCsDetailDao,
+    CsListDao,
+    deleteCsDao,
+    adminDeleteCsDao,
+    adminDeleteCsAnswerDao,
+    getCsAlistDao,
+  },
   contentDao,
   checkLetterDao,
 };

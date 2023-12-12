@@ -9,6 +9,7 @@ const {
   insertReviewController,
   getReviewController,
   deleteReviewController,
+  getWritingPadController,
 } = productController;
 const productRoute = express.Router();
 
@@ -19,5 +20,6 @@ productRoute.get("/", getProductListController);
 productRoute.post("/:productId", insertReviewController);
 productRoute.get("/:productId/review", getReviewController);
 productRoute.post("/:productId/review/delete", deleteReviewController);
+productRoute.get("/writing/:productId", getWritingPadController);
 
 module.exports = { productRoute };
