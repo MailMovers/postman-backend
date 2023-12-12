@@ -50,7 +50,7 @@ const {
   getCsAlistDao,
 } = require("./csDao");
 
-const { upDateProductDao } = require("./adminDao");
+const { upDateProductDao, getLetterAddressDao } = require("./adminDao");
 
 module.exports = {
   insertDeliveryAddressDao,
@@ -89,5 +89,5 @@ module.exports = {
     adminDeleteCsAnswerDao,
     getCsAlistDao,
   },
-  admin: { upDateProductDao },
+  admin: { upDateProductDao, getLetterAddressDao },
 };
