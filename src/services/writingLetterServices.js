@@ -5,20 +5,20 @@ const {
   countPhotoDao,
   stampDao,
   contentDao,
+  checkLetterDao,
 } = require("../models/writingLetterDao");
 
 const letterService = async (userId, writingPadId, contents) => {
   try {
     const page = contents.length;
     const letterResult = await letterDao(userId, writingPadId, page);
-    const letterId = letterResult.insertId;
+    const letterId = letterResult.id;
     for (let item of contents) {
       await contentDao(letterId, item.pageNum, item.content); // content id letters테이블에 넣기
     }
 
     return {
       success: true,
-      message: "편지가 성공적으로 저장되었습니다.",
       data: letterResult,
     };
   } catch (error) {
@@ -30,13 +30,47 @@ const letterService = async (userId, writingPadId, contents) => {
   }
 };
 
+const checkLetterService = async (userId) => {
+  try {
+    const result = await checkLetterDao(userId);
+
+    const letters = result.reduce((acc, row) => {
+      const existingLetter = acc.find(
+        (letter) => letter.letter_id === row.letter_id
+      );
+      if (existingLetter) {
+        existingLetter.contents.push({
+          pageNum: row.content_count,
+          content: row.content,
+        });
+      } else {
+        acc.push({
+          letterId: row.letter_id,
+          writingPadId: row.writing_pad_id,
+          contents: [
+            {
+              pageNum: row.content_count,
+              content: row.content,
+            },
+          ],
+        });
+      }
+      return acc;
+    }, []);
+
+    return letters;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 const PhotoService = async (s3Url, letterId, photoCount) => {
   try {
     const photoResult = await photoDao(s3Url, letterId);
     const countResult = await countPhotoDao(photoCount, letterId);
     return {
       success: true,
-      message: "사진이 성공적으로 저장되었습니다.",
       photoData: photoResult,
       countData: countResult,
     };
@@ -54,7 +88,6 @@ const stampService = async (stampId, letterId) => {
     const result = await stampDao(stampId, letterId);
     return {
       success: true,
-      message: "우표가 성공적으로 선택되었습니다.",
       data: result,
     };
   } catch (error) {
@@ -70,7 +103,6 @@ const confirmLetterService = async (userId) => {
   try {
     return {
       success: true,
-      message: "내역이 성공적으로 전달되었습니다.",
       data: await confirmLetterDao(userId),
     };
   } catch (error) {
@@ -87,4 +119,5 @@ module.exports = {
   PhotoService,
   confirmLetterService,
   stampService,
+  checkLetterService,
 };
