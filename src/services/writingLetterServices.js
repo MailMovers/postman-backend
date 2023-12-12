@@ -33,16 +33,35 @@ const letterService = async (userId, writingPadId, contents) => {
 const checkLetterService = async (userId) => {
   try {
     const result = await checkLetterDao(userId);
-    return {
-      success: true,
-      data: result,
-    };
+
+    const letters = result.reduce((acc, row) => {
+      const existingLetter = acc.find(
+        (letter) => letter.letter_id === row.letter_id
+      );
+      if (existingLetter) {
+        existingLetter.contents.push({
+          pageNum: row.content_count,
+          content: row.content,
+        });
+      } else {
+        acc.push({
+          letterId: row.letter_id,
+          writingPadId: row.writing_pad_id,
+          contents: [
+            {
+              pageNum: row.content_count,
+              content: row.content,
+            },
+          ],
+        });
+      }
+      return acc;
+    }, []);
+
+    return letters;
   } catch (error) {
-    console.error("Error in letterService:", error);
-    return {
-      success: false,
-      message: "Error in letterService. Please try again later.",
-    };
+    console.error(error);
+    throw error;
   }
 };
 

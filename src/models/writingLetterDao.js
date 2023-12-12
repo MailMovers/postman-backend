@@ -39,10 +39,9 @@ const contentDao = async (letterId, pageNum, content) => {
     throw error;
   }
 };
-
 const checkLetterDao = async (userId) => {
   try {
-    const letter = await AppDataSource.query(
+    const result = await AppDataSource.query(
       `
       SELECT 
         letters.id as letter_id, content.content, content.content_count, letters.writing_pad_id
@@ -54,13 +53,12 @@ const checkLetterDao = async (userId) => {
       `,
       [userId]
     );
-    return letter;
+    return result;
   } catch (error) {
     console.error(error);
     throw error;
   }
 };
-
 // 2차 사진 첨부 Dao
 const photoDao = async (s3Url, letterId) => {
   try {
