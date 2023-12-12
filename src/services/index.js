@@ -43,6 +43,8 @@ const {
   getCsAnswerListService,
 } = require("./csServices");
 
+const { updateProductService } = require("./adminService");
+
 module.exports = {
   insertAddressService,
   insertSendAddressService,
@@ -76,4 +78,5 @@ module.exports = {
     adminDeleteCsAnswerService,
     getCsAnswerListService,
   },
+  admin: { updateProductService },
 };
