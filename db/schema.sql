@@ -91,23 +91,6 @@ CREATE TABLE `delivery_address` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `fonts`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `fonts` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(10) NOT NULL,
-  `tag` varchar(500) NOT NULL,
-  `img_url` varchar(500) NOT NULL,
-  `file_path` varchar(500) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `letters`
 --
 
@@ -120,24 +103,21 @@ CREATE TABLE `letters` (
   `photo_count` int DEFAULT '0',
   `user_id` int NOT NULL,
   `writing_pad_id` int NOT NULL,
-  `font_id` int NOT NULL,
-  `stamp_id` int NOT NULL,
-  `send_address_id` int NOT NULL,
-  `delivery_address_id` int NOT NULL,
+  `stamp_id` int DEFAULT NULL,
+  `send_address_id` int DEFAULT NULL,
+  `delivery_address_id` int DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `writing_pad_id` (`writing_pad_id`),
-  KEY `font_id` (`font_id`),
   KEY `stamp_id` (`stamp_id`),
   KEY `send_address_id` (`send_address_id`),
   KEY `delivery_address_id` (`delivery_address_id`),
   CONSTRAINT `letters_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
   CONSTRAINT `letters_ibfk_2` FOREIGN KEY (`writing_pad_id`) REFERENCES `writing_pads` (`id`),
-  CONSTRAINT `letters_ibfk_3` FOREIGN KEY (`font_id`) REFERENCES `fonts` (`id`),
-  CONSTRAINT `letters_ibfk_4` FOREIGN KEY (`stamp_id`) REFERENCES `stamps` (`id`),
-  CONSTRAINT `letters_ibfk_5` FOREIGN KEY (`send_address_id`) REFERENCES `send_address` (`id`),
-  CONSTRAINT `letters_ibfk_6` FOREIGN KEY (`delivery_address_id`) REFERENCES `delivery_address` (`id`)
+  CONSTRAINT `letters_ibfk_3` FOREIGN KEY (`stamp_id`) REFERENCES `stamps` (`id`),
+  CONSTRAINT `letters_ibfk_4` FOREIGN KEY (`send_address_id`) REFERENCES `send_address` (`id`),
+  CONSTRAINT `letters_ibfk_5` FOREIGN KEY (`delivery_address_id`) REFERENCES `delivery_address` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -342,7 +322,6 @@ LOCK TABLES `schema_migrations` WRITE;
 INSERT INTO `schema_migrations` (version) VALUES
   ('20231107052528'),
   ('20231107052550'),
-  ('20231107052600'),
   ('20231107052612'),
   ('20231107052635'),
   ('20231107052636'),

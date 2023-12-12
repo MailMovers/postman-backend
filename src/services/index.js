@@ -14,6 +14,7 @@ const {
   PhotoService,
   stampService,
   confirmLetterService,
+  checkLetterService,
 } = require("./writingLetterServices");
 
 const { paymentSuccessService } = require("./paymentServices");
@@ -76,4 +77,5 @@ module.exports = {
     adminDeleteCsAnswerService,
     getCsAnswerListService,
   },
+  checkLetterService,
 };

@@ -17,14 +17,11 @@ const insertCsController = async (req, res) => {
     const { title, content } = req.body;
     await insertCsService(title, content, userId);
 
-    if (!userId) {
-      return res.status(400).json({ messge: "로그인이 필요합니다" });
-    }
     if (!title || title.length === 0) {
       return res.status(400).json({ messge: "글 제목을 작성해주세요" });
     }
     if (!content || content.length === 0) {
-      return res.stㄴatus(400).json({ messge: "글 내용을 작성해주세요" });
+      return res.status(400).json({ messge: "글 내용을 작성해주세요" });
     }
     return res.status(200).json({
       messge: "게시글이 작성되었습니다",
