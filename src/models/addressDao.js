@@ -92,7 +92,7 @@ const getSendListAddressDao = async (userId) => {
     send_phone,
     send_name,
     send_address.deleted_at
-    FROM send_Address
+    FROM send_address
     LEFT JOIN users ON users.id = send_address.user_id
     WHERE user_id = ?
     `,
