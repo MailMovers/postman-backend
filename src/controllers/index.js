@@ -47,6 +47,11 @@ const {
 const {
   updataProductController,
   getAllAddressController,
+  insertNoticeController,
+  updateNoticeController,
+  getNoticeDetailController,
+  getNoticeListController,
+  deleteNoticeController,
 } = require("./adminController");
 
 module.exports = {
@@ -92,5 +97,13 @@ module.exports = {
     adminDeleteCsAnswerController,
     getCsAnswerListController,
   },
-  admin: { updataProductController, getAllAddressController },
+  admin: {
+    updataProductController,
+    getAllAddressController,
+    insertNoticeController,
+    updateNoticeController,
+    getNoticeDetailController,
+    getNoticeListController,
+    deleteNoticeController,
+  },
 };
