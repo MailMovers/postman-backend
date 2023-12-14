@@ -47,6 +47,11 @@ const {
 const {
   updateProductService,
   getAllAddressService,
+  insertNoticeService,
+  updateNoticeService,
+  getNoticeDetailService,
+  getNoticeListService,
+  deleteNoticeService,
 } = require("./adminService");
 
 module.exports = {
@@ -82,6 +87,14 @@ module.exports = {
     adminDeleteCsAnswerService,
     getCsAnswerListService,
   },
-  admin: { updateProductService, getAllAddressService },
+  admin: {
+    updateProductService,
+    getAllAddressService,
+    insertNoticeService,
+    updateNoticeService,
+    getNoticeDetailService,
+    getNoticeListService,
+    deleteNoticeService,
+  },
   checkLetterService,
 };
