@@ -5,7 +5,7 @@ CREATE TABLE `roles` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO `roles` (`role`) VALUES ('user'), ('admin');
+INSERT INTO `roles` (`role`) VALUES ('user'),('print'),('admin'),('cs');
 
 -- migrate:down
 DROP TABLE `roles`
