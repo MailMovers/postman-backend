@@ -1,26 +1,38 @@
-const express = require("express");
-const cors = require("cors");
-const morgan = require("morgan");
+const express = require('express');
+const cors = require('cors');
+const morgan = require('morgan');
+const cookieParser = require('cookie-parser');
 
-const { errorHandler } = require("./src/utils/errorHandler");
-const router = require("./src/routes");
+const passportConfig = require('./src/passport');
 
+const { errorHandler } = require('./src/utils/errorHandler');
+const router = require('./src/routes');
+
+// cors whitelist
+const whitelist = ['http://localhost:3000'];
 
 const createApp = () => {
-  const app = express();
+    const app = express();
 
-  app.get('/', (req, res) => {
-    res.send('Hello World!')
-  })
+    app.get('/', (req, res) => {
+        res.send('Hello World - Github Actions!');
+    });
 
-  app.use(express.json());
-  app.use(cors());
-  app.use(morgan("dev"));
+    app.use(
+        cors({
+            origin: whitelist,
+            credentials: true,
+        })
+    );
+    app.use(cookieParser());
+    app.use(express.json());
+    app.use(morgan('dev'));
 
-  app.use(router);
-  app.use(errorHandler);
+    passportConfig(app);
+    app.use(router);
+    app.use(errorHandler);
 
-  return app;
+    return app;
 };
 
 module.exports = { createApp };

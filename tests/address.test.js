@@ -16,10 +16,22 @@ describe("CREATE DELIVERY ADDRESS", () => {
     app = createApp();
     await AppDataSource.initialize();
 
+    await AppDataSource.query(`
+    INSERT INTO roles (id, role)
+    VALUES (1,"user")`);
+
+    await AppDataSource.query(`
+    INSERT INTO roles (id, role)
+    VALUES (2,"print")`);
+
+    await AppDataSource.query(`
+    INSERT INTO roles (id, role)
+    VALUES (3,"admin")`);
+
     // 새로운 사용자 추가
     await AppDataSource.query(`
-      INSERT INTO users (id, name, email, phone, role_id)
-      VALUES (1, '김동언', 'kimdongeun@gmail.com', '000-0000-00000', 3)
+      INSERT INTO users (id, name, email, phone, role_id, password)
+      VALUES (1, '김동언', 'kimdongeun@gmail.com', '000-0000-00000', 3, "0000")
     `);
 
     // Delivery Address 테이블 초기화
@@ -39,6 +51,7 @@ describe("CREATE DELIVERY ADDRESS", () => {
     await AppDataSource.query(`SET FOREIGN_KEY_CHECKS = 0;`);
     await AppDataSource.query(`TRUNCATE users`);
     await AppDataSource.query(`TRUNCATE delivery_address`);
+    await AppDataSource.query(`TRUNCATE roles`);
     await AppDataSource.query(`TRUNCATE send_address`);
     await AppDataSource.query(`SET FOREIGN_KEY_CHECKS = 1;`);
 
