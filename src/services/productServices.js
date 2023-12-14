@@ -46,9 +46,9 @@ const insertReviewService = async (userId, productId, score, content) => {
   await insertReviewDao(userId, productId, score, content);
 };
 //상품 리뷰 불러오기
-const getReviewService = async (postId, pageSize, startItem) => {
+const getReviewService = async (productId, pageSize, startItem) => {
   // getReviewDao 함수의 반환값을 reviewList 변수에 할당
-  const reviewList = await getReviewDao(startItem, pageSize, postId);
+  const reviewList = await getReviewDao(startItem, pageSize, productId);
   // 여기서부터는 reviewList 변수를 사용할 수 있음
   const filterReviewList = reviewList.filter(
     (reviews) => reviews.deleted_at === null

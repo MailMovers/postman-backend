@@ -44,6 +44,11 @@ const {
   getCsAnswerListController,
 } = require("./csControllers");
 
+const {
+  updataProductController,
+  getAllAddressController,
+} = require("./adminController");
+
 module.exports = {
   UserController,
   addressController: {
@@ -87,4 +92,5 @@ module.exports = {
     adminDeleteCsAnswerController,
     getCsAnswerListController,
   },
+  admin: { updataProductController, getAllAddressController },
 };
