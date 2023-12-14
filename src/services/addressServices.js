@@ -1,5 +1,5 @@
 const {
-  insertAddressDao,
+  insertDeliveryAddressDao,
   insertSendAddressDao,
   deleteSendAddressDao,
   deleteDeliveryAddressDao,
@@ -16,7 +16,7 @@ const insertAddressService = async (
   deliveryPhone,
   deliveryName
 ) => {
-  return await insertAddressDao(
+  return await insertDeliveryAddressDao(
     userId,
     deliveryAddress,
     deliveryAddressDetail,

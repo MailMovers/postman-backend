@@ -1,19 +1,21 @@
 const express = require("express");
+const auth = require("../middlewares/auth.middleware");
+
 const { writingLetterController } = require("../controllers");
 const {
-    letterContoller,
-    photoContoller,
-    confirmLetterContoller,
-    stampController,
-    saveOrUpdateAddressController
+  letterContoller,
+  photoController,
+  confirmLetterContoller,
+  stampController,
+  checkLetterController,
 } = writingLetterController;
 
 const writingLetterRoute = express.Router();
 
-writingLetterRoute.post('/write', letterContoller);
-writingLetterRoute.post('/photo', photoContoller);
-writingLetterRoute.post('/stamp', stampController)
-writingLetterRoute.post('/address', saveOrUpdateAddressController)
-writingLetterRoute.get('/confirm', confirmLetterContoller);
+writingLetterRoute.post("/write", letterContoller);
+writingLetterRoute.get("/check",  checkLetterController);
+writingLetterRoute.post("/photo", auth, photoController);
+writingLetterRoute.post("/stamp", auth, stampController);
+writingLetterRoute.get("/confirm", auth, confirmLetterContoller);
 
 module.exports = { writingLetterRoute };
