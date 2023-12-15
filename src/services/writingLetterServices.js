@@ -40,6 +40,7 @@ const letterService = async (userId, writingPadId, contents) => {
 
 const checkAndInsertAddressService = async (
   userId,
+  letterId,
   sendAddress,
   sendAddressDetail,
   sendPhone,
@@ -68,7 +69,7 @@ const checkAndInsertAddressService = async (
     let deliveryAddressId, sendAddressId;
 
     if (existingDeliveryAddress) {
-      deliveryAddressId = existingDeliveryAddress.id;
+      deliveryAddressId = existingDeliveryAddress;
     } else {
       const newDeliveryAddress = await insertDeliveryAddressDao(
         userId,
@@ -81,7 +82,7 @@ const checkAndInsertAddressService = async (
     }
 
     if (existingSendAddress) {
-      sendAddressId = existingSendAddress.id;
+      sendAddressId = existingSendAddress;
     } else {
       const newSendAddress = await insertSendAddressDao(
         userId,
@@ -93,7 +94,7 @@ const checkAndInsertAddressService = async (
       sendAddressId = newSendAddress.insertId;
     }
 
-    await letterAddressDao(deliveryAddressId, sendAddressId, userId);
+    await letterAddressDao(deliveryAddressId, sendAddressId, letterId);
 
     return { deliveryAddressId, sendAddressId };
   } catch (error) {

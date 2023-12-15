@@ -115,7 +115,7 @@ const stampDao = async (stampId, letterId) => {
   }
 };
 
-const letterAddressDao = async (deliveryAddressId, sendAddressId, id) => {
+const letterAddressDao = async (deliveryAddressId, sendAddressId, letterId) => {
   try {
     const result = await AppDataSource.query(
       `
@@ -123,7 +123,7 @@ const letterAddressDao = async (deliveryAddressId, sendAddressId, id) => {
       SET delivery_address_id =?, send_address_id=?
       WHERE id =?
     `,
-      [deliveryAddressId, sendAddressId, id]
+      [deliveryAddressId, sendAddressId, letterId]
     );
     return result;
   } catch (error) {
@@ -139,21 +139,20 @@ const checkExistingSendAddressDao = async (
   sendPhone,
   sendName
 ) => {
-  const sendExistingAddress = await AppDataSource.query(
-    `
-      SELECT
-      send_address_detail,
-      send_address,
-      send_phone,
-      send_name,
-      send_address.deleted_at
+  try {
+    const sendExistingAddress = await AppDataSource.query(
+      `
+      SELECT id
       FROM send_address
-      LEFT JOIN users ON users.id = send_address.user_id
-      WHERE user_id = ? AND send_address = ? AND send_address_detail = ? 
-      AND send_phone = ? AND send_name = ? AND send_address.deleted_at IS NULL;`,
-    [userId, sendAddress, sendAddressDetail, sendPhone, sendName]
-  );
-  return sendExistingAddress[0];
+      WHERE user_id = ? AND LOWER(send_address) = LOWER(?) AND send_address_detail = ? 
+      AND send_phone = ? AND send_name = ? AND deleted_at IS NULL;`,
+      [userId, sendAddress, sendAddressDetail, sendPhone, sendName]
+    );
+    return sendExistingAddress[0]?.id;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 };
 
 const checkExistingDeliveryAddressDao = async (
@@ -163,30 +162,27 @@ const checkExistingDeliveryAddressDao = async (
   deliveryPhone,
   deliveryName
 ) => {
-  const deliveryExistingAddress = await AppDataSource.query(
-    `
-      SELECT
-      delivery_address_detail,
-      delivery_address,
-      delivery_phone,
-      delivery_name,
-      delivery_address.deleted_at
+  try {
+    const deliveryExistingAddress = await AppDataSource.query(
+      `
+      SELECT id
       FROM delivery_address
-      LEFT JOIN users ON users.id = delivery_address.user_id
-      WHERE user_id = ? AND delivery_address = ? AND delivery_address_detail = ? 
-      AND delivery_phone = ? AND delivery_name = ? AND delivery_address.deleted_at IS NULL;
-  `,
-    [
-      userId,
-      deliveryAddress,
-      deliveryAddressDetail,
-      deliveryPhone,
-      deliveryName,
-    ]
-  );
-  return deliveryExistingAddress[0];
+      WHERE user_id = ? AND LOWER(delivery_address) = LOWER(?) AND delivery_address_detail = ? 
+      AND delivery_phone = ? AND delivery_name = ? AND deleted_at IS NULL;`,
+      [
+        userId,
+        deliveryAddress,
+        deliveryAddressDetail,
+        deliveryPhone,
+        deliveryName,
+      ]
+    );
+    return deliveryExistingAddress[0]?.id;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 };
-
 // 최종확인
 const confirmLetterDao = async (userId) => {
   try {
