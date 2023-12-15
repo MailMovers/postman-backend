@@ -22,6 +22,7 @@ const {
   confirmLetterService,
   stampService,
   checkLetterService,
+  checkAndInsertAddressService,
 } = require("../services/writingLetterServices");
 
 const letterContoller = async (req, res, next) => {
@@ -49,11 +50,11 @@ const checkLetterController = async (req, res, next) => {
   try {
     const userId = req.query.userId;
     const result = await checkLetterService(userId);
-    if(result.length === 0){
+    if (result.length === 0) {
       return res.status(400).json({
         success: false,
-        message: "작성하던 편지가 없습니다."
-      })
+        message: "작성하던 편지가 없습니다.",
+      });
     }
     return res.status(201).json({
       success: true,
@@ -89,12 +90,37 @@ const photoController = async (req, res, next) => {
 
 const stampController = async (req, res, next) => {
   try {
-    const { stampId, letterId } = req.body;
+    const {
+      userId,
+      stampId,
+      letterId,
+      deliveryAddress,
+      deliveryAddressDetail,
+      deliveryPhone,
+      deliveryName,
+      sendAddress,
+      sendAddressDetail,
+      sendPhone,
+      sendName,
+    } = req.body;
     const result = await stampService(stampId, letterId);
+    const addResult = await checkAndInsertAddressService(
+      userId,
+      letterId,
+      deliveryAddress,
+      deliveryAddressDetail,
+      deliveryPhone,
+      deliveryName,
+      sendAddress,
+      sendAddressDetail,
+      sendPhone,
+      sendName
+    );
     return res.status(201).json({
       success: true,
       message: "stampContoller pass.",
       data: result,
+      data: addResult,
     });
   } catch (error) {
     console.error("Error in stampContoller :", error);

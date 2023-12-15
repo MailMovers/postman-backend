@@ -115,12 +115,76 @@ const stampDao = async (stampId, letterId) => {
   }
 };
 
-const selectAddressDao = async () => {
+const letterAddressDao = async (deliveryAddressId, sendAddressId, id) => {
   try {
+    const result = await AppDataSource.query(
+      `
+      UPDATE letters
+      SET delivery_address_id =?, send_address_id=?
+      WHERE id =?
+    `,
+      [deliveryAddressId, sendAddressId, id]
+    );
+    return result;
   } catch (error) {
     console.error(error);
     throw error;
   }
+};
+
+const checkExistingSendAddressDao = async (
+  userId,
+  sendAddress,
+  sendAddressDetail,
+  sendPhone,
+  sendName
+) => {
+  const sendExistingAddress = await AppDataSource.query(
+    `
+      SELECT
+      send_address_detail,
+      send_address,
+      send_phone,
+      send_name,
+      send_address.deleted_at
+      FROM send_address
+      LEFT JOIN users ON users.id = send_address.user_id
+      WHERE user_id = ? AND send_address = ? AND send_address_detail = ? 
+      AND send_phone = ? AND send_name = ? AND send_address.deleted_at IS NULL;`,
+    [userId, sendAddress, sendAddressDetail, sendPhone, sendName]
+  );
+  return sendExistingAddress[0];
+};
+
+const checkExistingDeliveryAddressDao = async (
+  userId,
+  deliveryAddress,
+  deliveryAddressDetail,
+  deliveryPhone,
+  deliveryName
+) => {
+  const deliveryExistingAddress = await AppDataSource.query(
+    `
+      SELECT
+      delivery_address_detail,
+      delivery_address,
+      delivery_phone,
+      delivery_name,
+      delivery_address.deleted_at
+      FROM delivery_address
+      LEFT JOIN users ON users.id = delivery_address.user_id
+      WHERE user_id = ? AND delivery_address = ? AND delivery_address_detail = ? 
+      AND delivery_phone = ? AND delivery_name = ? AND delivery_address.deleted_at IS NULL;
+  `,
+    [
+      userId,
+      deliveryAddress,
+      deliveryAddressDetail,
+      deliveryPhone,
+      deliveryName,
+    ]
+  );
+  return deliveryExistingAddress[0];
 };
 
 // 최종확인
@@ -172,4 +236,7 @@ module.exports = {
   stampDao,
   contentDao,
   checkLetterDao,
+  letterAddressDao,
+  checkExistingSendAddressDao,
+  checkExistingDeliveryAddressDao,
 };
