@@ -15,6 +15,7 @@ const {
   stampService,
   confirmLetterService,
   checkLetterService,
+  checkAndInsertAddressService,
 } = require("./writingLetterServices");
 
 const { paymentSuccessService } = require("./paymentServices");
@@ -97,4 +98,5 @@ module.exports = {
     deleteNoticeService,
   },
   checkLetterService,
+  checkAndInsertAddressService,
 };

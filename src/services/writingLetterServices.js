@@ -6,7 +6,15 @@ const {
   stampDao,
   contentDao,
   checkLetterDao,
+  letterAddressDao,
+  checkExistingDeliveryAddressDao,
+  checkExistingSendAddressDao,
 } = require("../models/writingLetterDao");
+
+const {
+  insertDeliveryAddressDao,
+  insertSendAddressDao,
+} = require("../models/addressDao");
 
 const letterService = async (userId, writingPadId, contents) => {
   try {
@@ -27,6 +35,71 @@ const letterService = async (userId, writingPadId, contents) => {
       success: false,
       message: "Error in letterService. Please try again later.",
     };
+  }
+};
+
+const checkAndInsertAddressService = async (
+  userId,
+  letterId,
+  sendAddress,
+  sendAddressDetail,
+  sendPhone,
+  sendName,
+  deliveryAddress,
+  deliveryAddressDetail,
+  deliveryPhone,
+  deliveryName
+) => {
+  try {
+    const existingDeliveryAddress = await checkExistingDeliveryAddressDao(
+      userId,
+      deliveryAddress,
+      deliveryAddressDetail,
+      deliveryPhone,
+      deliveryName
+    );
+    const existingSendAddress = await checkExistingSendAddressDao(
+      userId,
+      sendAddress,
+      sendAddressDetail,
+      sendPhone,
+      sendName
+    );
+
+    let deliveryAddressId, sendAddressId;
+
+    if (existingDeliveryAddress) {
+      deliveryAddressId = existingDeliveryAddress;
+    } else {
+      const newDeliveryAddress = await insertDeliveryAddressDao(
+        userId,
+        deliveryAddress,
+        deliveryAddressDetail,
+        deliveryPhone,
+        deliveryName
+      );
+      deliveryAddressId = newDeliveryAddress.insertId;
+    }
+
+    if (existingSendAddress) {
+      sendAddressId = existingSendAddress;
+    } else {
+      const newSendAddress = await insertSendAddressDao(
+        userId,
+        sendAddress,
+        sendAddressDetail,
+        sendPhone,
+        sendName
+      );
+      sendAddressId = newSendAddress.insertId;
+    }
+
+    await letterAddressDao(deliveryAddressId, sendAddressId, letterId);
+
+    return { deliveryAddressId, sendAddressId };
+  } catch (error) {
+    console.error(error);
+    throw error;
   }
 };
 
@@ -120,4 +193,5 @@ module.exports = {
   confirmLetterService,
   stampService,
   checkLetterService,
+  checkAndInsertAddressService,
 };

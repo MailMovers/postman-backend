@@ -115,14 +115,74 @@ const stampDao = async (stampId, letterId) => {
   }
 };
 
-const selectAddressDao = async () => {
+const letterAddressDao = async (deliveryAddressId, sendAddressId, letterId) => {
   try {
+    const result = await AppDataSource.query(
+      `
+      UPDATE letters
+      SET delivery_address_id =?, send_address_id=?
+      WHERE id =?
+    `,
+      [deliveryAddressId, sendAddressId, letterId]
+    );
+    return result;
   } catch (error) {
     console.error(error);
     throw error;
   }
 };
 
+const checkExistingSendAddressDao = async (
+  userId,
+  sendAddress,
+  sendAddressDetail,
+  sendPhone,
+  sendName
+) => {
+  try {
+    const sendExistingAddress = await AppDataSource.query(
+      `
+      SELECT id
+      FROM send_address
+      WHERE user_id = ? AND LOWER(send_address) = LOWER(?) AND send_address_detail = ? 
+      AND send_phone = ? AND send_name = ? AND deleted_at IS NULL;`,
+      [userId, sendAddress, sendAddressDetail, sendPhone, sendName]
+    );
+    return sendExistingAddress[0]?.id;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+const checkExistingDeliveryAddressDao = async (
+  userId,
+  deliveryAddress,
+  deliveryAddressDetail,
+  deliveryPhone,
+  deliveryName
+) => {
+  try {
+    const deliveryExistingAddress = await AppDataSource.query(
+      `
+      SELECT id
+      FROM delivery_address
+      WHERE user_id = ? AND LOWER(delivery_address) = LOWER(?) AND delivery_address_detail = ? 
+      AND delivery_phone = ? AND delivery_name = ? AND deleted_at IS NULL;`,
+      [
+        userId,
+        deliveryAddress,
+        deliveryAddressDetail,
+        deliveryPhone,
+        deliveryName,
+      ]
+    );
+    return deliveryExistingAddress[0]?.id;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 // 최종확인
 const confirmLetterDao = async (userId) => {
   try {
@@ -172,4 +232,7 @@ module.exports = {
   stampDao,
   contentDao,
   checkLetterDao,
+  letterAddressDao,
+  checkExistingSendAddressDao,
+  checkExistingDeliveryAddressDao,
 };
