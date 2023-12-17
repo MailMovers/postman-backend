@@ -24,11 +24,7 @@ const letterService = async (userId, writingPadId, contents) => {
     for (let item of contents) {
       await contentDao(letterId, item.pageNum, item.content); // content id letters테이블에 넣기
     }
-
-    return {
-      success: true,
-      data: letterResult,
-    };
+    return letterId;
   } catch (error) {
     console.error("Error in letterService:", error);
     return {
@@ -142,11 +138,7 @@ const PhotoService = async (s3Url, letterId, photoCount) => {
   try {
     const photoResult = await photoDao(s3Url, letterId);
     const countResult = await countPhotoDao(photoCount, letterId);
-    return {
-      success: true,
-      photoData: photoResult,
-      countData: countResult,
-    };
+    return { photoResult, countResult };
   } catch (error) {
     console.error("Error in PhotoService:", error);
     return {
@@ -159,10 +151,7 @@ const PhotoService = async (s3Url, letterId, photoCount) => {
 const stampService = async (stampId, letterId) => {
   try {
     const result = await stampDao(stampId, letterId);
-    return {
-      success: true,
-      data: result,
-    };
+    return result;
   } catch (error) {
     console.error("Error in stampService:", error);
     return {
@@ -174,10 +163,8 @@ const stampService = async (stampId, letterId) => {
 
 const confirmLetterService = async (userId) => {
   try {
-    return {
-      success: true,
-      data: await confirmLetterDao(userId),
-    };
+    const result = await confirmLetterDao(userId);
+    return result;
   } catch (error) {
     console.error("Error in confirmLetterService:", error);
     return {
