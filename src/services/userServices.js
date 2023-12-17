@@ -167,6 +167,32 @@ class UserService {
         }
     };
 
+    googleLogin = async ({ name, email }) => {
+        try {
+            const [user] = await this.userDao.findUserByEmail({ email, provider: 'google' });
+
+            if (!user) {
+                const phone = null;
+                const hashedPassword = await bcrypt.hashSync(SOCIAL_PASSWORD, 10);
+                const provider = 'naver';
+
+                const { insertId } = await this.userDao.insertUser({
+                    name,
+                    email,
+                    phone,
+                    hashedPassword,
+                    provider,
+                });
+
+                return { userId: insertId };
+            }
+
+            return { userId: user.id };
+        } catch (error) {
+            throw error;
+        }
+    };
+
     // Access Token 생성
     generateAccessToken = async ({ userId }) => {
         try {
