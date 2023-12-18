@@ -10,8 +10,6 @@ const {
   checkExistingDeliveryAddressDao,
   checkExistingSendAddressDao,
   updateLetterDao,
-  updateContentDao,
-  checkContentDao,
   deleteContentsDao,
 } = require("../models/writingLetterDao");
 
@@ -51,6 +49,7 @@ const updateLetterService = async (contents, letterId) => {
     throw error;
   }
 };
+
 const checkAndInsertAddressService = async (
   userId,
   letterId,

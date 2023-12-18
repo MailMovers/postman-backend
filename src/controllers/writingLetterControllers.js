@@ -33,7 +33,7 @@ const letterContoller = async (req, res, next) => {
     // const userId = req.params.userId; // URL의 경로 파라미터인 경우
     // const userId = req.params.userId;
     // const letterId = req.query.letterId;
-    const { writingPadId, contents,userId,letterId } = req.body;
+    const { writingPadId, contents, userId, letterId } = req.body;
     if (letterId) {
       const result = await updateLetterService(contents, letterId);
       return res.status(201).json({

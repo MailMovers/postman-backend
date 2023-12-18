@@ -73,39 +73,6 @@ const contentDao = async (letterId, pageNum, content) => {
   }
 };
 
-const checkContentDao = async (letterId, pageNum) => {
-  try {
-    const result = await AppDataSource.query(
-      `
-        SELECT * FROM content
-        WHERE letter_id = ? AND content_count = ?;
-        `,
-      [letterId, pageNum]
-    );
-    return result; // 레코드가 없으면 빈 배열을 반환합니다.
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
-
-const updateContentDao = async (content, letterId, pageNum) => {
-  try {
-    const result = await AppDataSource.query(
-      `
-        UPDATE content
-        SET content = ?
-        WHERE letter_id = ? AND content_count = ?;
-        `,
-      [content, letterId, pageNum]
-    );
-    return result;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
-
 const checkLetterDao = async (userId) => {
   try {
     const result = await AppDataSource.query(
@@ -145,7 +112,6 @@ const photoDao = async (s3Url, letterId) => {
     throw error;
   }
 };
-
 // 2차 사진 첨부 Dao
 const countPhotoDao = async (photoCount, letterId) => {
   try {
@@ -163,7 +129,6 @@ const countPhotoDao = async (photoCount, letterId) => {
     throw error;
   }
 };
-
 // 3차 우표선택
 const stampDao = async (stampId, letterId) => {
   try {
@@ -301,7 +266,5 @@ module.exports = {
   checkExistingSendAddressDao,
   checkExistingDeliveryAddressDao,
   updateLetterDao,
-  updateContentDao,
-  checkContentDao,
-  deleteContentsDao
+  deleteContentsDao,
 };
