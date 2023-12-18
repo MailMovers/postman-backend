@@ -26,25 +26,22 @@ const letterService = async (userId, writingPadId, contents) => {
     }
     return letterId;
   } catch (error) {
-    console.error("Error in letterService:", error);
-    return {
-      success: false,
-      message: "Error in letterService. Please try again later.",
-    };
+    console.error(error);
+    throw error;
   }
 };
 
 const checkAndInsertAddressService = async (
   userId,
   letterId,
+  deliveryAddress,
+  deliveryAddressDetail,
+  deliveryPhone,
+  deliveryName,
   sendAddress,
   sendAddressDetail,
   sendPhone,
   sendName,
-  deliveryAddress,
-  deliveryAddressDetail,
-  deliveryPhone,
-  deliveryName
 ) => {
   try {
     const existingDeliveryAddress = await checkExistingDeliveryAddressDao(
@@ -91,7 +88,6 @@ const checkAndInsertAddressService = async (
     }
 
     await letterAddressDao(deliveryAddressId, sendAddressId, letterId);
-
     return { deliveryAddressId, sendAddressId };
   } catch (error) {
     console.error(error);
@@ -140,11 +136,8 @@ const PhotoService = async (s3Url, letterId, photoCount) => {
     const countResult = await countPhotoDao(photoCount, letterId);
     return { photoResult, countResult };
   } catch (error) {
-    console.error("Error in PhotoService:", error);
-    return {
-      success: false,
-      message: "Error in PhotoService. Please try again later.",
-    };
+    console.error(error);
+    throw error;
   }
 };
 
@@ -153,24 +146,46 @@ const stampService = async (stampId, letterId) => {
     const result = await stampDao(stampId, letterId);
     return result;
   } catch (error) {
-    console.error("Error in stampService:", error);
-    return {
-      success: false,
-      message: "Error in stampService. Please try again later.",
-    };
+    console.error(error);
+    throw error;
   }
 };
 
-const confirmLetterService = async (userId) => {
+const confirmLetterService = async (letterId) => {
   try {
-    const result = await confirmLetterDao(userId);
-    return result;
+    const result = await confirmLetterDao(letterId);
+    const formattedResult = result.map((item) => {
+      return {
+        letterId: item.id,
+        writingPadId: item.writing_pad_id,
+        writingPadImgUrl: item.pad_img_url,
+        contents: [
+          {
+            pageNum: item.content_count,
+            content: item.content,
+          },
+        ],
+        photoCount: item.photo_count,
+        photos: [
+          {
+            photoUrl: item.photo_img_url,
+          },
+        ],
+        stampId: item.stamp_id,
+        deliveryAddress: item.delivery_address,
+        deliveryAddressDetail: item.delivery_address_detail,
+        deliveryPhone: item.delivery_phone,
+        deliveryName: item.delivery_name,
+        sendAddress: item.send_address,
+        sendAddressDetail: item.send_address_detail,
+        sendPhone: item.send_phone,
+        sendName: item.send_name,
+      };
+    });
+    return formattedResult;
   } catch (error) {
-    console.error("Error in confirmLetterService:", error);
-    return {
-      success: false,
-      message: "Error in confirmLetterService. Please try again later.",
-    };
+    console.error(error);
+    throw error;
   }
 };
 

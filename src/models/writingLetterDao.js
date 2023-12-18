@@ -184,7 +184,7 @@ const checkExistingDeliveryAddressDao = async (
   }
 };
 // 최종확인
-const confirmLetterDao = async (userId) => {
+const confirmLetterDao = async (letterId) => {
   try {
     const letterInfo = await AppDataSource.query(
       `
@@ -192,7 +192,6 @@ const confirmLetterDao = async (userId) => {
             letters.id,
             letters.page,
             letters.content,
-            letters.font_file_path,
             letters.photo_count,
             photos.img_url AS photo_img_url,
             writing_pads.img_url AS writing_pad_img_url,
@@ -209,13 +208,12 @@ const confirmLetterDao = async (userId) => {
             letters
         LEFT JOIN photos ON letters.id = photos.letter_id
         LEFT JOIN writing_pads ON letters.writing_pad_id = writing_pads.id
-        LEFT JOIN send_address ON send_address.user_id = letters.user_id
-        LEFT JOIN delivery_address ON delivery_address.user_id = letters.user_id
+        LEFT JOIN send_address ON letters.send_address_id = send_address.id
+        LEFT JOIN delivery_address ON letters.delivery_address_id = delivery_address.id
         WHERE
-            letters.user_id = ?;
-
+            letters.id = ?;
     `,
-      [userId]
+      [letterId]
     );
     return letterInfo;
   } catch (error) {
