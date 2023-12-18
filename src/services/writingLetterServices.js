@@ -26,11 +26,8 @@ const letterService = async (userId, writingPadId, contents) => {
     }
     return letterId;
   } catch (error) {
-    console.error("Error in letterService:", error);
-    return {
-      success: false,
-      message: "Error in letterService. Please try again later.",
-    };
+    console.error(error);
+    throw error;
   }
 };
 
@@ -139,11 +136,8 @@ const PhotoService = async (s3Url, letterId, photoCount) => {
     const countResult = await countPhotoDao(photoCount, letterId);
     return { photoResult, countResult };
   } catch (error) {
-    console.error("Error in PhotoService:", error);
-    return {
-      success: false,
-      message: "Error in PhotoService. Please try again later.",
-    };
+    console.error(error);
+    throw error;
   }
 };
 
@@ -152,11 +146,8 @@ const stampService = async (stampId, letterId) => {
     const result = await stampDao(stampId, letterId);
     return result;
   } catch (error) {
-    console.error("Error in stampService:", error);
-    return {
-      success: false,
-      message: "Error in stampService. Please try again later.",
-    };
+    console.error(error);
+    throw error;
   }
 };
 
@@ -193,11 +184,8 @@ const confirmLetterService = async (letterId) => {
     });
     return formattedResult;
   } catch (error) {
-    console.error("Error in confirmLetterService:", error);
-    return {
-      success: false,
-      message: "Error in confirmLetterService. Please try again later.",
-    };
+    console.error(error);
+    throw error;
   }
 };
 
