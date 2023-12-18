@@ -20,6 +20,8 @@ const {
   letterAddressDao,
   checkExistingDeliveryAddressDao,
   checkExistingSendAddressDao,
+  updateLetterDao,
+  updateContentDao,
 } = require("./writingLetterDao");
 
 // user dao
@@ -115,4 +117,6 @@ module.exports = {
   letterAddressDao,
   checkExistingDeliveryAddressDao,
   checkExistingSendAddressDao,
+  updateLetterDao,
+  updateContentDao,
 };
