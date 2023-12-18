@@ -161,10 +161,38 @@ const stampService = async (stampId, letterId) => {
   }
 };
 
-const confirmLetterService = async (userId) => {
+const confirmLetterService = async (letterId) => {
   try {
-    const result = await confirmLetterDao(userId);
-    return result;
+    const result = await confirmLetterDao(letterId);
+    const formattedResult = result.map((item) => {
+      return {
+        letterId: item.id,
+        writingPadId: item.writing_pad_id,
+        writingPadImgUrl: item.pad_img_url,
+        contents: [
+          {
+            pageNum: item.content_count,
+            content: item.content,
+          },
+        ],
+        photoCount: item.photo_count,
+        photos: [
+          {
+            photoUrl: item.photo_img_url,
+          },
+        ],
+        stampId: item.stamp_id,
+        deliveryAddress: item.delivery_address,
+        deliveryAddressDetail: item.delivery_address_detail,
+        deliveryPhone: item.delivery_phone,
+        deliveryName: item.delivery_name,
+        sendAddress: item.send_address,
+        sendAddressDetail: item.send_address_detail,
+        sendPhone: item.send_phone,
+        sendName: item.send_name,
+      };
+    });
+    return formattedResult;
   } catch (error) {
     console.error("Error in confirmLetterService:", error);
     return {
