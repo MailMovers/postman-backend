@@ -21,6 +21,22 @@ const letterDao = async (userId, writingPadId, page) => {
   }
 };
 
+const deleteContentsDao = async (letterId) => {
+  try {
+    const result = await AppDataSource.query(
+      `
+        DELETE FROM content
+        WHERE letter_id = ?;
+        `,
+      [letterId]
+    );
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 const updateLetterDao = async (page, letterId) => {
   try {
     const result = await AppDataSource.query(
@@ -57,15 +73,31 @@ const contentDao = async (letterId, pageNum, content) => {
   }
 };
 
-const updateContentDao = async (pageNum, content, letterId) => {
+const checkContentDao = async (letterId, pageNum) => {
+  try {
+    const result = await AppDataSource.query(
+      `
+        SELECT * FROM content
+        WHERE letter_id = ? AND content_count = ?;
+        `,
+      [letterId, pageNum]
+    );
+    return result; // 레코드가 없으면 빈 배열을 반환합니다.
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+const updateContentDao = async (content, letterId, pageNum) => {
   try {
     const result = await AppDataSource.query(
       `
         UPDATE content
-        SET content_count =?, content = ?
-        WHERE letter_id = ?;
+        SET content = ?
+        WHERE letter_id = ? AND content_count = ?;
         `,
-      [pageNum, content, letterId]
+      [content, letterId, pageNum]
     );
     return result;
   } catch (error) {
@@ -270,4 +302,6 @@ module.exports = {
   checkExistingDeliveryAddressDao,
   updateLetterDao,
   updateContentDao,
+  checkContentDao,
+  deleteContentsDao
 };
