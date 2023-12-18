@@ -21,6 +21,22 @@ const letterDao = async (userId, writingPadId, page) => {
   }
 };
 
+const deleteContentsDao = async (letterId) => {
+  try {
+    const result = await AppDataSource.query(
+      `
+        DELETE FROM content
+        WHERE letter_id = ?;
+        `,
+      [letterId]
+    );
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 const updateLetterDao = async (page, letterId) => {
   try {
     const result = await AppDataSource.query(
@@ -49,23 +65,6 @@ const contentDao = async (letterId, pageNum, content) => {
         );
       `,
       [letterId, pageNum, content]
-    );
-    return result;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
-
-const updateContentDao = async (pageNum, content, letterId) => {
-  try {
-    const result = await AppDataSource.query(
-      `
-        UPDATE content
-        SET content_count =?, content = ?
-        WHERE letter_id = ?;
-        `,
-      [pageNum, content, letterId]
     );
     return result;
   } catch (error) {
@@ -113,7 +112,6 @@ const photoDao = async (s3Url, letterId) => {
     throw error;
   }
 };
-
 // 2차 사진 첨부 Dao
 const countPhotoDao = async (photoCount, letterId) => {
   try {
@@ -131,7 +129,6 @@ const countPhotoDao = async (photoCount, letterId) => {
     throw error;
   }
 };
-
 // 3차 우표선택
 const stampDao = async (stampId, letterId) => {
   try {
@@ -269,5 +266,5 @@ module.exports = {
   checkExistingSendAddressDao,
   checkExistingDeliveryAddressDao,
   updateLetterDao,
-  updateContentDao,
+  deleteContentsDao,
 };

@@ -10,7 +10,7 @@ const {
   checkExistingDeliveryAddressDao,
   checkExistingSendAddressDao,
   updateLetterDao,
-  updateContentDao,
+  deleteContentsDao,
 } = require("../models/writingLetterDao");
 
 const {
@@ -35,17 +35,21 @@ const letterService = async (userId, writingPadId, contents) => {
 
 const updateLetterService = async (contents, letterId) => {
   try {
+    // 기존 contents를 삭제합니다.
+    await deleteContentsDao(letterId);
+
     const page = contents.length;
     const letterResult = await updateLetterDao(page, letterId);
     for (let item of contents) {
-      await updateContentDao(item.pageNum, item.content, letterId);
+      await contentDao(letterId, item.pageNum, item.content);
     }
-    return letterResult;
+    return { letterId, letterResult };
   } catch (error) {
     console.error(error);
     throw error;
   }
 };
+
 const checkAndInsertAddressService = async (
   userId,
   letterId,
