@@ -128,7 +128,32 @@ class UserController {
             });
         } catch (error) {
             console.log(error);
-            return res.status(400).json({ success: false, message: '로그인에 실패했습니다. ' });
+            return res.status(400).json({ success: false, message: '로그인에 실패했습니다.' });
+        }
+    };
+
+    // 구글 소셜로그인
+    googleLogin = async (req, res, next) => {
+        try {
+            const { name, email } = req.user._json;
+
+            const { userId } = await this.userService.googleLogin({ name, email });
+
+            const accessToken = await this.userService.generateAccessToken({ userId });
+            const refreshToken = await this.userService.generateRefreshToken();
+
+            // Set RefreshToken in Redis
+            await this.userService.setRefreshTokenInRedis({ userId, refreshToken });
+
+            return res.status(200).json({
+                success: true,
+                message: '로그인에 성공했습니다.',
+                accessToken,
+                refreshToken,
+            });
+        } catch (error) {
+            console.log(error);
+            return res.status(400).json({ success: false, message: '로그인에 실패했습니다.' });
         }
     };
 

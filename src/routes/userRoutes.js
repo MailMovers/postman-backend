@@ -26,6 +26,17 @@ userRoute.get(
     userController.naverLogin
 );
 
+// google login
+userRoute.get(
+    '/google',
+    passport.authenticate('google', { session: false, scope: ['email', 'profile'] })
+);
+userRoute.get(
+    '/google/callback',
+    passport.authenticate('google', { session: false }),
+    userController.googleLogin
+);
+
 // regenerate access token
 userRoute.post('/refresh', userController.refresh);
 

@@ -107,18 +107,14 @@ class UserService {
             const [user] = await this.userDao.findUserByEmail({ email, provider: 'kakao' });
 
             if (!user) {
-                // 회원가입
-                const phone = await this.kakaoPhoneFormatting({ phone_number });
-
                 // 비밀번호 암호화
                 const hashedPassword = await bcrypt.hashSync(SOCIAL_PASSWORD, 10);
-
                 const provider = 'kakao';
 
                 const { insertId } = await this.userDao.insertUser({
                     name,
                     email,
-                    phone,
+                    phone: phone_number,
                     hashedPassword,
                     provider,
                 });
@@ -132,28 +128,43 @@ class UserService {
         }
     };
 
-    kakaoPhoneFormatting = async ({ phone_number }) => {
-        // +82, 10-0000-0000
-        const [internationalNumber, phone] = phone_number.split(' ');
-
-        return '0' + phone.split('-').join('');
-    };
-
     naverSignUp = async ({ email, mobile, name }) => {
         try {
             const [user] = await this.userDao.findUserByEmail({ email, provider: 'naver' });
 
             if (!user) {
-                const phone = mobile.split('-').join(''); // 01000000000
-
                 const hashedPassword = await bcrypt.hashSync(SOCIAL_PASSWORD, 10);
-
                 const provider = 'naver';
 
                 const { insertId } = await this.userDao.insertUser({
                     name,
                     email,
-                    phone,
+                    phone: mobile,
+                    hashedPassword,
+                    provider,
+                });
+
+                return { userId: insertId };
+            }
+
+            return { userId: user.id };
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    googleLogin = async ({ name, email }) => {
+        try {
+            const [user] = await this.userDao.findUserByEmail({ email, provider: 'google' });
+
+            if (!user) {
+                const hashedPassword = await bcrypt.hashSync(SOCIAL_PASSWORD, 10);
+                const provider = 'google';
+
+                const { insertId } = await this.userDao.insertUser({
+                    name,
+                    email,
+                    phone: null,
                     hashedPassword,
                     provider,
                 });

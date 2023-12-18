@@ -2,6 +2,7 @@ const passport = require('passport');
 
 const kakao = require('./kakaoStrategy');
 const naver = require('./naverStrategy');
+const google = require('./googleStrategy');
 
 module.exports = (app) => {
     app.use(passport.initialize());
@@ -16,4 +17,5 @@ module.exports = (app) => {
 
     kakao();
     naver();
+    google();
 };
