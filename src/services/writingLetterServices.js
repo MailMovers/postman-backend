@@ -9,6 +9,8 @@ const {
   letterAddressDao,
   checkExistingDeliveryAddressDao,
   checkExistingSendAddressDao,
+  updateLetterDao,
+  updateContentDao,
 } = require("../models/writingLetterDao");
 
 const {
@@ -31,6 +33,19 @@ const letterService = async (userId, writingPadId, contents) => {
   }
 };
 
+const updateLetterService = async (contents, letterId) => {
+  try {
+    const page = contents.length;
+    const letterResult = await updateLetterDao(page, letterId);
+    for (let item of contents) {
+      await updateContentDao(item.pageNum, item.content, letterId);
+    }
+    return letterResult;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 const checkAndInsertAddressService = async (
   userId,
   letterId,
@@ -41,7 +56,7 @@ const checkAndInsertAddressService = async (
   sendAddress,
   sendAddressDetail,
   sendPhone,
-  sendName,
+  sendName
 ) => {
   try {
     const existingDeliveryAddress = await checkExistingDeliveryAddressDao(
@@ -196,4 +211,5 @@ module.exports = {
   stampService,
   checkLetterService,
   checkAndInsertAddressService,
+  updateLetterService,
 };

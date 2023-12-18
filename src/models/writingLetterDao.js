@@ -21,6 +21,23 @@ const letterDao = async (userId, writingPadId, page) => {
   }
 };
 
+const updateLetterDao = async (page, letterId) => {
+  try {
+    const result = await AppDataSource.query(
+      `
+      UPDATE letters
+      SET page = ?
+      WHERE id = ?;
+      `,
+      [page, letterId]
+    );
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 const contentDao = async (letterId, pageNum, content) => {
   try {
     const result = await AppDataSource.query(
@@ -39,6 +56,24 @@ const contentDao = async (letterId, pageNum, content) => {
     throw error;
   }
 };
+
+const updateContentDao = async (pageNum, content, letterId) => {
+  try {
+    const result = await AppDataSource.query(
+      `
+        UPDATE content
+        SET content_count =?, content = ?
+        WHERE letter_id = ?;
+        `,
+      [pageNum, content, letterId]
+    );
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 const checkLetterDao = async (userId) => {
   try {
     const result = await AppDataSource.query(
@@ -233,4 +268,6 @@ module.exports = {
   letterAddressDao,
   checkExistingSendAddressDao,
   checkExistingDeliveryAddressDao,
+  updateLetterDao,
+  updateContentDao,
 };
