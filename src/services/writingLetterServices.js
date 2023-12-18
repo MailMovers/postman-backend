@@ -37,14 +37,14 @@ const letterService = async (userId, writingPadId, contents) => {
 const checkAndInsertAddressService = async (
   userId,
   letterId,
+  deliveryAddress,
+  deliveryAddressDetail,
+  deliveryPhone,
+  deliveryName,
   sendAddress,
   sendAddressDetail,
   sendPhone,
   sendName,
-  deliveryAddress,
-  deliveryAddressDetail,
-  deliveryPhone,
-  deliveryName
 ) => {
   try {
     const existingDeliveryAddress = await checkExistingDeliveryAddressDao(
@@ -91,7 +91,6 @@ const checkAndInsertAddressService = async (
     }
 
     await letterAddressDao(deliveryAddressId, sendAddressId, letterId);
-
     return { deliveryAddressId, sendAddressId };
   } catch (error) {
     console.error(error);
