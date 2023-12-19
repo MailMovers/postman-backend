@@ -31,9 +31,9 @@ const letterContoller = async (req, res, next) => {
     // const userId = req.query.userId; // URL의 쿼리 파라미터인 경우
     // 또는
     // const userId = req.params.userId; // URL의 경로 파라미터인 경우
-    const userId = req.userId;
-    const letterId = req.query.letterId;
-    const { writingPadId, contents} = req.body;
+    // const userId = req.params.userId;
+    // const letterId = req.query.letterId;
+    const { writingPadId, contents, userId, letterId } = req.body;
     if (letterId) {
       const result = await updateLetterService(contents, letterId);
       return res.status(201).json({
@@ -60,7 +60,8 @@ const letterContoller = async (req, res, next) => {
 // 사용자가 작성하던 편지 확인하기
 const checkLetterController = async (req, res, next) => {
   try {
-    const userId = req.userId;
+    // const userId = req.userId;
+    const userId = req.query.userId;
     const result = await checkLetterService(userId);
     if (result.length === 0) {
       return res.status(400).json({
@@ -75,7 +76,7 @@ const checkLetterController = async (req, res, next) => {
     });
   } catch (error) {
     console.error("error in continueLetterController", error);
-    return res.status(500)({
+    return res.status(400)({
       success: false,
       message: "error in continueLetterController",
     });
@@ -120,8 +121,9 @@ const photoController = async (req, res, next) => {
 
 const stampController = async (req, res, next) => {
   try {
-    const userId = req.userId;
+    // const userId = req.userId;
     const {
+      userId,
       letterId,
       deliveryAddress,
       deliveryAddressDetail,
@@ -162,8 +164,9 @@ const stampController = async (req, res, next) => {
 
 const confirmLetterContoller = async (req, res, next) => {
   try {
-    const userId = req.userId;
-    const result = await confirmLetterService(userId);
+    // const userId = req.userId;
+    const letterId = req.query.letterId;
+    const result = await confirmLetterService(letterId);
     return res.status(201).json({
       success: true,
       message: "confirmLetterContoller pass.",
