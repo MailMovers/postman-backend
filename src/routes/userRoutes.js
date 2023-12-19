@@ -1,6 +1,7 @@
 const express = require('express');
 const userRoute = express.Router();
 const passport = require('passport');
+const auth = require('../middlewares/auth.middleware');
 
 const { UserController } = require('../controllers');
 const userController = new UserController();
@@ -39,5 +40,8 @@ userRoute.get(
 
 // regenerate access token
 userRoute.post('/refresh', userController.refresh);
+
+// get user-info
+userRoute.get('/info', auth, userController.getUserInfo);
 
 module.exports = userRoute;
