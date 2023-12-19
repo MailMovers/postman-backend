@@ -22,6 +22,17 @@ class UserDao {
             throw error;
         }
     };
+
+    getLocalUserInfoByUserId = async ({ userId }) => {
+        try {
+            return await AppDataSource.query(
+                `SELECT name, email, phone, created_at FROM users WHERE id = (?) AND provider = (?)`,
+                [userId, 'local']
+            );
+        } catch (error) {
+            throw error;
+        }
+    };
 }
 
 module.exports = UserDao;

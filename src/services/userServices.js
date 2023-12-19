@@ -259,6 +259,14 @@ class UserService {
             throw error;
         }
     };
+
+    getUserInfo = async ({ userId }) => {
+        try {
+            return await this.userDao.getLocalUserInfoByUserId({ userId });
+        } catch (error) {
+            throw error;
+        }
+    };
 }
 
 module.exports = UserService;

@@ -256,6 +256,20 @@ class UserController {
             }
         }
     };
+
+    // 회원 정보 가져오기
+    getUserInfo = async (req, res, next) => {
+        try {
+            const userId = req.userId;
+            const userInfo = await this.userService.getUserInfo({ userId });
+
+            return res.status(200).json({ success: true, userInfo });
+        } catch (error) {
+            return res
+                .status(400)
+                .json({ success: false, message: '회원 정보를 가져올 수 없습니다.' });
+        }
+    };
 }
 
 module.exports = UserController;
