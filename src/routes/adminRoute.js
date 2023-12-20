@@ -7,6 +7,7 @@ const {
   getNoticeDetailController,
   getNoticeListController,
   deleteNoticeController,
+  adminGetCsDetailController,
 } = require("../controllers/adminController");
 
 const {
@@ -47,9 +48,11 @@ adminRoute.post("/deleteNotice", deleteNoticeController);
 //고객센터 게시글 삭제하기
 adminRoute.post("/deleteCustomerService", adminCsDeleteController);
 //고색센터 게시글 답변달기
-adminRoute.post("insertCustomerServiceAnwser", insertCsAnswerController);
+adminRoute.post("/insertCustomerServiceAnwser", insertCsAnswerController);
 //고객센터 게시글 목록 불러오기
-adminRoute.get("getCustomerServiceList", getCslistController);
+adminRoute.get("/getCustomerServiceList", getCslistController);
 //고객센터 게시글 상세 불러오기
-adminRoute.get("getCustomerService", getCsDetailController);
+adminRoute.get("/getCustomerService", getCsDetailController);
+//고객센터 답변목록 불러오기
+adminRoute.get("/getCsAnswerList", adminGetCsDetailController);
 module.exports = adminRoute;
