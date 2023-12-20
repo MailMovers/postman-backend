@@ -10,7 +10,7 @@ const {
 } = require("../services/addressServices");
 
 //받는사람 주소등록
-const insertDeliveryAddressController = async (req, res) => {
+const insertDeliveryAddressController = async (req, res, next) => {
   const userId = 1;
   try {
     const {
@@ -30,21 +30,13 @@ const insertDeliveryAddressController = async (req, res) => {
       return res
         .status(400)
         .json({ message: "받으시는 분 성함을 입력해주세요" });
-    } else {
-      const result = await insertAddressService(
-        userId,
-        deliveryAddress,
-        deliveryAddressDetail,
-        deliveryPhone,
-        deliveryName
-      );
-      return res.status(200).json({
-        message: "SUCCSE",
-      });
     }
+    return res.status(200).json({
+      message: "SUCCESS",
+    });
   } catch (err) {
     console.error("insertDeliveryAddressController에서의 오류", err);
-    throw err;
+    next(err);
   }
 };
 
@@ -71,7 +63,7 @@ const insertSendAddressController = async (req, res, next) => {
         .status(400)
         .json({ message: "보내시는 분 성함을 입력해주세요" });
     return res.status(200).json({
-      message: "SUCCSE",
+      message: "SUCCESS",
     });
   } catch (err) {
     console.error(err);
@@ -89,7 +81,7 @@ const deleteSendAddressController = async (req, res, next) => {
     if (!sendAddressId)
       return res.status(400).json({ message: "주소가 옳바르지 않습니다" });
     return res.status(200).json({
-      message: "SUCCSE",
+      message: "SUCCESS",
     });
   } catch (err) {
     console.error(err);
@@ -107,7 +99,7 @@ const deleteDeliveryAddressController = async (req, res, next) => {
     if (!deliveryAddressId)
       return res.status(400).json({ message: "주소가 옳바르지 않습니다" });
     return res.status(200).json({
-      message: "SUCCSE",
+      message: "SUCCESS",
     });
   } catch (err) {
     console.error(err);
@@ -121,7 +113,7 @@ const getSendAddressListController = async (req, res, next) => {
     if (userId.length === 0 || !userId)
       return res.status(400).json({ message: "KEY_ERROR" });
     return res.status(200).json({
-      message: "SUCCSE",
+      message: "SUCCESS",
       data: await getSendListAddressService(userId),
     });
   } catch (err) {
@@ -136,7 +128,7 @@ const getDeliveryAddressListController = async (req, res, next) => {
     if (userId.length === 0 || !userId)
       return res.status(400).json({ message: "KEY_ERROR" });
     return res.status(200).json({
-      message: "SUCCSE",
+      message: "SUCCESS",
       data: await getDeliveryListAddressService(userId),
     });
   } catch (err) {
@@ -151,7 +143,7 @@ const getSendAddressController = async (req, res, next) => {
     if (userId.length === 0 || !userId)
       return res.status(400).json({ message: "KEY_ERROR" });
     return res.status(200).json({
-      message: "SUCCSE",
+      message: "SUCCESS",
       data: await getSendAddressService(userId),
     });
   } catch (err) {
@@ -166,7 +158,7 @@ const getDeliveryAddressController = async (req, res, next) => {
     if (userId.length === 0 || !userId)
       return res.status(400).json({ message: "KEY_ERROR" });
     return res.status(200).json({
-      message: "SUCCSE",
+      message: "SUCCESS",
       data: await getDeliveryAddressService(userId),
     });
   } catch (err) {

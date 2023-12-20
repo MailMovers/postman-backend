@@ -7,9 +7,10 @@ const {
   getNoticeListService,
   deleteNoticeService,
 } = require("../services/adminService");
+const { getCsDetailService } = require("../services/csServices");
 const { getUserByIdDao } = require("../models/productDao");
 //어드민 상품 수정
-const updataProductController = async (req, res) => {
+const updataProductController = async (req, res, next) => {
   try {
     const userId = 1;
     const { productId, name, imgUrl, padImgUrl, price, addPrice, discription } =
@@ -55,33 +56,35 @@ const updataProductController = async (req, res) => {
     return res.status(200).json({ message: "SUCCESS" });
   } catch (err) {
     console.error("updataProductController에서 발생한 오류", err);
-    throw err;
+    next(err);
   }
 };
+
 //편지안에 주소 전부 불러오기
-const getAllAddressController = async (req, res) => {
+const getAllAddressController = async (req, res, next) => {
   try {
     const letterId = req.body.letterId;
 
     if (!letterId || letterId === 0) {
-      return res.status(400).json({ message: "KEY_ERROR" });
+      return res.status(422).json({ message: "Invalid or missing letterId" });
     }
-    return res
-      .status(200)
-      .json({ message: "SUCCES", data: await getAllAddressService(letterId) });
+    const data = await getAllAddressService(letterId);
+
+    return res.status(200).json({ message: "SUCCESS", data });
   } catch (err) {
     console.error("getAllAddressController에서 발생한 에러", err);
-    throw err;
+    next(err);
   }
 };
+
 //공지사항 입력
-const insertNoticeController = async (req, res) => {
+const insertNoticeController = async (req, res, next) => {
   try {
     const userId = 1;
     const { title, content } = req.body;
     const user = await getUserByIdDao(userId);
     if (!user || user.user_role_id !== 3) {
-      return res.status(400).json({ message: "게시글 수정 권한이 없습니다" });
+      return res.status(400).json({ message: "게시글 입력 권한이 없습니다" });
     }
     if (title.length === 0) {
       return res.status(400).json({ message: "게시글 제목이 없습니다" });
@@ -90,14 +93,14 @@ const insertNoticeController = async (req, res) => {
       return res.status(400).json({ message: "글 내용이 없습니다" });
     }
     await insertNoticeService(title, content, userId);
-    return res.status(200).json({ message: "SUCCSE" });
+    return res.status(200).json({ message: "SUCCESS" });
   } catch (err) {
     console.error("insertNoticeController에서 발생한 오류", err);
-    throw err;
+    next(err);
   }
 };
 //공지사항 수정
-const updateNoticeController = async (req, res) => {
+const updateNoticeController = async (req, res, next) => {
   try {
     const userId = 1;
     const { title, content } = req.body;
@@ -112,14 +115,14 @@ const updateNoticeController = async (req, res) => {
       return res.status(400).json({ message: "글 내용이 없습니다" });
     }
     await updateNoticeService(title, content, userId);
-    return res.status(200).json({ message: "SUCCSE" });
+    return res.status(200).json({ message: "SUCCESS" });
   } catch (err) {
     console.error("updateNoticeController에서 발생한 오류", err);
-    throw err;
+    next(err);
   }
 };
 //공지사항 상세 불러오기
-const getNoticeDetailController = async (req, res) => {
+const getNoticeDetailController = async (req, res, next) => {
   try {
     const postId = req.body.postId;
     if (!postId) {
@@ -127,14 +130,14 @@ const getNoticeDetailController = async (req, res) => {
     }
     return res
       .status(200)
-      .json({ message: "SUCCSE", data: await getNoticeDetailService(postId) });
+      .json({ message: "SUCCESS", data: await getNoticeDetailService(postId) });
   } catch (err) {
     console.error("getNoticeDetailController에서 발생한 오류", err);
-    throw err;
+    next(err);
   }
 };
 //공지사항 목록 불러오기
-const getNoticeListController = async (req, res) => {
+const getNoticeListController = async (req, res, next) => {
   try {
     const page = req.query.page || 1;
     const pageSize = 20;
@@ -145,31 +148,62 @@ const getNoticeListController = async (req, res) => {
       return res.status(400).json({ message: "글 목록을 불어올 수 없습니다" });
     }
     return res.status(200).json({
-      message: "SUCCSE",
+      message: "SUCCESS",
       data: noticeList,
     });
   } catch (err) {
     console.error("getNoticeListController에서 발생한 오류", err);
-    throw err;
+    next(err);
   }
 };
 //공지사항 게시글 삭제
-const deleteNoticeController = async (req, res) => {
+const deleteNoticeController = async (req, res, next) => {
   try {
     const postId = req.body.postId;
     const userId = 1;
     const user = await getUserByIdDao(userId);
     if (!user || user.user_role_id !== 3) {
-      return res.status(400).json({ message: "게시글 수정 권한이 없습니다" });
+      return res.status(400).json({ message: "게시글 삭제 권한이 없습니다" });
     }
     if (!postId) {
       return res.status(400).json({ message: "삭제할 게시글이 없습니다" });
     }
     await deleteNoticeService(postId);
-    return res.status(200).json({ message: "SUCCSE" });
+    return res.status(200).json({ message: "SUCCESS" });
   } catch (err) {
     console.error("deleteNoticeController에서 발생한 오류", err);
-    throw err;
+    next(err);
+  }
+};
+
+//어드민 본인이 작성한 게시글 열람
+const adminGetCsDetailController = async (req, res, next) => {
+  try {
+    const userId = 1;
+    const customerServiceId = req.body.customerServiceId;
+    const user = await getUserByIdDao(userId);
+    if (!user || user.user_role_id !== 3) {
+      return res.status(400).json({ message: "게시글 삭제 권한이 없습니다" });
+    }
+    if (!customerServiceId) {
+      return res.status(400).json({ message: "게시글이 삭제 되었습니다" });
+    }
+    const csDetail = await getCsDetailService(userId, customerServiceId);
+
+    return res.status(200).json({
+      message: "SUCCESS",
+      data: csDetail,
+    });
+  } catch (err) {
+    console.error("getCsDetailController에서 발생한 에러", err);
+    next(err);
+    if (err.message === "게시글을 찾을 수 없습니다") {
+      return res.status(404).json({ message: "게시글을 찾을 수 없습니다" });
+    } else if (err.message === "게시글 열람 권한이 없습니다") {
+      return res.status(403).json({ message: "게시글 열람 권한이 없습니다" });
+    } else {
+      return res.status(500).json({ message: "서버 오류" });
+    }
   }
 };
 
@@ -181,4 +215,5 @@ module.exports = {
   getNoticeDetailController,
   getNoticeListController,
   deleteNoticeController,
+  adminGetCsDetailController,
 };
