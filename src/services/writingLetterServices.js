@@ -13,6 +13,8 @@ const {
   deleteContentsDao,
 } = require("../models/writingLetterDao");
 
+const { getProductDao } = require("../models/productDao");
+
 const {
   insertDeliveryAddressDao,
   insertSendAddressDao,
@@ -117,30 +119,25 @@ const checkAndInsertAddressService = async (
 const checkLetterService = async (userId) => {
   try {
     const result = await checkLetterDao(userId);
-
-    const letters = result.reduce((acc, row) => {
-      const existingLetter = acc.find(
-        (letter) => letter.letter_id === row.letter_id
-      );
-      if (existingLetter) {
-        existingLetter.contents.push({
-          pageNum: row.content_count,
-          content: row.content,
-        });
-      } else {
-        acc.push({
+    const letters = await Promise.all(
+      result.map(async (row) => {
+        const product = await getProductDao(row.writing_pad_id);
+        console.log(product);
+        const productPic = product[0] ? product[0].img_url : null; // product가 null이 아닌 경우에만 img_url에 접근
+        return {
           letterId: row.letter_id,
           writingPadId: row.writing_pad_id,
+          productPic: productPic,
           contents: [
             {
               pageNum: row.content_count,
               content: row.content,
             },
           ],
-        });
-      }
-      return acc;
-    }, []);
+          productPic: productPic,
+        };
+      })
+    );
 
     return letters;
   } catch (error) {
