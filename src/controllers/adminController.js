@@ -12,7 +12,7 @@ const { getUserByIdDao } = require("../models/productDao");
 //어드민 상품 수정
 const updataProductController = async (req, res, next) => {
   try {
-    const userId = 1;
+    const userId = req.userId;
     const { productId, name, imgUrl, padImgUrl, price, addPrice, discription } =
       req.body;
     if (!userId) {
@@ -80,7 +80,7 @@ const getAllAddressController = async (req, res, next) => {
 //공지사항 입력
 const insertNoticeController = async (req, res, next) => {
   try {
-    const userId = 1;
+    const userId = req.userId;
     const { title, content } = req.body;
     const user = await getUserByIdDao(userId);
     if (!user || user.user_role_id !== 3) {
@@ -102,7 +102,7 @@ const insertNoticeController = async (req, res, next) => {
 //공지사항 수정
 const updateNoticeController = async (req, res, next) => {
   try {
-    const userId = 1;
+    const userId = req.userId;
     const { title, content } = req.body;
     const user = await getUserByIdDao(userId);
     if (!user || user.user_role_id !== 3) {
@@ -179,7 +179,7 @@ const deleteNoticeController = async (req, res, next) => {
 //어드민 본인이 작성한 게시글 열람
 const adminGetCsDetailController = async (req, res, next) => {
   try {
-    const userId = 1;
+    const userId = req.userId;
     const customerServiceId = req.body.customerServiceId;
     const user = await getUserByIdDao(userId);
     if (!user || user.user_role_id !== 3) {

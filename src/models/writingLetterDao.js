@@ -220,30 +220,31 @@ const confirmLetterDao = async (letterId) => {
   try {
     const letterInfo = await AppDataSource.query(
       `
-        SELECT
-            letters.id,
-            letters.page,
-            letters.content,
-            letters.photo_count,
-            photos.img_url AS photo_img_url,
-            writing_pads.img_url AS writing_pad_img_url,
-            letters.stamp_id,
-            send_address.send_address,
-            send_address.send_address_detail,
-            send_address.send_phone,
-            send_address.send_name,
-            delivery_address.delivery_address,
-            delivery_address.delivery_address_detail,
-            delivery_address.delivery_phone,
-            delivery_address.delivery_name
-        FROM
-            letters
-        LEFT JOIN photos ON letters.id = photos.letter_id
-        LEFT JOIN writing_pads ON letters.writing_pad_id = writing_pads.id
-        LEFT JOIN send_address ON letters.send_address_id = send_address.id
-        LEFT JOIN delivery_address ON letters.delivery_address_id = delivery_address.id
-        WHERE
-            letters.id = ?;
+  SELECT
+      letters.id,
+      letters.page,
+      content.content,
+      letters.photo_count,
+      photos.img_url AS photo_img_url,
+      writing_pads.img_url AS writing_pad_img_url,
+      letters.stamp_id,
+      send_address.send_address,
+      send_address.send_address_detail,
+      send_address.send_phone,
+      send_address.send_name,
+      delivery_address.delivery_address,
+      delivery_address.delivery_address_detail,
+      delivery_address.delivery_phone,
+      delivery_address.delivery_name
+  FROM
+      letters
+  LEFT JOIN content ON letters.id = content.letter_id
+  LEFT JOIN photos ON letters.id = photos.letter_id
+  LEFT JOIN writing_pads ON letters.writing_pad_id = writing_pads.id
+  LEFT JOIN send_address ON letters.send_address_id = send_address.id
+  LEFT JOIN delivery_address ON letters.delivery_address_id = delivery_address.id
+  WHERE
+      letters.id =?
     `,
       [letterId]
     );
