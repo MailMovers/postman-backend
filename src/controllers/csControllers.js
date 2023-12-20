@@ -13,7 +13,7 @@ const { getUserByIdDao } = require("../models/productDao");
 //고객센터 문의하기 (유저는 수정해야함)
 const insertCsController = async (req, res, next) => {
   try {
-    const userId = 1;
+    const userId = req.userId;
     const { title, content } = req.body;
     await insertCsService(title, content, userId);
 
@@ -34,7 +34,7 @@ const insertCsController = async (req, res, next) => {
 //답변달기 유저는 수정해야함
 const insertCsAnswerController = async (req, res, next) => {
   try {
-    const userId = 1;
+    const userId = req.userId;
     const { content, customerServiceId } = req.body;
     if (!userId) {
       return res.status(400).json({ message: "KEY_ERROR" });
@@ -62,7 +62,7 @@ const insertCsAnswerController = async (req, res, next) => {
 //유저 본인이 작성한 게시글 열람
 const getCsDetailController = async (req, res, next) => {
   try {
-    const userId = 1;
+    const userId = req.userId;
     const customerServiceId = req.body.customerServiceId;
     if (!userId) {
       return res.status(400).json({ message: "게시글 열람 권한이 없습니다" });
@@ -114,7 +114,7 @@ const getCslistController = async (req, res, next) => {
 //게시글 삭제하기
 const deleteCsController = async (req, res, next) => {
   try {
-    const userId = 1;
+    const userId = req.userId;
     const customerServiceId = req.body.customerServiceId;
     await deleteCsService(userId, customerServiceId);
 
@@ -154,7 +154,7 @@ const adminCsDeleteController = async (req, res, next) => {
 //어드민 답변삭제
 const adminDeleteCsAnswerController = async (req, res, next) => {
   try {
-    const userId = 1;
+    const userId = req.userId;
     const { csAnswerId, customerServiceId } = req.body;
 
     // 사용자 정보가 없거나 권한이 없는 경우

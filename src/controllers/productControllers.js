@@ -194,7 +194,7 @@ const getWritingPadController = async (req, res, next) => {
       data: await getWritingPadService(productId),
     });
   } catch (err) {
-    console.error("getWritingPadControlleㄴr에서 발생한 오류", err);
+    console.error("getWritingPadController에서 발생한 오류", err);
     next(err);
   }
 };

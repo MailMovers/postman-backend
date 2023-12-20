@@ -11,7 +11,7 @@ const {
 
 //받는사람 주소등록
 const insertDeliveryAddressController = async (req, res, next) => {
-  const userId = 1;
+  const userId = req.userId;
   try {
     const {
       deliveryAddress,
@@ -43,7 +43,7 @@ const insertDeliveryAddressController = async (req, res, next) => {
 //보내는사람 주소등록
 const insertSendAddressController = async (req, res, next) => {
   try {
-    const userId = 1;
+    const userId = req.userId;
     const { sendAddress, sendAddressDetail, sendPhone, sendName } = req.body;
     await insertSendAddressService(
       userId,
@@ -73,7 +73,7 @@ const insertSendAddressController = async (req, res, next) => {
 //보내는 사람 주소 삭제
 const deleteSendAddressController = async (req, res, next) => {
   try {
-    const userId = 1;
+    const userId = req.userId;
     const sendAddressId = req.body.sendAddressId;
     await deleteSendAddressService(userId, sendAddressId);
     if (userId.length === 0 || !userId)
@@ -91,7 +91,7 @@ const deleteSendAddressController = async (req, res, next) => {
 //받는사람 주소 삭제
 const deleteDeliveryAddressController = async (req, res, next) => {
   try {
-    const userId = 1;
+    const userId = req.userId;
     const deliveryAddressId = req.body.deliveryAddressId;
     await deleteDeliveryAddressService(userId, deliveryAddressId);
     if (userId.length === 0 || !userId)
@@ -109,7 +109,7 @@ const deleteDeliveryAddressController = async (req, res, next) => {
 //보내는 사람 주소목록 보기
 const getSendAddressListController = async (req, res, next) => {
   try {
-    const userId = 1;
+    const userId = req.userId;
     if (userId.length === 0 || !userId)
       return res.status(400).json({ message: "KEY_ERROR" });
     return res.status(200).json({
@@ -124,7 +124,7 @@ const getSendAddressListController = async (req, res, next) => {
 //받는사람 주소 목록보기
 const getDeliveryAddressListController = async (req, res, next) => {
   try {
-    const userId = 1;
+    const userId = req.userId;
     if (userId.length === 0 || !userId)
       return res.status(400).json({ message: "KEY_ERROR" });
     return res.status(200).json({
@@ -139,7 +139,7 @@ const getDeliveryAddressListController = async (req, res, next) => {
 //보내는 사람 기본 배송주소
 const getSendAddressController = async (req, res, next) => {
   try {
-    const userId = 1;
+    const userId = req.userId;
     if (userId.length === 0 || !userId)
       return res.status(400).json({ message: "KEY_ERROR" });
     return res.status(200).json({
@@ -154,7 +154,7 @@ const getSendAddressController = async (req, res, next) => {
 //받는사람 기본배송주소
 const getDeliveryAddressController = async (req, res, next) => {
   try {
-    const userId = 1;
+    const userId = req.userId;
     if (userId.length === 0 || !userId)
       return res.status(400).json({ message: "KEY_ERROR" });
     return res.status(200).json({
