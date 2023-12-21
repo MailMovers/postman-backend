@@ -51,7 +51,7 @@ const letterContoller = async (req, res, next) => {
     }
   } catch (error) {
     console.error("Error in letterController :", error);
-    return res.status(500).json({
+    return res.status(400).json({
       success: false,
       message: "Error in letterContoller. Please try again later.",
     });
@@ -94,7 +94,7 @@ const getUploadUrl = async (req, res, next) => {
     });
   } catch (error) {
     console.error("Error in getUploadUrl :", error);
-    return res.status(500).json({
+    return res.status(400).json({
       success: false,
       message: "Error in getUploadUrl. Please try again later.",
     });
@@ -112,7 +112,7 @@ const photoController = async (req, res, next) => {
     });
   } catch (error) {
     console.error("Error in photoController :", error);
-    return res.status(500).json({
+    return res.status(400).json({
       success: false,
       message: "Error in photoController. Please try again later.",
     });
@@ -155,7 +155,7 @@ const stampController = async (req, res, next) => {
     });
   } catch (error) {
     console.error("Error in stampContoller :", error);
-    return res.status(500).json({
+    return res.status(400).json({
       success: false,
       message: "Error in stampContoller. Please try again later.",
     });
