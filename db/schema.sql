@@ -77,10 +77,10 @@ CREATE TABLE `customer_service` (
 CREATE TABLE `delivery_address` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
-  `delivery_address` varchar(50) NOT NULL,
-  `delivery_address_detail` varchar(30) NOT NULL,
-  `delivery_phone` varchar(20) DEFAULT NULL,
-  `delivery_name` varchar(10) NOT NULL,
+  `delivery_address` varchar(255) NOT NULL,
+  `delivery_address_detail` varchar(255) NOT NULL,
+  `delivery_phone` varchar(255) DEFAULT NULL,
+  `delivery_name` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
@@ -115,9 +115,7 @@ CREATE TABLE `letters` (
   KEY `delivery_address_id` (`delivery_address_id`),
   CONSTRAINT `letters_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
   CONSTRAINT `letters_ibfk_2` FOREIGN KEY (`writing_pad_id`) REFERENCES `writing_pads` (`id`),
-  CONSTRAINT `letters_ibfk_3` FOREIGN KEY (`stamp_id`) REFERENCES `stamps` (`id`),
-  CONSTRAINT `letters_ibfk_4` FOREIGN KEY (`send_address_id`) REFERENCES `send_address` (`id`),
-  CONSTRAINT `letters_ibfk_5` FOREIGN KEY (`delivery_address_id`) REFERENCES `delivery_address` (`id`)
+  CONSTRAINT `letters_ibfk_3` FOREIGN KEY (`stamp_id`) REFERENCES `stamps` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -245,10 +243,10 @@ CREATE TABLE `schema_migrations` (
 CREATE TABLE `send_address` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
-  `send_address` varchar(50) NOT NULL,
-  `send_address_detail` varchar(30) NOT NULL,
-  `send_phone` varchar(20) DEFAULT NULL,
-  `send_name` varchar(10) NOT NULL,
+  `send_address` varchar(255) NOT NULL,
+  `send_address_detail` varchar(255) NOT NULL,
+  `send_phone` varchar(255) DEFAULT NULL,
+  `send_name` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
