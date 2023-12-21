@@ -129,6 +129,23 @@ const photoDao = async (s3Url, letterId) => {
     throw error;
   }
 };
+
+const delPhotoDao = async (photoId) => {
+  try {
+    const photo = await AppDataSource.query(
+      `
+      DELETE FROM photos
+      WHERE id = ?
+        );
+        `,
+      [photoId]
+    );
+    return photo;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 // 2차 사진 첨부 Dao
 const updateCountPhotoDao = async (photoCount, letterId) => {
   try {
@@ -286,4 +303,5 @@ module.exports = {
   updateLetterDao,
   deleteContentsDao,
   updateCountPhotoDao,
+  delPhotoDao,
 };

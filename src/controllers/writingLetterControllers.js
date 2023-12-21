@@ -27,16 +27,14 @@ const {
   updateLetterService,
   countPhotoService,
   PhotoService,
+  delPhotoService,
 } = require("../services/writingLetterServices");
 
 const letterContoller = async (req, res, next) => {
   try {
-    // const userId = req.query.userId; // URL의 쿼리 파라미터인 경우
-    // 또는
-    // const userId = req.params.userId; // URL의 경로 파라미터인 경우
-    // const userId = req.params.userId;
+    const userId = req.userId;
     // const letterId = req.query.letterId;
-    const { writingPadId, contents, userId, letterId } = req.body;
+    const { writingPadId, contents, letterId } = req.body;
     if (letterId) {
       const result = await updateLetterService(contents, letterId);
       return res.status(201).json({
@@ -63,8 +61,7 @@ const letterContoller = async (req, res, next) => {
 // 사용자가 작성하던 편지 확인하기
 const checkLetterController = async (req, res, next) => {
   try {
-    // const userId = req.userId;
-    const userId = req.query.userId;
+    const userId = req.userId;
     const result = await checkLetterService(userId);
     if (result.length === 0) {
       return res.status(400).json({
@@ -110,11 +107,12 @@ const photoController = async (req, res, next) => {
     const region = process.env.AWS_REGION;
     const { letterId, originalname } = req.body;
     const s3Url = `https://${Bucket}.s3.${region}.amazonaws.com/${originalname}`;
-    await PhotoService(s3Url, letterId);
+    const photoId = await PhotoService(s3Url, letterId);
     await countPhotoService(letterId);
     return res.status(201).json({
       success: true,
       message: "photoController pass.",
+      data: photoId,
     });
   } catch (error) {
     console.error("Error in photoController :", error);
@@ -125,11 +123,23 @@ const photoController = async (req, res, next) => {
   }
 };
 
+const delPhotoController = async (req, res, next) => {
+  try {
+    const { photoId, letterId } = req.body;
+    await delPhotoService(photoId, letterId);
+  } catch (error) {
+    console.error("Error in delPhotoController :", error);
+    return res.status(400).json({
+      success: false,
+      message: "Error in delPhotoController. Please try again later.",
+    });
+  }
+};
+
 const stampController = async (req, res, next) => {
   try {
-    // const userId = req.userId;
+    const userId = req.userId;
     const {
-      userId,
       stampId,
       letterId,
       deliveryAddress,
@@ -171,7 +181,6 @@ const stampController = async (req, res, next) => {
 
 const confirmLetterContoller = async (req, res, next) => {
   try {
-    // const userId = req.userId;
     const letterId = req.query.letterId;
     const result = await confirmLetterService(letterId);
     return res.status(201).json({
@@ -196,4 +205,5 @@ module.exports = {
   getPreSignedUrl,
   checkLetterController,
   getUploadUrl,
+  delPhotoController,
 };

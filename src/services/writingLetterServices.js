@@ -12,6 +12,7 @@ const {
   countPhotoDao,
   updateCountPhotoDao,
   photoDao,
+  delPhotoDao,
 } = require("../models/writingLetterDao");
 
 const { getProductDao } = require("../models/productDao");
@@ -149,13 +150,25 @@ const checkLetterService = async (userId) => {
 
 const PhotoService = async (s3Url, letterId) => {
   try {
-    await photoDao(s3Url, letterId);
+    const photoId = await photoDao(s3Url, letterId);
+    return photoId.id;
   } catch (error) {
     console.error(error);
     throw error;
   }
 };
-
+const delPhotoService = async (photoId, letterId) => {
+  try {
+    await delPhotoDao(photoId);
+    const currentPhotoCount = await countPhotoDao(letterId);
+    const photoCount = currentPhotoCount[0].photo_count - 1;
+    await updateCountPhotoDao(photoCount, letterId);
+    return;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 const countPhotoService = async (letterId) => {
   try {
     const currentPhotoCount = await countPhotoDao(letterId);
@@ -224,4 +237,5 @@ module.exports = {
   updateLetterService,
   countPhotoService,
   PhotoService,
+  delPhotoService,
 };

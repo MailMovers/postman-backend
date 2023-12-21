@@ -12,15 +12,17 @@ const {
   stampController,
   checkLetterController,
   getUploadUrl,
+  delPhotoController,
 } = writingLetterController;
 
 const writingLetterRoute = express.Router();
 
-writingLetterRoute.post("/write", letterContoller);
-writingLetterRoute.post("/upload", upload.single("file"), getUploadUrl);
-writingLetterRoute.get("/check", checkLetterController);
-writingLetterRoute.post("/photo", photoController);
-writingLetterRoute.post("/stamp", stampController);
-writingLetterRoute.get("/confirm", confirmLetterContoller);
+writingLetterRoute.post("/write", auth, letterContoller);
+writingLetterRoute.post("/upload", auth, upload.single("file"), getUploadUrl);
+writingLetterRoute.get("/check", auth, checkLetterController);
+writingLetterRoute.post("/photo", auth, photoController);
+writingLetterRoute.post("/delPhoto", auth, delPhotoController);
+writingLetterRoute.post("/stamp", auth, stampController);
+writingLetterRoute.get("/confirm", auth, confirmLetterContoller);
 
 module.exports = { writingLetterRoute };
