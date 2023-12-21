@@ -22,6 +22,8 @@ const {
   confirmLetterService,
   stampService,
   checkLetterService,
+  checkAndInsertAddressService,
+  updateLetterService,
 } = require("../services/writingLetterServices");
 
 const letterContoller = async (req, res, next) => {
@@ -29,13 +31,24 @@ const letterContoller = async (req, res, next) => {
     // const userId = req.query.userId; // URL의 쿼리 파라미터인 경우
     // 또는
     // const userId = req.params.userId; // URL의 경로 파라미터인 경우
-    const { writingPadId, contents, userId } = req.body;
-    const result = await letterService(userId, writingPadId, contents);
-    return res.status(201).json({
-      success: true,
-      data: result,
-      message: "편지저장완료",
-    });
+    // const userId = req.params.userId;
+    // const letterId = req.query.letterId;
+    const { writingPadId, contents, userId, letterId } = req.body;
+    if (letterId) {
+      const result = await updateLetterService(contents, letterId);
+      return res.status(201).json({
+        success: true,
+        data: result,
+        message: "편지수정완료",
+      });
+    } else {
+      const result = await letterService(userId, writingPadId, contents);
+      return res.status(201).json({
+        success: true,
+        data: result,
+        message: "편지저장완료",
+      });
+    }
   } catch (error) {
     console.error("Error in letterController :", error);
     return res.status(500).json({
@@ -47,13 +60,14 @@ const letterContoller = async (req, res, next) => {
 // 사용자가 작성하던 편지 확인하기
 const checkLetterController = async (req, res, next) => {
   try {
+    // const userId = req.userId;
     const userId = req.query.userId;
     const result = await checkLetterService(userId);
-    if(result.length === 0){
+    if (result.length === 0) {
       return res.status(400).json({
         success: false,
-        message: "작성하던 편지가 없습니다."
-      })
+        message: "작성하던 편지가 없습니다.",
+      });
     }
     return res.status(201).json({
       success: true,
@@ -62,9 +76,27 @@ const checkLetterController = async (req, res, next) => {
     });
   } catch (error) {
     console.error("error in continueLetterController", error);
-    return res.status(500)({
+    return res.status(400)({
       success: false,
       message: "error in continueLetterController",
+    });
+  }
+};
+
+const getUploadUrl = async (req, res, next) => {
+  try {
+    const { file } = req.body;
+    const result = await getPreSignedUrl(file);
+    return res.status(201).json({
+      success: true,
+      message: "getUploadUrl pass.",
+      data: result,
+    });
+  } catch (error) {
+    console.error("Error in getUploadUrl :", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error in getUploadUrl. Please try again later.",
     });
   }
 };
@@ -89,12 +121,37 @@ const photoController = async (req, res, next) => {
 
 const stampController = async (req, res, next) => {
   try {
-    const { stampId, letterId } = req.body;
+    // const userId = req.userId;
+    const {
+      userId,
+      letterId,
+      deliveryAddress,
+      deliveryAddressDetail,
+      deliveryPhone,
+      deliveryName,
+      sendAddress,
+      sendAddressDetail,
+      sendPhone,
+      sendName,
+    } = req.body;
     const result = await stampService(stampId, letterId);
+    const addResult = await checkAndInsertAddressService(
+      userId,
+      letterId,
+      deliveryAddress,
+      deliveryAddressDetail,
+      deliveryPhone,
+      deliveryName,
+      sendAddress,
+      sendAddressDetail,
+      sendPhone,
+      sendName
+    );
     return res.status(201).json({
       success: true,
       message: "stampContoller pass.",
       data: result,
+      data: addResult,
     });
   } catch (error) {
     console.error("Error in stampContoller :", error);
@@ -107,8 +164,9 @@ const stampController = async (req, res, next) => {
 
 const confirmLetterContoller = async (req, res, next) => {
   try {
-    const userId = req.param.userId;
-    const result = await confirmLetterService(userId);
+    // const userId = req.userId;
+    const letterId = req.query.letterId;
+    const result = await confirmLetterService(letterId);
     return res.status(201).json({
       success: true,
       message: "confirmLetterContoller pass.",
@@ -130,4 +188,5 @@ module.exports = {
   stampController,
   getPreSignedUrl,
   checkLetterController,
+  getUploadUrl,
 };

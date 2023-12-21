@@ -8,14 +8,16 @@ const {
   confirmLetterContoller,
   stampController,
   checkLetterController,
+  getUploadUrl,
 } = writingLetterController;
 
 const writingLetterRoute = express.Router();
 
 writingLetterRoute.post("/write", letterContoller);
-writingLetterRoute.get("/check",  checkLetterController);
-writingLetterRoute.post("/photo", auth, photoController);
-writingLetterRoute.post("/stamp", auth, stampController);
-writingLetterRoute.get("/confirm", auth, confirmLetterContoller);
+writingLetterRoute.get("/photo", getUploadUrl);
+writingLetterRoute.get("/check", checkLetterController);
+writingLetterRoute.post("/photo", photoController);
+writingLetterRoute.post("/stamp", stampController);
+writingLetterRoute.get("/confirm", confirmLetterContoller);
 
 module.exports = { writingLetterRoute };

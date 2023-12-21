@@ -5,6 +5,8 @@ const { ErrorNames, CustomError } = require('../utils/customErrors');
 const smtpTransport = require('../config/email.config');
 const redisCli = require('../config/redis.config');
 
+const SOCIAL_PASSWORD = 'a12345678';
+
 class UserService {
     userDao = new UserDao();
 
@@ -105,18 +107,14 @@ class UserService {
             const [user] = await this.userDao.findUserByEmail({ email, provider: 'kakao' });
 
             if (!user) {
-                // 회원가입
-                const phone = await this.kakaoPhoneFormatting({ phone_number });
-
                 // 비밀번호 암호화
-                const hashedPassword = await bcrypt.hashSync('a12345678', 10);
-
+                const hashedPassword = await bcrypt.hashSync(SOCIAL_PASSWORD, 10);
                 const provider = 'kakao';
 
                 const { insertId } = await this.userDao.insertUser({
                     name,
                     email,
-                    phone,
+                    phone: phone_number,
                     hashedPassword,
                     provider,
                 });
@@ -130,11 +128,54 @@ class UserService {
         }
     };
 
-    kakaoPhoneFormatting = async ({ phone_number }) => {
-        // +82, 10-0000-0000
-        const [internationalNumber, phone] = phone_number.split(' ');
+    naverSignUp = async ({ email, mobile, name }) => {
+        try {
+            const [user] = await this.userDao.findUserByEmail({ email, provider: 'naver' });
 
-        return '0' + phone.split('-').join('');
+            if (!user) {
+                const hashedPassword = await bcrypt.hashSync(SOCIAL_PASSWORD, 10);
+                const provider = 'naver';
+
+                const { insertId } = await this.userDao.insertUser({
+                    name,
+                    email,
+                    phone: mobile,
+                    hashedPassword,
+                    provider,
+                });
+
+                return { userId: insertId };
+            }
+
+            return { userId: user.id };
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    googleLogin = async ({ name, email }) => {
+        try {
+            const [user] = await this.userDao.findUserByEmail({ email, provider: 'google' });
+
+            if (!user) {
+                const hashedPassword = await bcrypt.hashSync(SOCIAL_PASSWORD, 10);
+                const provider = 'google';
+
+                const { insertId } = await this.userDao.insertUser({
+                    name,
+                    email,
+                    phone: null,
+                    hashedPassword,
+                    provider,
+                });
+
+                return { userId: insertId };
+            }
+
+            return { userId: user.id };
+        } catch (error) {
+            throw error;
+        }
     };
 
     // Access Token 생성
@@ -214,6 +255,14 @@ class UserService {
     getRefreshTokenInRedis = async ({ userId }) => {
         try {
             return await redisCli.GET(`refresh-${userId}`);
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    getUserInfo = async ({ userId }) => {
+        try {
+            return await this.userDao.getLocalUserInfoByUserId({ userId });
         } catch (error) {
             throw error;
         }

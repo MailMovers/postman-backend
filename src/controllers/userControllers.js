@@ -107,6 +107,56 @@ class UserController {
         }
     };
 
+    // 네이버 소셜로그인
+    naverLogin = async (req, res, next) => {
+        try {
+            const { email, mobile, name } = req.user._json.response;
+
+            const { userId } = await this.userService.naverSignUp({ email, mobile, name });
+
+            const accessToken = await this.userService.generateAccessToken({ userId });
+            const refreshToken = await this.userService.generateRefreshToken();
+
+            // Set RefreshToken in Redis
+            await this.userService.setRefreshTokenInRedis({ userId, refreshToken });
+
+            return res.status(200).json({
+                success: true,
+                message: '로그인에 성공했습니다.',
+                accessToken,
+                refreshToken,
+            });
+        } catch (error) {
+            console.log(error);
+            return res.status(400).json({ success: false, message: '로그인에 실패했습니다.' });
+        }
+    };
+
+    // 구글 소셜로그인
+    googleLogin = async (req, res, next) => {
+        try {
+            const { name, email } = req.user._json;
+
+            const { userId } = await this.userService.googleLogin({ name, email });
+
+            const accessToken = await this.userService.generateAccessToken({ userId });
+            const refreshToken = await this.userService.generateRefreshToken();
+
+            // Set RefreshToken in Redis
+            await this.userService.setRefreshTokenInRedis({ userId, refreshToken });
+
+            return res.status(200).json({
+                success: true,
+                message: '로그인에 성공했습니다.',
+                accessToken,
+                refreshToken,
+            });
+        } catch (error) {
+            console.log(error);
+            return res.status(400).json({ success: false, message: '로그인에 실패했습니다.' });
+        }
+    };
+
     // 일반 로그인
     signIn = async (req, res, next) => {
         try {
@@ -204,6 +254,20 @@ class UserController {
                     res.status(401).json({ success: false, message: '비정상적인 요청입니다.' });
                     break;
             }
+        }
+    };
+
+    // 회원 정보 가져오기
+    getUserInfo = async (req, res, next) => {
+        try {
+            const userId = req.userId;
+            const userInfo = await this.userService.getUserInfo({ userId });
+
+            return res.status(200).json({ success: true, userInfo });
+        } catch (error) {
+            return res
+                .status(400)
+                .json({ success: false, message: '회원 정보를 가져올 수 없습니다.' });
         }
     };
 }

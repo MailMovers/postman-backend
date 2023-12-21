@@ -61,6 +61,18 @@ jobs:
                   secret: REDIS_HOST
                 - name: REDIS_PORT
                   secret: REDIS_PORT
+                - name: NAVER_ID
+                  secret: NAVER_ID
+                - name: NAVER_SECRET
+                  secret: NAVER_SECRET
+                - name: NAVER_CALLBACK
+                  secret: NAVER_CALLBACK
+                - name: GOOGLE_ID
+                  secret: GOOGLE_ID
+                - name: GOOGLE_SECRET
+                  secret: GOOGLE_SECRET
+                - name: GOOGLE_CALLBACK
+                  secret: GOOGLE_CALLBACK
               ports: 3000
             context:
               git:
