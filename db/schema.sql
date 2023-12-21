@@ -115,7 +115,9 @@ CREATE TABLE `letters` (
   KEY `delivery_address_id` (`delivery_address_id`),
   CONSTRAINT `letters_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
   CONSTRAINT `letters_ibfk_2` FOREIGN KEY (`writing_pad_id`) REFERENCES `writing_pads` (`id`),
-  CONSTRAINT `letters_ibfk_3` FOREIGN KEY (`stamp_id`) REFERENCES `stamps` (`id`)
+  CONSTRAINT `letters_ibfk_3` FOREIGN KEY (`stamp_id`) REFERENCES `stamps` (`id`),
+  CONSTRAINT `letters_ibfk_4` FOREIGN KEY (`send_address_id`) REFERENCES `send_address` (`id`),
+  CONSTRAINT `letters_ibfk_5` FOREIGN KEY (`delivery_address_id`) REFERENCES `delivery_address` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -281,11 +283,12 @@ CREATE TABLE `users` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `phone` varchar(255) NOT NULL,
+  `phone` varchar(255) DEFAULT NULL,
   `role_id` int NOT NULL,
   `point` int NOT NULL DEFAULT '0',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `password` varchar(255) NOT NULL,
   `provider` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
