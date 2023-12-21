@@ -11,12 +11,13 @@ const {
 
 const {
   letterService,
-  PhotoService,
+  countPhotoService,
   stampService,
   confirmLetterService,
   checkLetterService,
   checkAndInsertAddressService,
-  updateLetterService
+  updateLetterService,
+  PhotoService,
 } = require("./writingLetterServices");
 
 const { paymentSuccessService } = require("./paymentServices");
@@ -66,7 +67,6 @@ module.exports = {
   getSendAddressService,
   getDeliveryAddressService,
   letterService,
-  PhotoService,
   stampService,
   confirmLetterService,
   UserService,
@@ -101,4 +101,6 @@ module.exports = {
   checkLetterService,
   checkAndInsertAddressService,
   updateLetterService,
+  countPhotoService,
+  PhotoService,
 };

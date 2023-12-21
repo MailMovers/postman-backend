@@ -93,6 +93,23 @@ const checkLetterDao = async (userId) => {
     throw error;
   }
 };
+
+const countPhotoDao = async (letterId) => {
+  try {
+    const count = await AppDataSource.query(
+      `
+      SELECT photo_count
+      FROM letters
+      WHERE id = ?
+      `,
+      [letterId]
+    );
+    return count;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 // 2차 사진 첨부 Dao
 const photoDao = async (s3Url, letterId) => {
   try {
@@ -113,7 +130,7 @@ const photoDao = async (s3Url, letterId) => {
   }
 };
 // 2차 사진 첨부 Dao
-const countPhotoDao = async (photoCount, letterId) => {
+const updateCountPhotoDao = async (photoCount, letterId) => {
   try {
     const countPhoto = await AppDataSource.query(
       `
@@ -268,4 +285,5 @@ module.exports = {
   checkExistingDeliveryAddressDao,
   updateLetterDao,
   deleteContentsDao,
+  updateCountPhotoDao,
 };

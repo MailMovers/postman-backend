@@ -1,4 +1,5 @@
 const AWS = require("aws-sdk");
+AWS.config.logger = console;
 
 const s3 = new AWS.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY,
@@ -10,7 +11,8 @@ const getPreSignedUrl = async (file) => {
   const params = {
     Bucket: process.env.AWS_BUCKET_NAME, // S3 버킷 이름
     Key: file.originalname, // 파일 이름
-    Expires: 60, // url이 만료되는 시간(초)
+    Expires: 1520, // url이 만료되는 시간(초)
+    ContentType: file.mimetype, // 파일의 MIME 타입
   };
   const preSignedUrl = await s3.getSignedUrlPromise("putObject", params); // 업로드된 파일의 URL 반환
   return preSignedUrl;
@@ -18,12 +20,13 @@ const getPreSignedUrl = async (file) => {
 
 const {
   letterService,
-  PhotoService,
   confirmLetterService,
   stampService,
   checkLetterService,
   checkAndInsertAddressService,
   updateLetterService,
+  countPhotoService,
+  PhotoService,
 } = require("../services/writingLetterServices");
 
 const letterContoller = async (req, res, next) => {
@@ -85,8 +88,8 @@ const checkLetterController = async (req, res, next) => {
 
 const getUploadUrl = async (req, res, next) => {
   try {
-    const { file } = req.body;
-    const result = await getPreSignedUrl(file);
+    const { originalname } = req.file;
+    const result = await getPreSignedUrl({ originalname });
     return res.status(201).json({
       success: true,
       message: "getUploadUrl pass.",
@@ -103,12 +106,15 @@ const getUploadUrl = async (req, res, next) => {
 
 const photoController = async (req, res, next) => {
   try {
-    const { letterId, photoCount, s3Url } = req.body;
-    const result = await PhotoService(s3Url, letterId, photoCount);
+    const Bucket = process.env.AWS_BUCKET_NAME;
+    const region = process.env.AWS_REGION;
+    const { letterId, originalname } = req.body;
+    const s3Url = `https://${Bucket}.s3.${region}.amazonaws.com/${originalname}`;
+    await PhotoService(s3Url, letterId);
+    await countPhotoService(letterId);
     return res.status(201).json({
       success: true,
       message: "photoController pass.",
-      data: result,
     });
   } catch (error) {
     console.error("Error in photoController :", error);
@@ -124,6 +130,7 @@ const stampController = async (req, res, next) => {
     // const userId = req.userId;
     const {
       userId,
+      stampId,
       letterId,
       deliveryAddress,
       deliveryAddressDetail,
