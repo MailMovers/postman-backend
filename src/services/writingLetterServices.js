@@ -1,8 +1,6 @@
 const {
   confirmLetterDao,
   letterDao,
-  photoDao,
-  countPhotoDao,
   stampDao,
   contentDao,
   checkLetterDao,
@@ -11,6 +9,10 @@ const {
   checkExistingSendAddressDao,
   updateLetterDao,
   deleteContentsDao,
+  countPhotoDao,
+  updateCountPhotoDao,
+  photoDao,
+  delPhotoDao,
 } = require("../models/writingLetterDao");
 
 const { getProductDao } = require("../models/productDao");
@@ -146,11 +148,32 @@ const checkLetterService = async (userId) => {
   }
 };
 
-const PhotoService = async (s3Url, letterId, photoCount) => {
+const PhotoService = async (s3Url, letterId) => {
   try {
-    const photoResult = await photoDao(s3Url, letterId);
-    const countResult = await countPhotoDao(photoCount, letterId);
-    return { photoResult, countResult };
+    const photoId = await photoDao(s3Url, letterId);
+    return photoId.id;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+const delPhotoService = async (photoId, letterId) => {
+  try {
+    await delPhotoDao(photoId);
+    const currentPhotoCount = await countPhotoDao(letterId);
+    const photoCount = currentPhotoCount[0].photo_count - 1;
+    await updateCountPhotoDao(photoCount, letterId);
+    return;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+const countPhotoService = async (letterId) => {
+  try {
+    const currentPhotoCount = await countPhotoDao(letterId);
+    const photoCount = currentPhotoCount[0].photo_count + 1;
+    await updateCountPhotoDao(photoCount, letterId);
   } catch (error) {
     console.error(error);
     throw error;
@@ -207,10 +230,12 @@ const confirmLetterService = async (letterId) => {
 
 module.exports = {
   letterService,
-  PhotoService,
   confirmLetterService,
   stampService,
   checkLetterService,
   checkAndInsertAddressService,
   updateLetterService,
+  countPhotoService,
+  PhotoService,
+  delPhotoService,
 };

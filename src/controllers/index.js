@@ -16,6 +16,7 @@ const {
   stampController,
   checkLetterController,
   getUploadUrl,
+  delPhotoController,
 } = require("./writingLetterControllers");
 
 // user controller class
@@ -74,6 +75,7 @@ module.exports = {
     confirmLetterContoller,
     checkLetterController,
     getUploadUrl,
+    delPhotoController,
   },
 
   productController: {
