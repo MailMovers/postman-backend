@@ -1,5 +1,7 @@
 const express = require("express");
 const { addressController } = require("../controllers");
+const auth = require("../middlewares/auth.middleware");
+
 const {
   insertDeliveryAddressController,
   insertSendAddressController,
@@ -12,13 +14,13 @@ const {
 } = addressController;
 const addressRoute = express.Router();
 
-addressRoute.post("/delivery", insertDeliveryAddressController);
-addressRoute.post("/send", insertSendAddressController);
-addressRoute.post("/delete", deleteDeliveryAddressController);
-addressRoute.post("/delete/send", deleteSendAddressController);
-addressRoute.get("/send", getSendAddressListController);
-addressRoute.get("/delivery", getDeliveryAddressListController);
-addressRoute.get("/default/send", getSendAddressController);
-addressRoute.get("/default/delivery", getDeliveryAddressController);
+addressRoute.post("/delivery", auth, insertDeliveryAddressController);
+addressRoute.post("/send", auth, insertSendAddressController);
+addressRoute.post("/delete", auth, deleteDeliveryAddressController);
+addressRoute.post("/delete/send", auth, deleteSendAddressController);
+addressRoute.get("/send", auth, getSendAddressListController);
+addressRoute.get("/delivery", auth, getDeliveryAddressListController);
+addressRoute.get("/default/send", auth, getSendAddressController);
+addressRoute.get("/default/delivery", auth, getDeliveryAddressController);
 
 module.exports = { addressRoute };

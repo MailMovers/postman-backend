@@ -11,7 +11,7 @@ const {
 const { getUserByIdDao, getUserByReviewDao } = require("../models/productDao");
 
 //어드민 계정일 경우에만 상품을 등록할수있습니다.
-const insertProductController = async (req, res) => {
+const insertProductController = async (req, res, next) => {
   try {
     const userId = req.userId;
     const { name, imgUrl, padImgUrl, price, addPrice, discription } = req.body;
@@ -31,6 +31,9 @@ const insertProductController = async (req, res) => {
     if (!imgUrl) {
       return res.status(400).json({ message: "상품이미지를 넣어주세요" });
     }
+    if (!padImgUrl) {
+      return res.status(400).json({ message: "편지지 이미지가 없습니다" });
+    }
     if (!price) {
       return res.status(400).json({ message: "가격을 작성해주세요" });
     }
@@ -38,16 +41,16 @@ const insertProductController = async (req, res) => {
       return res.status(400).json({ message: "상품설명을 작성해주세요" });
     }
     return res.status(200).json({
-      message: "상품이 등록되었습니다",
+      message: "SUCCESS",
     });
   } catch (err) {
     console.error("insertProductController에서 생긴 오류", err);
-    throw err;
+    next(err);
   }
 };
 
 //어드민 계정일 경우에만 상품을 삭제 할수있습니다.
-const deleteProductController = async (req, res) => {
+const deleteProductController = async (req, res, next) => {
   try {
     const userId = req.userId;
     const productId = req.body.productId;
@@ -63,15 +66,15 @@ const deleteProductController = async (req, res) => {
       return res.status(400).json({ message: "삭제할 상품을 선택해주세요" });
     }
     return res.status(200).json({
-      message: "상품 삭제가 완료되었습니다",
+      message: "SUCCESS",
     });
   } catch (err) {
     console.error("deleteProductController에서 생긴 오류", err);
-    throw err;
+    next(err);
   }
 };
 //상품의 상세정보를 가져옵니다.
-const getProductController = async (req, res) => {
+const getProductController = async (req, res, next) => {
   try {
     const productId = req.params.productId;
     if (!productId || productId.length === 0) {
@@ -80,16 +83,16 @@ const getProductController = async (req, res) => {
         .json({ message: "게시글 정보가 등록되지 않았습니다" });
     }
     return res.status(200).json({
-      message: "GET_PRODUCT",
+      message: "SUCCESS",
       data: await getProductService(productId),
     });
   } catch (err) {
     console.error("getProductController에서 생긴 오류", err);
-    throw err;
+    next(err);
   }
 };
 //상품의 목록을 페이지 기준 20개씩 보내줍니다.
-const getProductListController = async (req, res) => {
+const getProductListController = async (req, res, next) => {
   try {
     const page = req.query.page || 1;
     const pageSize = 20;
@@ -102,16 +105,16 @@ const getProductListController = async (req, res) => {
       });
     }
     return res.status(200).json({
-      message: "상품 목록을 불러왔습니다",
+      message: "SUCCESS",
       data: productList,
     });
   } catch (err) {
     console.error("getProductListController에서 오류:", err);
-    throw err; // 에러를 다음 미들웨어로 전달
+    next(err); // 에러를 다음 미들웨어로 전달
   }
 };
 //상품이 배송완료가 되었을때 리뷰를 작성할수 있습니다.
-const insertReviewController = async (req, res) => {
+const insertReviewController = async (req, res, next) => {
   try {
     const userId = req.userId;
     const productId = req.params.productId;
@@ -131,15 +134,15 @@ const insertReviewController = async (req, res) => {
       return res.status(400).json({ message: "글을 작성해주십시요" });
 
     return res.status(200).json({
-      message: "리뷰가 작성되었습니다",
+      message: "SUCCESS",
     });
   } catch (err) {
     console.error("insertReviewController에서 생긴 에러", err);
-    throw err;
+    next(err);
   }
 };
 //상품 리뷰를 한 페이지당 20개의 댓글을 보여줍니다.
-const getReviewController = async (req, res) => {
+const getReviewController = async (req, res, next) => {
   try {
     const page = req.query.page || 1;
     const pageSize = 20;
@@ -154,16 +157,16 @@ const getReviewController = async (req, res) => {
       return res.status(400).json({ message: "리뷰를 불러올 수 없습니다" });
 
     return res.status(200).json({
-      message: "GET_REVIEW",
+      message: "SUCCESS",
       data: reviewList,
     });
   } catch (err) {
     console.error("getReviewController에서 생긴 에러");
-    throw err;
+    next(err);
   }
 };
 //유저가 작성한 리뷰를 삭제합니다.
-const deleteReviewController = async (req, res) => {
+const deleteReviewController = async (req, res, next) => {
   try {
     const userId = req.userId;
     const reviewId = req.body.reviewId;
@@ -174,15 +177,15 @@ const deleteReviewController = async (req, res) => {
     if (!reviewId || reviewId.length === 0)
       return res.status(400).json({ message: "삭제할 리뷰를 선택해주세요" });
     return res.status(200).json({
-      message: "리뷰가 삭제되었습니다.",
+      message: "SUCCESS",
     });
   } catch (err) {
     console.error("deleteReviewController에서 생긴 에러", err);
-    throw err;
+    next(err);
   }
 };
 // getWritingPadController
-const getWritingPadController = async (req, res) => {
+const getWritingPadController = async (req, res, next) => {
   try {
     const productId = req.params.productId; // 수정된 부분
     if (!productId) return res.status(400).json({ message: "KEY_ERROR" });
@@ -191,8 +194,8 @@ const getWritingPadController = async (req, res) => {
       data: await getWritingPadService(productId),
     });
   } catch (err) {
-    console.error("getWritingPadControlleㄴr에서 발생한 오류", err);
-    throw err;
+    console.error("getWritingPadController에서 발생한 오류", err);
+    next(err);
   }
 };
 
