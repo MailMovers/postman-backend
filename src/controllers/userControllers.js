@@ -7,6 +7,7 @@ const {
 const { UserService } = require('../services');
 const { ErrorNames, CustomError } = require('../utils/customErrors');
 const jwt = require('jsonwebtoken');
+const url = require('url');
 
 class UserController {
     userService = new UserService();
@@ -95,15 +96,20 @@ class UserController {
             // Set RefreshToken in Redis
             await this.userService.setRefreshTokenInRedis({ userId, refreshToken });
 
-            return res.status(200).json({
-                success: true,
-                message: '로그인에 성공했습니다.',
-                accessToken,
-                refreshToken,
-            });
+            return res.redirect(
+                url.format({
+                    pathname: '/login/kakao',
+                    query: {
+                        success: true,
+                        message: '로그인에 성공했습니다.',
+                        accessToken: accessToken,
+                        refreshToken: refreshToken,
+                    },
+                })
+            );
         } catch (error) {
             console.log(error);
-            return res.status(400).json({ success: false, message: '로그인에 실패했습니다.' });
+            return res.redirect('/');
         }
     };
 
@@ -120,15 +126,20 @@ class UserController {
             // Set RefreshToken in Redis
             await this.userService.setRefreshTokenInRedis({ userId, refreshToken });
 
-            return res.status(200).json({
-                success: true,
-                message: '로그인에 성공했습니다.',
-                accessToken,
-                refreshToken,
-            });
+            return res.redirect(
+                url.format({
+                    pathname: '/login/naver',
+                    query: {
+                        success: true,
+                        message: '로그인에 성공했습니다.',
+                        accessToken: accessToken,
+                        refreshToken: refreshToken,
+                    },
+                })
+            );
         } catch (error) {
             console.log(error);
-            return res.status(400).json({ success: false, message: '로그인에 실패했습니다.' });
+            return res.redirect('/');
         }
     };
 
@@ -145,15 +156,20 @@ class UserController {
             // Set RefreshToken in Redis
             await this.userService.setRefreshTokenInRedis({ userId, refreshToken });
 
-            return res.status(200).json({
-                success: true,
-                message: '로그인에 성공했습니다.',
-                accessToken,
-                refreshToken,
-            });
+            return res.redirect(
+                url.format({
+                    pathname: '/login/google',
+                    query: {
+                        success: true,
+                        message: '로그인에 성공했습니다.',
+                        accessToken: accessToken,
+                        refreshToken: refreshToken,
+                    },
+                })
+            );
         } catch (error) {
             console.log(error);
-            return res.status(400).json({ success: false, message: '로그인에 실패했습니다.' });
+            return res.redirect('/');
         }
     };
 
