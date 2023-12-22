@@ -54,6 +54,9 @@ const {
   getNoticeDetailController,
   getNoticeListController,
   deleteNoticeController,
+  getLetterController,
+  getPhotoController,
+  getAddressController,
 } = require("./adminController");
 
 module.exports = {
@@ -109,5 +112,8 @@ module.exports = {
     getNoticeDetailController,
     getNoticeListController,
     deleteNoticeController,
+    getLetterController,
+    getPhotoController,
+    getAddressController,
   },
 };

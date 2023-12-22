@@ -10,6 +10,9 @@ const {
   getNoticeListController,
   deleteNoticeController,
   adminGetCsDetailController,
+  getLetterController,
+  getPhotoController,
+  getAddressController,
 } = require("../controllers/adminController");
 
 const {
@@ -57,4 +60,15 @@ adminRoute.get("/getCustomerServiceList", auth, getCslistController);
 adminRoute.get("/getCustomerService", auth, getCsDetailController);
 //고객센터 답변목록 불러오기
 adminRoute.get("/getCsAnswerList", auth, adminGetCsDetailController);
+
+// -- 작성 편지 정보 불러오기 --
+// TODO : 편지에 첨부된 사진 불러오기, 고객이 작성한 편지 내용 불러오기, 발신지와 수신지 주소 불러오기 및 우표 정보 불러오기
+
+// 편지 내용 불러오기
+adminRoute.get("/letter", auth, getLetterController);
+// 사진 내용 불러오기
+adminRoute.get("/photo", auth, getPhotoController);
+// 주소 내용 불러오기
+adminRoute.get("/address", auth, getAddressController);
+
 module.exports = adminRoute;

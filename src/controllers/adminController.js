@@ -206,6 +206,30 @@ const adminGetCsDetailController = async (req, res, next) => {
     }
   }
 };
+const getLetterController = async (req, res, next) => {
+  try {
+    await getLetterService();
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+};
+const getPhotoController = async (req, res, next) => {
+  try {
+    await getPhotoService();
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+};
+const getAddressController = async (req, res, next) => {
+  try {
+    await getAllAddressService();
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+};
 
 module.exports = {
   updataProductController,
@@ -216,4 +240,7 @@ module.exports = {
   getNoticeListController,
   deleteNoticeController,
   adminGetCsDetailController,
+  getLetterController,
+  getPhotoController,
+  getAddressController,
 };
