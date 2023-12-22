@@ -73,6 +73,16 @@ jobs:
                   secret: GOOGLE_SECRET
                 - name: GOOGLE_CALLBACK
                   secret: GOOGLE_CALLBACK
+                - name: AWS_ACCESS_KEY
+                  secret: AWS_ACCESS_KEY
+                - name: AWS_SECRET_ACCESS_KEY
+                  secret: AWS_SECRET_ACCESS_KEY
+                - name: AWS_REGION
+                  secret: AWS_REGION
+                - name: AWS_BUCKET_NAME
+                  secret: AWS_BUCKET_NAME
+                - name: TOSSPAYMENTS_SECRET_KEY
+                  secret: TOSSPAYMENTS_SECRET_KEY
               ports: 3000
             context:
               git:
