@@ -98,7 +98,7 @@ class UserController {
 
             return res.redirect(
                 url.format({
-                    pathname: '/login/kakao',
+                    pathname: 'http://localhost:3000/login/kakao',
                     query: {
                         success: true,
                         message: '로그인에 성공했습니다.',
@@ -109,7 +109,7 @@ class UserController {
             );
         } catch (error) {
             console.log(error);
-            return res.redirect('/');
+            return res.redirect('http://localhost:3000');
         }
     };
 
@@ -128,7 +128,7 @@ class UserController {
 
             return res.redirect(
                 url.format({
-                    pathname: '/login/naver',
+                    pathname: 'http://localhost:3000/login/naver',
                     query: {
                         success: true,
                         message: '로그인에 성공했습니다.',
@@ -139,7 +139,7 @@ class UserController {
             );
         } catch (error) {
             console.log(error);
-            return res.redirect('/');
+            return res.redirect('http://localhost:3000');
         }
     };
 
@@ -158,7 +158,7 @@ class UserController {
 
             return res.redirect(
                 url.format({
-                    pathname: '/login/google',
+                    pathname: 'http://localhost:3000/login/google',
                     query: {
                         success: true,
                         message: '로그인에 성공했습니다.',
@@ -169,7 +169,7 @@ class UserController {
             );
         } catch (error) {
             console.log(error);
-            return res.redirect('/');
+            return res.redirect('http://localhost:3000');
         }
     };
 
