@@ -211,6 +211,9 @@ class UserController {
             const { authorization } = req.headers;
             const { refreshToken } = req.body;
 
+            console.log('authorization : ', authorization);
+            console.log('refreshToken : ', refreshToken);
+
             // Access Token 이나 Refresh Token 이 존재하지 않을 때
             if (!authorization || !refreshToken) {
                 throw new CustomError(ErrorNames.TokenNotFoundError, '토큰이 존재하지 않습니다.');
