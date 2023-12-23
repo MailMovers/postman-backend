@@ -171,6 +171,23 @@ CREATE TABLE `orders` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `pad_details`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `pad_details` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `detail_img_url` varchar(500) NOT NULL,
+  `writing_pad_id` int NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `writing_pad_id` (`writing_pad_id`),
+  CONSTRAINT `pad_details_ibfk_1` FOREIGN KEY (`writing_pad_id`) REFERENCES `writing_pads` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `photos`
 --
 
@@ -353,5 +370,6 @@ INSERT INTO `schema_migrations` (version) VALUES
   ('20231107052701'),
   ('20231107052707'),
   ('20231116095747'),
-  ('20231212095859');
+  ('20231212095859'),
+  ('20231223085727');
 UNLOCK TABLES;
