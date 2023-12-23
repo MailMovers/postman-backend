@@ -187,7 +187,7 @@ class UserService {
                 },
                 process.env.JWT_SECRET_KEY,
                 {
-                    expiresIn: '20s',
+                    expiresIn: '1d',
                 }
             );
         } catch (error) {
