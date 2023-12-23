@@ -262,7 +262,9 @@ class UserService {
 
     getUserInfo = async ({ userId }) => {
         try {
-            return await this.userDao.getLocalUserInfoByUserId({ userId });
+            const [userInfo] = await this.userDao.getUserInfoByUserId({ userId });
+
+            return userInfo;
         } catch (error) {
             throw error;
         }
