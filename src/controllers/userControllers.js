@@ -251,23 +251,31 @@ class UserController {
             switch (error.name) {
                 // 토큰이 존재하지 않을 때
                 case 'TokenNotFoundError':
-                    res.status(400).json({ success: false, message: error.message });
+                    res.status(400).json({ success: false, message: error.message, error });
                     break;
                 // 토큰 변조
                 case 'JsonWebTokenError':
-                    res.status(401).json({ success: false, message: '토큰이 변조되었습니다.' });
+                    res.status(401).json({
+                        success: false,
+                        message: '토큰이 변조되었습니다.',
+                        error,
+                    });
                     break;
                 // 잘못된 Refresh Token
                 case 'RefreshTokenNotMatchedError':
-                    res.status(401).json({ success: false, message: error.message });
+                    res.status(401).json({ success: false, message: error.message, error });
                     break;
                 // Access, Refresh 둘다 만료 -> 로그인 필요
                 case 'NeedLoginError':
-                    res.status(401).json({ success: false, message: error.message });
+                    res.status(401).json({ success: false, message: error.message, error });
                     break;
 
                 default:
-                    res.status(401).json({ success: false, message: '비정상적인 요청입니다.' });
+                    res.status(401).json({
+                        success: false,
+                        message: '비정상적인 요청입니다.',
+                        error,
+                    });
                     break;
             }
         }
