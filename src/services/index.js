@@ -18,7 +18,7 @@ const {
   checkAndInsertAddressService,
   updateLetterService,
   PhotoService,
-  deletePhotoService,
+  delPhotoService,
 } = require("./writingLetterServices");
 
 const { paymentSuccessService } = require("./paymentServices");
@@ -104,5 +104,5 @@ module.exports = {
   updateLetterService,
   countPhotoService,
   PhotoService,
-  deletePhotoService,
+  delPhotoService,
 };
