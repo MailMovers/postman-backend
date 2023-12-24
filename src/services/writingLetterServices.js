@@ -136,7 +136,6 @@ const checkLetterService = async (userId) => {
               content: row.content,
             },
           ],
-          productPic: productPic,
         };
       })
     );
@@ -193,7 +192,21 @@ const stampService = async (stampId, letterId) => {
 const confirmLetterService = async (letterId) => {
   try {
     const result = await confirmLetterDao(letterId);
-    const formattedResult = result.map((item) => {
+    const writingPadIds = result.map(item => item.writing_pad_id);
+    const stampIds = result.map(item => item.stamp_id);
+
+    // 글쓰기 패드와 우표에 대한 가격 정보를 가져옵니다.
+    const prices = await getPricesDao(writingPadIds, stampIds);
+
+    // 각 편지에 대한 상세 정보와 함께 총액을 계산합니다.
+    const formattedResult = result.map((item, index) => {
+      // 페이지와 사진에 대한 추가 비용을 계산합니다.
+      const additionalPageCost = item.content_count > MAX_FREE_PAGES ? PAGE_PRICE * (item.content_count - MAX_FREE_PAGES) : 0;
+      const photoCost = item.photo_count * PHOTO_PRICE;
+
+      // 총액을 계산합니다.
+      const totalCost = prices[index].writingPadPrice + additionalPageCost + photoCost + prices[index].stampFee;
+
       return {
         letterId: item.id,
         writingPadId: item.writing_pad_id,
@@ -205,11 +218,7 @@ const confirmLetterService = async (letterId) => {
           },
         ],
         photoCount: item.photo_count,
-        photos: [
-          {
-            photoUrl: item.photo_img_url,
-          },
-        ],
+        photos: item.photos.map(photo => ({ photoUrl: photo.photo_img_url })),
         stampId: item.stamp_id,
         deliveryAddress: item.delivery_address,
         deliveryAddressDetail: item.delivery_address_detail,
@@ -219,8 +228,10 @@ const confirmLetterService = async (letterId) => {
         sendAddressDetail: item.send_address_detail,
         sendPhone: item.send_phone,
         sendName: item.send_name,
+        totalCost: totalCost, // 추가된 총액 정보
       };
     });
+
     return formattedResult;
   } catch (error) {
     console.error(error);
