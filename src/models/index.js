@@ -15,6 +15,15 @@ const {
   countPhotoDao,
   stampDao,
   confirmLetterDao,
+  contentDao,
+  checkLetterDao,
+  letterAddressDao,
+  checkExistingDeliveryAddressDao,
+  checkExistingSendAddressDao,
+  updateLetterDao,
+  deleteContentsDao,
+  updateCountPhotoDao,
+  delPhotoDao,
 } = require("./writingLetterDao");
 
 // user dao
@@ -37,6 +46,27 @@ const {
   getPricesDao,
   addPointDao,
 } = require("./paymentDao");
+
+const {
+  insertCsDao,
+  insertCsAnswerDao,
+  getCsDetailDao,
+  CsListDao,
+  deleteCsDao,
+  adminDeleteCsDao,
+  adminDeleteCsAnswerDao,
+  getCsAlistDao,
+} = require("./csDao");
+
+const {
+  upDateProductDao,
+  getLetterAddressDao,
+  insertNoticeDao,
+  updateNoticeDao,
+  getNoticeDetailDao,
+  getNoticeListDao,
+  deleteNoticeDao,
+} = require("./adminDao");
 
 module.exports = {
   insertDeliveryAddressDao,
@@ -65,4 +95,32 @@ module.exports = {
   insertReviewDao,
   getReviewDao,
   deleteReviewDao,
+  cs: {
+    insertCsDao,
+    insertCsAnswerDao,
+    getCsDetailDao,
+    CsListDao,
+    deleteCsDao,
+    adminDeleteCsDao,
+    adminDeleteCsAnswerDao,
+    getCsAlistDao,
+  },
+  admin: {
+    upDateProductDao,
+    getLetterAddressDao,
+    insertNoticeDao,
+    updateNoticeDao,
+    getNoticeDetailDao,
+    getNoticeListDao,
+    deleteNoticeDao,
+  },
+  contentDao,
+  checkLetterDao,
+  letterAddressDao,
+  checkExistingDeliveryAddressDao,
+  checkExistingSendAddressDao,
+  updateLetterDao,
+  deleteContentsDao,
+  updateCountPhotoDao,
+  delPhotoDao,
 };

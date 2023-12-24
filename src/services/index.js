@@ -11,10 +11,14 @@ const {
 
 const {
   letterService,
-  PhotoService,
+  countPhotoService,
   stampService,
   confirmLetterService,
-  saveOrUpdateAddressService,
+  checkLetterService,
+  checkAndInsertAddressService,
+  updateLetterService,
+  PhotoService,
+  delPhotoService,
 } = require("./writingLetterServices");
 
 const { paymentSuccessService } = require("./paymentServices");
@@ -30,7 +34,29 @@ const {
   insertReviewService,
   getReviewService,
   deleteReviewService,
+  getWritingPadService,
 } = require("./productServices");
+
+const {
+  insertCsService,
+  insertCsAnswerService,
+  getCsDetailService,
+  getCsListService,
+  deleteCsService,
+  adminDeleteCsService,
+  adminDeleteCsAnswerService,
+  getCsAnswerListService,
+} = require("./csServices");
+
+const {
+  updateProductService,
+  getAllAddressService,
+  insertNoticeService,
+  updateNoticeService,
+  getNoticeDetailService,
+  getNoticeListService,
+  deleteNoticeService,
+} = require("./adminService");
 
 module.exports = {
   insertAddressService,
@@ -42,9 +68,7 @@ module.exports = {
   getSendAddressService,
   getDeliveryAddressService,
   letterService,
-  PhotoService,
   stampService,
-  saveOrUpdateAddressService,
   confirmLetterService,
   UserService,
   insertProductService,
@@ -55,4 +79,30 @@ module.exports = {
   getReviewService,
   deleteReviewService,
   paymentSuccessService,
+  getWritingPadService,
+  cs: {
+    insertCsService,
+    insertCsAnswerService,
+    getCsDetailService,
+    getCsListService,
+    deleteCsService,
+    adminDeleteCsService,
+    adminDeleteCsAnswerService,
+    getCsAnswerListService,
+  },
+  admin: {
+    updateProductService,
+    getAllAddressService,
+    insertNoticeService,
+    updateNoticeService,
+    getNoticeDetailService,
+    getNoticeListService,
+    deleteNoticeService,
+  },
+  checkLetterService,
+  checkAndInsertAddressService,
+  updateLetterService,
+  countPhotoService,
+  PhotoService,
+  delPhotoService,
 };

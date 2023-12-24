@@ -2,19 +2,20 @@ const { AppDataSource } = require("./dataSource");
 //상품 등록
 const insertProductDao = async (
   name,
-  img_url,
+  imgUrl,
+  padImgUrl,
   price,
-  add_price,
+  addPrice,
   discription
 ) => {
   const insertProduct = await AppDataSource.query(
     `
         INSERT INTO writing_pads
-        (name,img_url,price,add_price,discription)
+        (name,img_url,pad_img_url,price,add_price,discription)
         VALUES
-        (?,?,?,?,?)
+        (?,?,?,?,?,?)
         `,
-    [name, img_url, price, add_price, discription]
+    [name, imgUrl, padImgUrl, price, addPrice, discription]
   );
   return insertProduct;
 };
@@ -112,7 +113,7 @@ const getUserByReviewDao = async (userId) => {
    LEFT JOIN orders o ON o.user_id = u.id
    LEFT JOIN letters l ON l.id = o.letter_id
    LEFT JOIN writing_pads wp ON wp.id = l.writing_pad_id 
-   WHERE o.status = "delivery completed" AND u.id = ?
+   WHERE o.status = "done" AND u.id = ?
   `,
     [userId]
   );
@@ -139,7 +140,7 @@ const insertReviewDao = async (userId, productId, score, content) => {
 };
 
 //상품리뷰 불러오기
-const getReviewDao = async (startItem, pageSize, postId) => {
+const getReviewDao = async (startItem, pageSize, productId) => {
   const getReview = await AppDataSource.query(
     `
     SELECT
@@ -157,7 +158,7 @@ const getReviewDao = async (startItem, pageSize, postId) => {
       created_at DESC
     LIMIT ? OFFSET ?;
   `,
-    [postId, pageSize, startItem]
+    [productId, pageSize, startItem]
   );
   return getReview;
 };
@@ -174,6 +175,19 @@ const deleteReviewDao = async (userId, reviewId) => {
   );
   return deleteReview;
 };
+//편지지 이미지 불러오기
+const getWritingPadDao = async (productId) => {
+  const writingPad = await AppDataSource.query(
+    `
+    SELECT
+      pad_img_url
+    FROM writing_pads
+    WHERE id = ?
+    `,
+    [productId]
+  );
+  return writingPad;
+};
 
 module.exports = {
   insertProductDao,
@@ -185,4 +199,5 @@ module.exports = {
   insertReviewDao,
   getReviewDao,
   deleteReviewDao,
+  getWritingPadDao,
 };

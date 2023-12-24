@@ -22,6 +22,17 @@ class UserDao {
             throw error;
         }
     };
+
+    getUserInfoByUserId = async ({ userId }) => {
+        try {
+            return await AppDataSource.query(
+                `SELECT name, email, phone, created_at FROM users WHERE id = (?)`,
+                [userId]
+            );
+        } catch (error) {
+            throw error;
+        }
+    };
 }
 
 module.exports = UserDao;

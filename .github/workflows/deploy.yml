@@ -20,41 +20,69 @@ jobs:
           token: ${{ secrets.CLOUDTYPE_TOKEN }}
           project: devasherpark/mailmovers-test
           stage: main
-          yaml: >
+          yaml: |
             name: postman-backend
-
             app: node@18
-
             options:
               env:
                 - name: NODE_ENV
                   value: production
                 - name: TYPEORM_CONNECTION
-                  value: mysql
+                  secret: TYPEORM_CONNECTION
                 - name: TYPEORM_HOST
-                  value: svc.sel5.cloudtype.app
+                  secret: TYPEORM_HOST
                 - name: TYPEORM_PORT
-                  value: "31153"
+                  secret: TYPEORM_PORT
                 - name: TYPEORM_USERNAME
-                  value: root
+                  secret: TYPEORM_USERNAME
                 - name: TYPEORM_PASSWORD
-                  value: mailmovers
+                  secret: TYPEORM_PASSWORD
                 - name: TYPEORM_DATABASE
-                  value: mailmovers
+                  secret: TYPEORM_DATABASE
                 - name: DATABASE_URL
-                  value: mysql://root:mailmovers@svc.sel5.cloudtype.app:31153/mailmovers
+                  secret: DATABASE_URL
                 - name: JWT_SECRET_KEY
-                  value: mailmovers
+                  secret: JWT_SECRET_KEY
                 - name: SERVER_PORT
-                  value: "3000"
+                  secret: SERVER_PORT
                 - name: NODEMAILER_USER
-                  value: devasherpark@naver.com
+                  secret: NODEMAILER_USER
                 - name: NODEMAILER_PASS
-                  value: gusals8665!@#
+                  secret: NODEMAILER_PASS
                 - name: KAKAO_KEY
-                  value: bc6ae8924e0d6b4ce40a1f6f78d08be6
+                  secret: KAKAO_KEY
                 - name: KAKAO_CALLBACK
-                  value: https://port-0-postman-backend-ysl2bloxw3rzo.sel5.cloudtype.app/user/kakao/callback
+                  secret: KAKAO_CALLBACK
+                - name: REDIS_USER
+                  secret: REDIS_USER
+                - name: REDIS_PASSWORD
+                  secret: REDIS_PASSWORD
+                - name: REDIS_HOST
+                  secret: REDIS_HOST
+                - name: REDIS_PORT
+                  secret: REDIS_PORT
+                - name: NAVER_ID
+                  secret: NAVER_ID
+                - name: NAVER_SECRET
+                  secret: NAVER_SECRET
+                - name: NAVER_CALLBACK
+                  secret: NAVER_CALLBACK
+                - name: GOOGLE_ID
+                  secret: GOOGLE_ID
+                - name: GOOGLE_SECRET
+                  secret: GOOGLE_SECRET
+                - name: GOOGLE_CALLBACK
+                  secret: GOOGLE_CALLBACK
+                - name: AWS_ACCESS_KEY
+                  secret: AWS_ACCESS_KEY
+                - name: AWS_SECRET_ACCESS_KEY
+                  secret: AWS_SECRET_ACCESS_KEY
+                - name: AWS_REGION
+                  secret: AWS_REGION
+                - name: AWS_BUCKET_NAME
+                  secret: AWS_BUCKET_NAME
+                - name: TOSSPAYMENTS_SECRET_KEY
+                  secret: TOSSPAYMENTS_SECRET_KEY
               ports: 3000
             context:
               git:

@@ -11,10 +11,12 @@ const {
 
 const {
   letterContoller,
-  photoContoller,
+  photoController,
   confirmLetterContoller,
   stampController,
-  saveOrUpdateAddressController,
+  checkLetterController,
+  getUploadUrl,
+  delPhotoController,
 } = require("./writingLetterControllers");
 
 // user controller class
@@ -28,9 +30,31 @@ const {
   insertReviewController,
   getReviewController,
   deleteReviewController,
+  getWritingPadController,
 } = require("./productControllers");
 
 const { paymentSuccessController } = require("./paymentControllers.js");
+
+const {
+  insertCsController,
+  insertCsAnswerController,
+  getCsDetailController,
+  getCslistController,
+  deleteCsController,
+  adminCsDeleteController,
+  adminDeleteCsAnswerController,
+  getCsAnswerListController,
+} = require("./csControllers");
+
+const {
+  updataProductController,
+  getAllAddressController,
+  insertNoticeController,
+  updateNoticeController,
+  getNoticeDetailController,
+  getNoticeListController,
+  deleteNoticeController,
+} = require("./adminController");
 
 module.exports = {
   UserController,
@@ -46,10 +70,12 @@ module.exports = {
   },
   writingLetterController: {
     letterContoller,
-    photoContoller,
+    photoController,
     stampController,
-    saveOrUpdateAddressController,
     confirmLetterContoller,
+    checkLetterController,
+    getUploadUrl,
+    delPhotoController,
   },
 
   productController: {
@@ -60,8 +86,28 @@ module.exports = {
     insertReviewController,
     getReviewController,
     deleteReviewController,
+    getWritingPadController,
   },
   paymentController: {
     paymentSuccessController,
+  },
+  csController: {
+    insertCsController,
+    insertCsAnswerController,
+    getCsDetailController,
+    getCslistController,
+    deleteCsController,
+    adminCsDeleteController,
+    adminDeleteCsAnswerController,
+    getCsAnswerListController,
+  },
+  admin: {
+    updataProductController,
+    getAllAddressController,
+    insertNoticeController,
+    updateNoticeController,
+    getNoticeDetailController,
+    getNoticeListController,
+    deleteNoticeController,
   },
 };

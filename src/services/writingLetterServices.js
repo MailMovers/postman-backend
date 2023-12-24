@@ -1,143 +1,252 @@
 const {
   confirmLetterDao,
   letterDao,
-  photoDao,
-  countPhotoDao,
   stampDao,
+  contentDao,
+  checkLetterDao,
+  letterAddressDao,
+  checkExistingDeliveryAddressDao,
+  checkExistingSendAddressDao,
+  updateLetterDao,
+  deleteContentsDao,
+  countPhotoDao,
+  updateCountPhotoDao,
+  photoDao,
+  delPhotoDao,
 } = require("../models/writingLetterDao");
+
+const { getProductDao } = require("../models/productDao");
+
 const {
-  getSendListAddressDao,
-  getDeliveryListAddressDao,
-  insertSendAddressDao,
   insertDeliveryAddressDao,
+  insertSendAddressDao,
 } = require("../models/addressDao");
-// 편지저장
-const letterService = async (userId, fontId, wriringPadId, content, page) => {
-  try {
-    await letterDao(userId, fontId, wriringPadId, content, page);
-    return {
-      success: true,
-      message: "편지가 성공적으로 저장되었습니다.",
-      data: await letterDao(userId, fontId, wriringPadId, content, page),
-    };
-  } catch (error) {
-    console.error("Error in letterService:", error);
-    return {
-      success: false,
-      message: "Error in letterService. Please try again later.",
-    };
-  }
-};
-// 쓰던 편지 불러오기
 
-// 사진저장
-const PhotoService = async (imgUrl, letterId, photoCount) => {
+const letterService = async (userId, writingPadId, contents) => {
   try {
-    await photoDao(imgUrl, letterId);
-    await countPhotoDao(photoCount, letterId);
-    return {
-      success: true,
-      message: "사진이 성공적으로 저장되었습니다.",
-      data: await photoDao(imgUrl, letterId),
-      data: await countPhotoDao(photoCount, letterId),
-    };
+    const page = contents.length;
+    const letterResult = await letterDao(userId, writingPadId, page);
+    const letterId = letterResult.id;
+    for (let item of contents) {
+      await contentDao(letterId, item.pageNum, item.content); // content id letters테이블에 넣기
+    }
+    return letterId;
   } catch (error) {
-    console.error("Error in PhotoService:", error);
-    return {
-      success: false,
-      message: "Error in PhotoService. Please try again later.",
-    };
+    console.error(error);
+    throw error;
   }
 };
 
-// 우표선택
+const updateLetterService = async (contents, letterId) => {
+  try {
+    // 기존 contents를 삭제합니다.
+    await deleteContentsDao(letterId);
+
+    const page = contents.length;
+    const letterResult = await updateLetterDao(page, letterId);
+    for (let item of contents) {
+      await contentDao(letterId, item.pageNum, item.content);
+    }
+    return { letterId, letterResult };
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+const checkAndInsertAddressService = async (
+  userId,
+  letterId,
+  deliveryAddress,
+  deliveryAddressDetail,
+  deliveryPhone,
+  deliveryName,
+  sendAddress,
+  sendAddressDetail,
+  sendPhone,
+  sendName
+) => {
+  try {
+    const existingDeliveryAddress = await checkExistingDeliveryAddressDao(
+      userId,
+      deliveryAddress,
+      deliveryAddressDetail,
+      deliveryPhone,
+      deliveryName
+    );
+    const existingSendAddress = await checkExistingSendAddressDao(
+      userId,
+      sendAddress,
+      sendAddressDetail,
+      sendPhone,
+      sendName
+    );
+
+    let deliveryAddressId, sendAddressId;
+
+    if (existingDeliveryAddress) {
+      deliveryAddressId = existingDeliveryAddress;
+    } else {
+      const newDeliveryAddress = await insertDeliveryAddressDao(
+        userId,
+        deliveryAddress,
+        deliveryAddressDetail,
+        deliveryPhone,
+        deliveryName
+      );
+      deliveryAddressId = newDeliveryAddress.insertId;
+    }
+
+    if (existingSendAddress) {
+      sendAddressId = existingSendAddress;
+    } else {
+      const newSendAddress = await insertSendAddressDao(
+        userId,
+        sendAddress,
+        sendAddressDetail,
+        sendPhone,
+        sendName
+      );
+      sendAddressId = newSendAddress.insertId;
+    }
+
+    await letterAddressDao(deliveryAddressId, sendAddressId, letterId);
+    return { deliveryAddressId, sendAddressId };
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+const checkLetterService = async (userId) => {
+  try {
+    const result = await checkLetterDao(userId);
+    const letters = await Promise.all(
+      result.map(async (row) => {
+        const product = await getProductDao(row.writing_pad_id);
+        console.log(product);
+        const productPic = product[0] ? product[0].img_url : null; // product가 null이 아닌 경우에만 img_url에 접근
+        return {
+          letterId: row.letter_id,
+          writingPadId: row.writing_pad_id,
+          productPic: productPic,
+          contents: [
+            {
+              pageNum: row.content_count,
+              content: row.content,
+            },
+          ],
+        };
+      })
+    );
+
+    return letters;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+const PhotoService = async (s3Url, letterId) => {
+  try {
+    const photoId = await photoDao(s3Url, letterId);
+    return photoId.id;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+const delPhotoService = async (photoId, letterId) => {
+  try {
+    await delPhotoDao(photoId);
+    const currentPhotoCount = await countPhotoDao(letterId);
+    const photoCount = currentPhotoCount[0].photo_count - 1;
+    await updateCountPhotoDao(photoCount, letterId);
+    return;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+const countPhotoService = async (letterId) => {
+  try {
+    const currentPhotoCount = await countPhotoDao(letterId);
+    const photoCount = currentPhotoCount[0].photo_count + 1;
+    await updateCountPhotoDao(photoCount, letterId);
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 const stampService = async (stampId, letterId) => {
   try {
-    await stampDao(stampId, letterId);
-    return {
-      success: true,
-      message: "우표가 성공적으로 선택되었습니다.",
-      data: await stampDao(stampId, letterId),
-    };
+    const result = await stampDao(stampId, letterId);
+    return result;
   } catch (error) {
-    console.error("Error in stampService:", error);
-    return {
-      success: false,
-      message: "Error in stampService. Please try again later.",
-    };
+    console.error(error);
+    throw error;
   }
 };
 
-// 주소선택
-// 주소 선택 및 저장
-const saveOrUpdateAddressService = async (userId, addressData) => {
-  const existingSendAddresses = await getSendListAddressDao(userId);
-  const existingDeliveryAddresses = await getDeliveryListAddressDao(userId);
-
-  const isAddressDuplicate = (existingAddresses, newAddress, addressType) => {
-    return existingAddresses.some(
-      (existingAddress) =>
-        existingAddress[addressType] === newAddress[addressType] &&
-        existingAddress[`${addressType}_detail`] ===
-          newAddress[`${addressType}_detail`] &&
-        existingAddress[`${addressType}_phone`] ===
-          newAddress[`${addressType}_phone`] &&
-        existingAddress[`${addressType}_name`] ===
-          newAddress[`${addressType}_name`]
-    );
-  };
-
-  if (isAddressDuplicate(existingSendAddresses, addressData, "send")) {
-    const duplicateSendAddress = existingSendAddresses.find(
-      (existingAddress) =>
-        existingAddress.send_address === addressData.send_address &&
-        existingAddress.send_address_detail ===
-          addressData.send_address_detail &&
-        existingAddress.send_phone === addressData.send_phone &&
-        existingAddress.send_name === addressData.send_name
-    );
-    const letterId = duplicateSendAddress.id;
-  } else {
-    insertSendAddressDao(addressData);
-  }
-
-  if (isAddressDuplicate(existingDeliveryAddresses, addressData, "delivery")) {
-    const duplicateDeliveryAddress = existingDeliveryAddresses.find(
-      (existingAddress) =>
-        existingAddress.delivery_address === addressData.delivery_address &&
-        existingAddress.delivery_address_detail ===
-          addressData.delivery_address_detail &&
-        existingAddress.delivery_phone === addressData.delivery_phone &&
-        existingAddress.delivery_name === addressData.delivery_name
-    );
-    const letterId = duplicateDeliveryAddress.id;
-    // 여기에 'await updatedeliveryaddressdao' 함수 호출이 와야 합니다.
-  } else {
-    insertDeliveryAddressDao(addressData);
-  }
-};
-
-// 최종내용확인
-const confirmLetterService = async (userId) => {
+const confirmLetterService = async (letterId) => {
   try {
-    return {
-      success: true,
-      message: "내역이 성공적으로 전달되었습니다.",
-      data: await confirmLetterDao(userId),
-    };
+    const result = await confirmLetterDao(letterId);
+    const writingPadIds = result.map(item => item.writing_pad_id);
+    const stampIds = result.map(item => item.stamp_id);
+
+    // 글쓰기 패드와 우표에 대한 가격 정보를 가져옵니다.
+    const prices = await getPricesDao(writingPadIds, stampIds);
+
+    // 각 편지에 대한 상세 정보와 함께 총액을 계산합니다.
+    const formattedResult = result.map((item, index) => {
+      // 페이지와 사진에 대한 추가 비용을 계산합니다.
+      const additionalPageCost = item.content_count > MAX_FREE_PAGES ? PAGE_PRICE * (item.content_count - MAX_FREE_PAGES) : 0;
+      const photoCost = item.photo_count * PHOTO_PRICE;
+
+      // 총액을 계산합니다.
+      const totalCost = prices[index].writingPadPrice + additionalPageCost + photoCost + prices[index].stampFee;
+
+      return {
+        letterId: item.id,
+        writingPadId: item.writing_pad_id,
+        writingPadImgUrl: item.pad_img_url,
+        contents: [
+          {
+            pageNum: item.content_count,
+            content: item.content,
+          },
+        ],
+        photoCount: item.photo_count,
+        photos: item.photos.map(photo => ({ photoUrl: photo.photo_img_url })),
+        stampId: item.stamp_id,
+        deliveryAddress: item.delivery_address,
+        deliveryAddressDetail: item.delivery_address_detail,
+        deliveryPhone: item.delivery_phone,
+        deliveryName: item.delivery_name,
+        sendAddress: item.send_address,
+        sendAddressDetail: item.send_address_detail,
+        sendPhone: item.send_phone,
+        sendName: item.send_name,
+        totalCost: totalCost, // 추가된 총액 정보
+      };
+    });
+
+    return formattedResult;
   } catch (error) {
-    console.error("Error in confirmLetterService:", error);
-    return {
-      success: false,
-      message: "Error in confirmLetterService. Please try again later.",
-    };
+    console.error(error);
+    throw error;
   }
 };
 
 module.exports = {
   letterService,
-  PhotoService,
   confirmLetterService,
   stampService,
-  saveOrUpdateAddressService,
+  checkLetterService,
+  checkAndInsertAddressService,
+  updateLetterService,
+  countPhotoService,
+  PhotoService,
+  delPhotoService,
 };

@@ -38,11 +38,14 @@ CREATE TABLE `cs_answer` (
   `id` int NOT NULL AUTO_INCREMENT,
   `content` varchar(500) NOT NULL,
   `user_id` int NOT NULL,
+  `customer_service_id` int NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `cs_answer_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+  KEY `customer_service_id` (`customer_service_id`),
+  CONSTRAINT `cs_answer_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `cs_answer_ibfk_2` FOREIGN KEY (`customer_service_id`) REFERENCES `customer_service` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -57,14 +60,11 @@ CREATE TABLE `customer_service` (
   `title` varchar(30) NOT NULL,
   `content` varchar(50) NOT NULL,
   `user_id` int NOT NULL,
-  `cs_answer_id` int DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
-  KEY `cs_answer_id` (`cs_answer_id`),
-  CONSTRAINT `customer_service_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  CONSTRAINT `customer_service_ibfk_2` FOREIGN KEY (`cs_answer_id`) REFERENCES `cs_answer` (`id`)
+  CONSTRAINT `customer_service_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -77,33 +77,16 @@ CREATE TABLE `customer_service` (
 CREATE TABLE `delivery_address` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
-  `delivery_address` varchar(50) NOT NULL,
-  `delivery_address_detail` varchar(30) NOT NULL,
-  `delivery_phone` varchar(20) DEFAULT NULL,
-  `delivery_name` varchar(10) NOT NULL,
+  `delivery_address` varchar(255) NOT NULL,
+  `delivery_address_detail` varchar(255) NOT NULL,
+  `delivery_phone` varchar(255) DEFAULT NULL,
+  `delivery_name` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `delivery_address_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `fonts`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `fonts` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(10) NOT NULL,
-  `tag` varchar(500) NOT NULL,
-  `img_url` varchar(500) NOT NULL,
-  `file_path` varchar(500) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -120,24 +103,41 @@ CREATE TABLE `letters` (
   `photo_count` int DEFAULT '0',
   `user_id` int NOT NULL,
   `writing_pad_id` int NOT NULL,
-  `font_id` int NOT NULL,
-  `stamp_id` int NOT NULL,
-  `send_address_id` int NOT NULL,
-  `delivery_address_id` int NOT NULL,
+  `stamp_id` int DEFAULT NULL,
+  `send_address_id` int DEFAULT NULL,
+  `delivery_address_id` int DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `writing_pad_id` (`writing_pad_id`),
-  KEY `font_id` (`font_id`),
   KEY `stamp_id` (`stamp_id`),
   KEY `send_address_id` (`send_address_id`),
   KEY `delivery_address_id` (`delivery_address_id`),
   CONSTRAINT `letters_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
   CONSTRAINT `letters_ibfk_2` FOREIGN KEY (`writing_pad_id`) REFERENCES `writing_pads` (`id`),
-  CONSTRAINT `letters_ibfk_3` FOREIGN KEY (`font_id`) REFERENCES `fonts` (`id`),
-  CONSTRAINT `letters_ibfk_4` FOREIGN KEY (`stamp_id`) REFERENCES `stamps` (`id`),
-  CONSTRAINT `letters_ibfk_5` FOREIGN KEY (`send_address_id`) REFERENCES `send_address` (`id`),
-  CONSTRAINT `letters_ibfk_6` FOREIGN KEY (`delivery_address_id`) REFERENCES `delivery_address` (`id`)
+  CONSTRAINT `letters_ibfk_3` FOREIGN KEY (`stamp_id`) REFERENCES `stamps` (`id`),
+  CONSTRAINT `letters_ibfk_4` FOREIGN KEY (`send_address_id`) REFERENCES `send_address` (`id`),
+  CONSTRAINT `letters_ibfk_5` FOREIGN KEY (`delivery_address_id`) REFERENCES `delivery_address` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `notice`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `notice` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `content` text NOT NULL,
+  `user_id` int NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `notice_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -167,6 +167,23 @@ CREATE TABLE `orders` (
   KEY `letter_id` (`letter_id`),
   CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
   CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`letter_id`) REFERENCES `letters` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `pad_details`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `pad_details` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `detail_img_url` varchar(500) NOT NULL,
+  `writing_pad_id` int NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `writing_pad_id` (`writing_pad_id`),
+  CONSTRAINT `pad_details_ibfk_1` FOREIGN KEY (`writing_pad_id`) REFERENCES `writing_pads` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -245,10 +262,10 @@ CREATE TABLE `schema_migrations` (
 CREATE TABLE `send_address` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
-  `send_address` varchar(50) NOT NULL,
-  `send_address_detail` varchar(30) NOT NULL,
-  `send_phone` varchar(20) DEFAULT NULL,
-  `send_name` varchar(10) NOT NULL,
+  `send_address` varchar(255) NOT NULL,
+  `send_address_detail` varchar(255) NOT NULL,
+  `send_phone` varchar(255) DEFAULT NULL,
+  `send_name` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
@@ -268,7 +285,6 @@ CREATE TABLE `stamps` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL,
   `price` smallint NOT NULL,
-  `description` varchar(100) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -284,11 +300,12 @@ CREATE TABLE `users` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `phone` varchar(255) NOT NULL,
+  `phone` varchar(255) DEFAULT NULL,
   `role_id` int NOT NULL,
   `point` int NOT NULL DEFAULT '0',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `password` varchar(255) NOT NULL,
   `provider` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
@@ -308,6 +325,7 @@ CREATE TABLE `writing_pads` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL,
   `img_url` varchar(500) NOT NULL,
+  `pad_img_url` varchar(500) NOT NULL,
   `price` smallint NOT NULL,
   `add_price` smallint NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -341,7 +359,6 @@ LOCK TABLES `schema_migrations` WRITE;
 INSERT INTO `schema_migrations` (version) VALUES
   ('20231107052528'),
   ('20231107052550'),
-  ('20231107052600'),
   ('20231107052612'),
   ('20231107052635'),
   ('20231107052636'),
@@ -352,5 +369,7 @@ INSERT INTO `schema_migrations` (version) VALUES
   ('20231107052649'),
   ('20231107052701'),
   ('20231107052707'),
-  ('20231116095747');
+  ('20231116095747'),
+  ('20231212095859'),
+  ('20231223085727');
 UNLOCK TABLES;
