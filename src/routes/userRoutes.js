@@ -44,4 +44,7 @@ userRoute.post('/refresh', userController.refresh);
 // get user-info
 userRoute.get('/info', auth, userController.getUserInfo);
 
+// update password
+userRoute.post('/update-password', auth, userController.updatePassword);
+
 module.exports = userRoute;
