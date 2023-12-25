@@ -3,6 +3,7 @@ const {
     emailAuthSchema,
     authNumberSchema,
     signInSchema,
+    updatePasswordSchema,
 } = require('../utils/validation');
 const { UserService } = require('../services');
 const { ErrorNames, CustomError } = require('../utils/customErrors');
@@ -292,6 +293,31 @@ class UserController {
             return res
                 .status(400)
                 .json({ success: false, message: '회원 정보를 가져올 수 없습니다.' });
+        }
+    };
+
+    // 회원 비밀번호 변경
+    updatePassword = async (req, res, next) => {
+        try {
+            const userId = req.userId;
+            const { password, newPassword } = await updatePasswordSchema.validateAsync(req.body);
+
+            await this.userService.updatePassword({ userId, password, newPassword });
+
+            return res.status(200).json({ success: true, message: '비밀번호를 변경하였습니다.' });
+        } catch (error) {
+            console.log(error);
+            // Joi
+            if (error.isJoi) {
+                const { message } = error.details[0];
+                return res.status(400).json({ success: false, message, error });
+            }
+            if (error.name === 'PasswordNotMatchedError') {
+                return res.status(400).json({ success: false, message: error.message, error });
+            }
+            return res
+                .status(400)
+                .json({ success: true, message: '비밀번호 변경에 실패했습니다.', error });
         }
     };
 }

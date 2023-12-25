@@ -187,7 +187,7 @@ class UserService {
                 },
                 process.env.JWT_SECRET_KEY,
                 {
-                    expiresIn: '20s',
+                    expiresIn: '1d',
                 }
             );
         } catch (error) {
@@ -265,6 +265,29 @@ class UserService {
             const [userInfo] = await this.userDao.getUserInfoByUserId({ userId });
 
             return userInfo;
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    updatePassword = async ({ userId, password, newPassword }) => {
+        try {
+            console.log(userId, password, newPassword);
+
+            const [user] = await this.userDao.getPasswordByUserId({ userId });
+
+            const isVerified = await bcrypt.compareSync(password, user.password);
+
+            if (!isVerified) {
+                throw new CustomError(
+                    ErrorNames.PasswordNotMatchedError,
+                    '비밀번호가 일치하지 않습니다.'
+                );
+            }
+
+            const hashedNewPassword = await bcrypt.hashSync(newPassword, 10);
+
+            return await this.userDao.updateUserPassword({ userId, hashedNewPassword });
         } catch (error) {
             throw error;
         }
