@@ -28,9 +28,10 @@ const {
   countPhotoService,
   PhotoService,
   delPhotoService,
+  historyLetterService,
 } = require("../services/writingLetterServices");
 
-const letterContoller = async (req, res, next) => {
+const letterController = async (req, res, next) => {
   try {
     const userId = req.userId;
     // const letterId = req.query.letterId;
@@ -179,7 +180,7 @@ const stampController = async (req, res, next) => {
   }
 };
 
-const confirmLetterContoller = async (req, res, next) => {
+const confirmLetterController = async (req, res, next) => {
   try {
     const letterId = req.query.letterId;
     const result = await confirmLetterService(letterId);
@@ -197,13 +198,32 @@ const confirmLetterContoller = async (req, res, next) => {
   }
 };
 
+const historyLetterController = async (req, res, next) => {
+  try {
+    const userId = req.userId;
+    const result = await historyLetterService(userId);
+    return res.status(201).json({
+      success: true,
+      message: "historyLetterContoller pass.",
+      data: result,
+    });
+  } catch (error) {
+    console.error("Error in historyLetterContoller :", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error in historyLetterContoller. Please try again later.",
+    });
+  }
+};
+
 module.exports = {
-  letterContoller,
+  letterController,
   photoController,
-  confirmLetterContoller,
+  confirmLetterController,
   stampController,
   getPreSignedUrl,
   checkLetterController,
   getUploadUrl,
   delPhotoController,
+  historyLetterController,
 };

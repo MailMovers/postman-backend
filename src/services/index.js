@@ -19,6 +19,7 @@ const {
   updateLetterService,
   PhotoService,
   delPhotoService,
+  historyLetterService,
 } = require("./writingLetterServices");
 
 const { paymentSuccessService } = require("./paymentServices");
@@ -105,4 +106,5 @@ module.exports = {
   countPhotoService,
   PhotoService,
   delPhotoService,
+  historyLetterService,
 };
