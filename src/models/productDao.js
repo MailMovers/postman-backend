@@ -6,16 +6,16 @@ const insertProductDao = async (
   padImgUrl,
   price,
   addPrice,
-  discription
+  description
 ) => {
   const insertProduct = await AppDataSource.query(
     `
         INSERT INTO writing_pads
-        (name,img_url,pad_img_url,price,add_price,discription)
+        (name,img_url,pad_img_url,price,add_price,description)
         VALUES
         (?,?,?,?,?,?)
         `,
-    [name, imgUrl, padImgUrl, price, addPrice, discription]
+    [name, imgUrl, padImgUrl, price, addPrice, description]
   );
   return insertProduct;
 };
@@ -65,7 +65,7 @@ const getProductDao = async (productId) => {
       img_url,
       price,
       add_price,
-      discription
+      description
     FROM
       writing_pads
     WHERE
@@ -85,7 +85,7 @@ const getProductListDao = async (startItem, pageSize) => {
         img_url,
         price,
         add_price,
-        discription,
+        description,
         deleted_at
       FROM
         writing_pads
@@ -188,6 +188,23 @@ const getWritingPadDao = async (productId) => {
   );
   return writingPad;
 };
+//편지지 숫자
+const getCountProductListDao = async () => {
+  try {
+    const writingPadCountQuery = `
+      SELECT COUNT(*) AS count FROM writing_pads WHERE deleted_at IS NULL
+    `;
+    const resultCount = await AppDataSource.query(writingPadCountQuery);
+
+    // resultCount가 배열 형태일 경우 첫 번째 요소를 사용
+    const count = resultCount[0]?.count || 0;
+
+    return { count };
+  } catch (error) {
+    console.error("getCountProductListDao 오류:", error);
+    throw error; // 에러를 다시 throw하여 상위에서 처리할 수 있도록 함
+  }
+};
 
 module.exports = {
   insertProductDao,
@@ -200,4 +217,5 @@ module.exports = {
   getReviewDao,
   deleteReviewDao,
   getWritingPadDao,
+  getCountProductListDao,
 };

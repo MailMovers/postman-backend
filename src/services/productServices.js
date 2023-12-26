@@ -16,9 +16,9 @@ const insertProductService = async (
   padImgUrl,
   price,
   addPrice,
-  discription
+  description
 ) => {
-  await insertProductDao(name, imgUrl, padImgUrl, price, addPrice, discription);
+  await insertProductDao(name, imgUrl, padImgUrl, price, addPrice, description);
 };
 //상품삭제
 const deleteProductService = async (productId) => {
