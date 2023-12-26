@@ -63,7 +63,7 @@ const letterController = async (req, res, next) => {
 const checkLetterController = async (req, res, next) => {
   try {
     // const userId = req.userId;
-    const userId = req.body.userId
+    const userId = req.body.userId;
     const result = await checkLetterService(userId);
     if (result.length === 0) {
       return res.status(400).json({
@@ -140,8 +140,9 @@ const delPhotoController = async (req, res, next) => {
 
 const stampController = async (req, res, next) => {
   try {
-    const userId = req.userId;
+    // const userId = req.userId;
     const {
+      userId,
       stampId,
       letterId,
       deliveryAddress,
