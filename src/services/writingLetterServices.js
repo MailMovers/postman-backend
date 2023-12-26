@@ -188,16 +188,17 @@ const stampService = async (stampId, letterId) => {
   }
 };
 
-const PAGE_PRICE = 500;
-const PHOTO_PRICE = 500;
-const MAX_FREE_PAGES = 3;
-
 const confirmLetterService = async (letterId) => {
   try {
+    const PAGE_PRICE = 500;
+    const PHOTO_PRICE = 500;
+    const MAX_FREE_PAGES = 3;
+
     const result = await confirmLetterDao(letterId);
-    const writingPadIds = result.map((item) => item.writing_pad_id);
-    const stampIds = result.map((item) => item.stamp_id);
-    const prices = await getPricesDao(writingPadIds, stampIds);
+    const writingPadId = [result[0].writing_pad_id];
+    const stampId = [result[0].stamp_id];
+    const prices = await getPricesDao(writingPadId, stampId);
+
     const formattedResult = await Promise.all(
       result.map(async (item, index) => {
         const additionalPageCost =
