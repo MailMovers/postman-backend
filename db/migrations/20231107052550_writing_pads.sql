@@ -4,6 +4,7 @@ CREATE TABLE `writing_pads` (
   `name` varchar(20) NOT NULL,
   `img_url` varchar(500) NOT NULL,
   `pad_img_url` varchar(500) NOT NULL,
+  `category` varchar(500) NOT NULL,
   `price` SMALLINT NOT NULL,
   `add_price` SMALLINT NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
