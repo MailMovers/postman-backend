@@ -77,7 +77,7 @@ const checkLetterController = async (req, res, next) => {
     });
   } catch (error) {
     console.error("error in continueLetterController", error);
-    return res.status(400)({
+    return res.status(400).json({
       success: false,
       message: "error in continueLetterController",
     });
