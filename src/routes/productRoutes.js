@@ -24,5 +24,4 @@ productRoute.post("/:productId", auth, insertReviewController);
 productRoute.get("/:productId/review", getReviewController);
 //리뷰 삭제
 productRoute.post("/:productId/review/delete", auth, deleteReviewController);
-
 module.exports = { productRoute };
