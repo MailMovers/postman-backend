@@ -5,7 +5,7 @@ const getPricesDao = async (writingPadId, stampId) => {
     `
       SELECT id, price AS writingPadPrice
       FROM writing_pads
-      WHERE id = ?
+      WHERE id IN (?)
     `,
     [writingPadId]
   );
@@ -14,12 +14,16 @@ const getPricesDao = async (writingPadId, stampId) => {
     `
       SELECT id, price AS stampFee
       FROM stamps
-      WHERE id = ?
+      WHERE id IN (?)
     `,
     [stampId]
   );
 
-  const prices = stampFees[0].stampFees + writingPadPrices[0].writingPadPrices;
+  const prices = writingPadId.map((id, index) => ({
+    writingPadPrice: writingPadPrices.find((price) => price.id === id)
+      .writingPadPrice,
+    stampFee: stampFees.find((fee) => fee.id === stampId[index]).stampFee,
+  }));
 
   return prices;
 };
