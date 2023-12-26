@@ -11,7 +11,7 @@ const getPreSignedUrl = async (file) => {
   const params = {
     Bucket: process.env.AWS_BUCKET_NAME, // S3 버킷 이름
     Key: file.originalname, // 파일 이름
-    Expires: 1520, // url이 만료되는 시간(초)
+    Expires: 3000, // url이 만료되는 시간(초)
     ContentType: file.mimetype, // 파일의 MIME 타입
   };
   const preSignedUrl = await s3.getSignedUrlPromise("putObject", params); // 업로드된 파일의 URL 반환
