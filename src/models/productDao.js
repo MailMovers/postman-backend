@@ -6,16 +6,16 @@ const insertProductDao = async (
   padImgUrl,
   price,
   addPrice,
-  discription
+  description
 ) => {
   const insertProduct = await AppDataSource.query(
     `
         INSERT INTO writing_pads
-        (name,img_url,pad_img_url,price,add_price,discription)
+        (name,img_url,pad_img_url,price,add_price,description)
         VALUES
         (?,?,?,?,?,?)
         `,
-    [name, imgUrl, padImgUrl, price, addPrice, discription]
+    [name, imgUrl, padImgUrl, price, addPrice, description]
   );
   return insertProduct;
 };
@@ -65,7 +65,7 @@ const getProductDao = async (productId) => {
       img_url,
       price,
       add_price,
-      discription
+      description
     FROM
       writing_pads
     WHERE
@@ -85,7 +85,7 @@ const getProductListDao = async (startItem, pageSize) => {
         img_url,
         price,
         add_price,
-        discription,
+        description,
         deleted_at
       FROM
         writing_pads

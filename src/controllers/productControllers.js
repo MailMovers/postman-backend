@@ -18,8 +18,8 @@ const {
 const insertProductController = async (req, res, next) => {
   try {
     const userId = req.userId;
-    const { name, imgUrl, padImgUrl, price, addPrice, discription } = req.body;
-    await insertProductService(userId, name, imgUrl, addPrice, discription);
+    const { name, imgUrl, padImgUrl, price, addPrice, description } = req.body;
+    await insertProductService(userId, name, imgUrl, addPrice, description);
     if (!userId) {
       return res.status(400).json({ message: "KEY_ERROR" });
     }
@@ -41,7 +41,7 @@ const insertProductController = async (req, res, next) => {
     if (!price) {
       return res.status(400).json({ message: "가격을 작성해주세요" });
     }
-    if (!discription) {
+    if (!description) {
       return res.status(400).json({ message: "상품설명을 작성해주세요" });
     }
     return res.status(200).json({
