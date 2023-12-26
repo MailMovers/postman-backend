@@ -33,9 +33,9 @@ const {
 
 const letterController = async (req, res, next) => {
   try {
-    // const userId = req.userId;
+    const userId = req.userId;
     // const letterId = req.query.letterId;
-    const { userId, writingPadId, contents, letterId } = req.body;
+    const { writingPadId, contents, letterId } = req.body;
     if (letterId) {
       const result = await updateLetterService(contents, letterId);
       return res.status(201).json({
@@ -62,8 +62,7 @@ const letterController = async (req, res, next) => {
 // 사용자가 작성하던 편지 확인하기
 const checkLetterController = async (req, res, next) => {
   try {
-    // const userId = req.userId;
-    const userId = req.body.userId;
+    const userId = req.userId;
     const result = await checkLetterService(userId);
     if (result.length === 0) {
       return res.status(400).json({
@@ -140,9 +139,8 @@ const delPhotoController = async (req, res, next) => {
 
 const stampController = async (req, res, next) => {
   try {
-    // const userId = req.userId;
+    const userId = req.userId;
     const {
-      userId,
       stampId,
       letterId,
       deliveryAddress,
