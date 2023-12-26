@@ -195,11 +195,10 @@ const confirmLetterService = async (letterId) => {
     const MAX_FREE_PAGES = 3;
 
     const result = await confirmLetterDao(letterId);
-    const writingPadId = [result[0].writing_pad_id];
-    const stampId = [result[0].stamp_id];
-    console.log("stampId:", stampId, "writingPadId:", writingPadId);
+    const writingPadId = result[0].writing_pad_id;
+    const stampId = result[0].stamp_id;
     const prices = await getPricesDao(writingPadId, stampId);
-
+    console.log("prices:",prices)
     const formattedResult = await Promise.all(
       result.map(async (item, index) => {
         const additionalPageCost =
