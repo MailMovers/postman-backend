@@ -8,7 +8,11 @@ const {
   deleteReviewService,
   getWritingPadService,
 } = require("../services/productServices");
-const { getUserByIdDao, getUserByReviewDao } = require("../models/productDao");
+const {
+  getUserByIdDao,
+  getUserByReviewDao,
+  getCountProductListDao,
+} = require("../models/productDao");
 
 //어드민 계정일 경우에만 상품을 등록할수있습니다.
 const insertProductController = async (req, res, next) => {
@@ -95,10 +99,10 @@ const getProductController = async (req, res, next) => {
 const getProductListController = async (req, res, next) => {
   try {
     const page = req.query.page || 1;
-    const pageSize = 20;
+    const pageSize = 8;
     const startItem = (page - 1) * pageSize;
     const productList = await getProductListService(startItem, pageSize);
-
+    const count = await getCountProductListDao();
     if (!productList || productList.length === 0) {
       return res.status(400).json({
         message: "상품 목록을 불러올 수 없습니다",
@@ -106,6 +110,7 @@ const getProductListController = async (req, res, next) => {
     }
     return res.status(200).json({
       message: "SUCCESS",
+      count: count,
       data: productList,
     });
   } catch (err) {
