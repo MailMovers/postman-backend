@@ -16,7 +16,6 @@ const {
   getContentDao,
   getPhotosDao,
   historyLetterDao,
-  historyDetailLetterDao,
 } = require("../models/writingLetterDao");
 
 const { getProductDao } = require("../models/productDao");
@@ -24,7 +23,7 @@ const {
   insertDeliveryAddressDao,
   insertSendAddressDao,
 } = require("../models/addressDao");
-const { getPricesDao } = require("../models/paymentDao");
+const { getPricesDao, getRecipe } = require("../models/paymentDao");
 
 const letterService = async (userId, writingPadId, contents) => {
   try {
@@ -250,8 +249,9 @@ const confirmLetterService = async (letterId) => {
 const historyLetterService = async (userId, letterId) => {
   try {
     if (letterId) {
-      const result = await historyDetailLetterDao(letterId);
-      return result;
+      const letterInformation = await confirmLetterDao(letterId);
+      const price = await getRecipe(letterId);
+      return [letterInformation, price];
     }
     const result = await historyLetterDao(userId);
     return result;
