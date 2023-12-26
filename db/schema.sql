@@ -326,10 +326,11 @@ CREATE TABLE `writing_pads` (
   `name` varchar(20) NOT NULL,
   `img_url` varchar(500) NOT NULL,
   `pad_img_url` varchar(500) NOT NULL,
+  `category` varchar(500) NOT NULL,
   `price` smallint NOT NULL,
   `add_price` smallint NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `discription` varchar(200) DEFAULT NULL,
+  `description` varchar(200) DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
