@@ -197,6 +197,7 @@ const confirmLetterService = async (letterId) => {
     const result = await confirmLetterDao(letterId);
     const writingPadId = [result[0].writing_pad_id];
     const stampId = [result[0].stamp_id];
+    console.log("stampId:", stampId, "writingPadId:", writingPadId);
     const prices = await getPricesDao(writingPadId, stampId);
 
     const formattedResult = await Promise.all(
