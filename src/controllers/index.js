@@ -10,13 +10,14 @@ const {
 } = require("./addressControllers");
 
 const {
-  letterContoller,
+  letterController,
   photoController,
-  confirmLetterContoller,
+  confirmLetterController,
   stampController,
   checkLetterController,
   getUploadUrl,
   delPhotoController,
+  historyLetterController,
 } = require("./writingLetterControllers");
 
 // user controller class
@@ -69,13 +70,14 @@ module.exports = {
     getDeliveryAddressController,
   },
   writingLetterController: {
-    letterContoller,
+    letterController,
     photoController,
     stampController,
-    confirmLetterContoller,
+    confirmLetterController,
     checkLetterController,
     getUploadUrl,
     delPhotoController,
+    historyLetterController,
   },
 
   productController: {
