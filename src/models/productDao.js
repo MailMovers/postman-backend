@@ -83,6 +83,7 @@ const getProductListDao = async (startItem, pageSize) => {
     const productList = await AppDataSource.query(
       `
       SELECT
+        id,
         name,
         img_url,
         price,
@@ -199,7 +200,7 @@ const getCountProductListDao = async () => {
     `;
     const resultCount = await AppDataSource.query(writingPadCountQuery);
 
-    // resultCount가 배열 형태일 경우 첫 번째 요소를 사용
+    // resultCount가 배열 형태일 경우 첫 번째 요소를 사용ㅊ
     const count = resultCount[0]?.count || 0;
 
     return { count };
@@ -209,11 +210,11 @@ const getCountProductListDao = async () => {
   }
 };
 //카테고리 별로 편지지 리스트를 불러옵니다.
-const getProductCategoriDao = async (startItem, pageSize, category) => {
+const getCategoryListWithCountDao = async (startItem, pageSize, category) => {
   try {
-    const productList = await AppDataSource.query(
-      `
+    const productListQuery = `
       SELECT
+        id,
         name,
         img_url,
         price,
@@ -226,12 +227,27 @@ const getProductCategoriDao = async (startItem, pageSize, category) => {
       WHERE
         deleted_at IS NULL AND category = ?
       LIMIT ? OFFSET ?;
-      `,
-      [category, pageSize, startItem]
-    );
-    return productList;
+    `;
+    const countQuery = `
+      SELECT COUNT(*) AS count FROM writing_pads WHERE deleted_at IS NULL AND category = ?;
+    `;
+
+    // 동시에 실행할 쿼리 배열
+    const queries = [productListQuery, countQuery];
+
+    // 쿼리 실행 및 결과를 배열로 받음
+    const [productList, countResult] = await Promise.all([
+      AppDataSource.query(productListQuery, [category, pageSize, startItem]),
+      AppDataSource.query(countQuery, [category]),
+    ]);
+
+    // 결과 반환
+    return {
+      productList,
+      count: countResult[0]?.count || 0,
+    };
   } catch (error) {
-    console.error("getProductCategoriDao에서 오류:", error);
+    console.error("getCategoryListWithCountDao에서 오류:", error);
     throw error;
   }
 };
@@ -248,5 +264,5 @@ module.exports = {
   deleteReviewDao,
   getWritingPadDao,
   getCountProductListDao,
-  getProductCategoriDao,
+  getCategoryListWithCountDao,
 };
