@@ -8,6 +8,7 @@ const {
   getReviewDao,
   deleteReviewDao,
   getWritingPadDao,
+  getProductCategoriDao,
 } = require("../models/productDao");
 
 const insertProductService = async (
@@ -16,9 +17,18 @@ const insertProductService = async (
   padImgUrl,
   price,
   addPrice,
-  description
+  description,
+  category
 ) => {
-  await insertProductDao(name, imgUrl, padImgUrl, price, addPrice, description);
+  await insertProductDao(
+    name,
+    imgUrl,
+    padImgUrl,
+    price,
+    addPrice,
+    description,
+    category
+  );
 };
 //상품삭제
 const deleteProductService = async (productId) => {
@@ -65,6 +75,20 @@ const getWritingPadService = async (productId) => {
   return await getWritingPadDao(productId);
 };
 
+const getProductCategoriService = async (startItem, pageSize, category) => {
+  try {
+    const productList = await getProductCategoriDao(
+      startItem,
+      pageSize,
+      category
+    );
+    return productList;
+  } catch (error) {
+    console.error("getProductCategoriService에서 오류:", error);
+    throw error;
+  }
+};
+
 module.exports = {
   insertProductService,
   deleteProductService,
@@ -74,4 +98,5 @@ module.exports = {
   getReviewService,
   deleteReviewService,
   getWritingPadService,
+  getProductCategoriService,
 };

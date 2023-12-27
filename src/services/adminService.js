@@ -15,7 +15,8 @@ const updateProductService = async (
   padImgUrl,
   price,
   addPrice,
-  description
+  description,
+  category
 ) => {
   return await upDateProductDao(
     productId,
@@ -24,7 +25,8 @@ const updateProductService = async (
     padImgUrl,
     price,
     addPrice,
-    description
+    description,
+    category
   );
 };
 //편지안에 주소 모두 불러오기
