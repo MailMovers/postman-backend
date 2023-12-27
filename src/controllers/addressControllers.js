@@ -119,9 +119,10 @@ const getSendAddressListController = async (req, res, next) => {
     const userId = req.userId;
     if (userId.length === 0 || !userId)
       return res.status(400).json({ message: "KEY_ERROR" });
+    const result = await getSendListAddressService(userId);
     return res.status(200).json({
       message: "SUCCESS",
-      data: await getSendListAddressService(userId),
+      data: result,
     });
   } catch (err) {
     console.error(err);
@@ -134,9 +135,10 @@ const getDeliveryAddressListController = async (req, res, next) => {
     const userId = req.userId;
     if (userId.length === 0 || !userId)
       return res.status(400).json({ message: "KEY_ERROR" });
+    const result = await getDeliveryListAddressService(userId);
     return res.status(200).json({
       message: "SUCCESS",
-      data: await getDeliveryListAddressService(userId),
+      data: result,
     });
   } catch (err) {
     console.error(err);
