@@ -316,6 +316,7 @@ const historyLetterDao = async (userId) => {
     const result = await AppDataSource.query(
       `
       SELECT 
+          l.id as letterId,
           wp.name,
           da.delivery_address,
           da.delivery_address_detail,
@@ -367,5 +368,4 @@ module.exports = {
   getContentDao,
   getPhotosDao,
   historyLetterDao,
-  historyDetailLetterDao,
 };
