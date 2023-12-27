@@ -75,5 +75,15 @@ const addPointDao = async (point, userId) => {
   );
   return result;
 };
+const getRecipe = async (letterId) => {
+  const result = await AppDataSource.query(
+    `
+    SELECT * FROM orders
+    WHERE letter_id = ?
+    `,
+    [letterId]
+  );
+  return result;
+};
 
-module.exports = { paymentInsertInfoDao, getPricesDao, addPointDao };
+module.exports = { paymentInsertInfoDao, getPricesDao, addPointDao, getRecipe };
