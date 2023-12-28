@@ -44,7 +44,7 @@ const {
   getReviewDao,
   deleteReviewDao,
   getCountProductListDao,
-  getProductCategoriDao,
+  getCategoryListWithCountDao,
 } = require("./productDao");
 
 const {
@@ -103,7 +103,7 @@ module.exports = {
   getReviewDao,
   deleteReviewDao,
   getCountProductListDao,
-  getProductCategoriDao,
+  getCategoryListWithCountDao,
   cs: {
     insertCsDao,
     insertCsAnswerDao,

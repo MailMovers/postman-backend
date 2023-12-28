@@ -8,7 +8,7 @@ const {
   getReviewDao,
   deleteReviewDao,
   getWritingPadDao,
-  getProductCategoriDao,
+  getCategoryListWithCountDao,
 } = require("../models/productDao");
 
 const insertProductService = async (
@@ -77,7 +77,7 @@ const getWritingPadService = async (productId) => {
 
 const getProductCategoriService = async (startItem, pageSize, category) => {
   try {
-    const productList = await getProductCategoriDao(
+    const productList = await getCategoryListWithCountDao(
       startItem,
       pageSize,
       category

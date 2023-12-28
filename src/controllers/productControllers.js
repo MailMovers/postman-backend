@@ -13,6 +13,7 @@ const {
   getUserByIdDao,
   getUserByReviewDao,
   getCountProductListDao,
+  getCountCategoryListDao,
 } = require("../models/productDao");
 
 //어드민 계정일 경우에만 상품을 등록할수있습니다.
@@ -215,38 +216,28 @@ const getWritingPadController = async (req, res, next) => {
     next(err);
   }
 };
-
-//상품의 목록을 페이지 기준 20개씩 보내줍니다.
 const getProductCategoriController = async (req, res, next) => {
   try {
     const page = req.query.page || 1;
     const pageSize = 8;
     const startItem = (page - 1) * pageSize;
-    const category = req.body.category;
+    const category = req.query.category; // req.params.category 대신 req.query.category 사용
     const productList = await getProductCategoriService(
       startItem,
       pageSize,
       category
-    ); // 카테고리 값을 getProductCategoriService로 전달
-    const count = await getCountProductListDao();
-
+    );
     if (!productList || productList.length === 0) {
       return res.status(400).json({
         message: "상품 목록을 불러올 수 없습니다",
       });
     }
-
-    if (!category || category.length === 0) {
-      return res.status(400).json({ message: "상품을 불러올 수 없습니다" });
-    }
-
     return res.status(200).json({
       message: "SUCCESS",
-      count: count,
       data: productList,
     });
   } catch (err) {
-    console.error("getProductListController에서 오류:", err);
+    console.error("getProductCategoriController에서 오류:", err);
     next(err);
   }
 };
