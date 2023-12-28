@@ -115,6 +115,14 @@ const updatePasswordSchema = Joi.object({
         }),
 });
 
+// 전화번호 변경 유효성검사
+const updatePhoneSchema = Joi.object({
+    newPhone: Joi.string().required().messages({
+        'string.base': '전화번호는 문자열이어야 합니다.',
+        'any.required': '전화번호를 입력해주세요.',
+    }),
+});
+
 const customMessages = {
     'any.required': '{{#label}} is required.',
     'string.base': '{{#label}} must be a string.',
@@ -129,4 +137,5 @@ module.exports = {
     authNumberSchema,
     signInSchema,
     updatePasswordSchema,
+    updatePhoneSchema,
 };
