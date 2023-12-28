@@ -194,6 +194,7 @@ const confirmLetterService = async (letterId) => {
     const MAX_FREE_PAGES = 3;
 
     const result = await confirmLetterDao(letterId);
+    console.log("result",result)
     const writingPadId = result[0].writing_pad_id;
     const stampId = result[0].stamp_id;
     const prices = await getPricesDao([writingPadId], [stampId]);
@@ -201,8 +202,8 @@ const confirmLetterService = async (letterId) => {
     const formattedResult = await Promise.all(
       result.map(async (item) => {
         const additionalPageCost =
-          item.content_count > MAX_FREE_PAGES
-            ? PAGE_PRICE * (item.content_count - MAX_FREE_PAGES)
+          item.page > MAX_FREE_PAGES
+            ? PAGE_PRICE * (item.page - MAX_FREE_PAGES)
             : 0;
         const photoCost = item.photo_count * PHOTO_PRICE;
         const totalCost =
@@ -210,10 +211,10 @@ const confirmLetterService = async (letterId) => {
           additionalPageCost +
           photoCost +
           prices[0].stampFee;
-
+        
         const contents = await getContentDao(item.id);
         const photos = await getPhotosDao(item.id);
-
+        console.log("additionalPageCost : ",additionalPageCost)
         return {
           letterId: item.id,
           writingPadId: item.writing_pad_id,
