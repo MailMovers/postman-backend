@@ -6,7 +6,8 @@ const secretKey = process.env.TOSSPAYMENTS_SECRET_KEY;
 
 const paymentSuccessController = async (req, res) => {
   try {
-    const { orderId, amount, paymentKey, userId } = req.query; // userId added
+    const userId = req.userId
+    const { orderId, amount, paymentKey } = req.query; // userId added
     const response = await axios.post(
       "https://api.tosspayments.com/v1/payments/confirm",
       {
