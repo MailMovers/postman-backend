@@ -25,6 +25,6 @@ writingLetterRoute.post("/photo", auth, photoController);
 writingLetterRoute.post("/delPhoto", auth, delPhotoController);
 writingLetterRoute.post("/stamp", auth, stampController);
 writingLetterRoute.get("/confirm", auth, confirmLetterController);
-writingLetterRoute.get("/history", auth, historyLetterController);
+writingLetterRoute.get("/history",  historyLetterController);
 
 module.exports = { writingLetterRoute };
