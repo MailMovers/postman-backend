@@ -27,7 +27,6 @@ const {
   getContentDao,
   getPhotosDao,
   historyLetterDao,
-  historyDetailLetterDao,
 } = require("./writingLetterDao");
 
 // user dao
@@ -135,6 +134,5 @@ module.exports = {
   getContentDao,
   getPhotosDao,
   historyLetterDao,
-  historyDetailLetterDao,
   getRecipe,
 };
