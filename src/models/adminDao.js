@@ -7,16 +7,26 @@ const upDateProductDao = async (
   padImgUrl,
   price,
   addPrice,
-  description
+  description,
+  category
 ) => {
   try {
     const updateProduct = await AppDataSource.query(
       `
           UPDATE writing_pads 
-          SET name = ?, img_url = ?, pad_img_url = ?, price = ?, add_price = ?, description = ? 
+          SET name = ?, img_url = ?, pad_img_url = ?, price = ?, add_price = ?, description = ?, category = ?
           WHERE id = ?
         `,
-      [name, imgUrl, padImgUrl, price, addPrice, description, productId]
+      [
+        name,
+        imgUrl,
+        padImgUrl,
+        price,
+        addPrice,
+        description,
+        category,
+        productId,
+      ]
     );
     return updateProduct;
   } catch (error) {

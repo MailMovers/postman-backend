@@ -13,8 +13,16 @@ const { getUserByIdDao } = require("../models/productDao");
 const updataProductController = async (req, res, next) => {
   try {
     const userId = req.userId;
-    const { productId, name, imgUrl, padImgUrl, price, addPrice, description } =
-      req.body;
+    const {
+      productId,
+      name,
+      imgUrl,
+      padImgUrl,
+      price,
+      addPrice,
+      description,
+      category,
+    } = req.body;
     if (!userId) {
       return res.status(400).json({ message: "KEY_ERROR" });
     }
@@ -44,6 +52,9 @@ const updataProductController = async (req, res, next) => {
     if (!productId) {
       return res.status(400).json({ message: "상품 id가 없습니다" });
     }
+    if (!category) {
+      return res.status(400).json({ message: "카테고리를 작성해주세요" });
+    }
     await updateProductService(
       productId,
       name,
@@ -51,7 +62,8 @@ const updataProductController = async (req, res, next) => {
       padImgUrl,
       price,
       addPrice,
-      description
+      description,
+      category
     );
     return res.status(200).json({ message: "SUCCESS" });
   } catch (err) {

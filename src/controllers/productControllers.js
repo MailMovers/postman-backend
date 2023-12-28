@@ -7,19 +7,29 @@ const {
   getReviewService,
   deleteReviewService,
   getWritingPadService,
+  getProductCategoriService,
 } = require("../services/productServices");
 const {
   getUserByIdDao,
   getUserByReviewDao,
   getCountProductListDao,
+  getCountCategoryListDao,
 } = require("../models/productDao");
 
 //어드민 계정일 경우에만 상품을 등록할수있습니다.
 const insertProductController = async (req, res, next) => {
   try {
     const userId = req.userId;
-    const { name, imgUrl, padImgUrl, price, addPrice, description } = req.body;
-    await insertProductService(userId, name, imgUrl, addPrice, description);
+    const { name, imgUrl, padImgUrl, price, addPrice, description, category } =
+      req.body;
+    await insertProductService(
+      userId,
+      name,
+      imgUrl,
+      addPrice,
+      description,
+      category
+    );
     if (!userId) {
       return res.status(400).json({ message: "KEY_ERROR" });
     }
@@ -43,6 +53,9 @@ const insertProductController = async (req, res, next) => {
     }
     if (!description) {
       return res.status(400).json({ message: "상품설명을 작성해주세요" });
+    }
+    if (!category) {
+      return res.statrs(400).json({ message: "카테고리를 작성해주세요" });
     }
     return res.status(200).json({
       message: "SUCCESS",
@@ -203,6 +216,31 @@ const getWritingPadController = async (req, res, next) => {
     next(err);
   }
 };
+const getProductCategoriController = async (req, res, next) => {
+  try {
+    const page = req.query.page || 1;
+    const pageSize = 8;
+    const startItem = (page - 1) * pageSize;
+    const category = req.query.category; // req.params.category 대신 req.query.category 사용
+    const productList = await getProductCategoriService(
+      startItem,
+      pageSize,
+      category
+    );
+    if (!productList || productList.length === 0) {
+      return res.status(400).json({
+        message: "상품 목록을 불러올 수 없습니다",
+      });
+    }
+    return res.status(200).json({
+      message: "SUCCESS",
+      data: productList,
+    });
+  } catch (err) {
+    console.error("getProductCategoriController에서 오류:", err);
+    next(err);
+  }
+};
 
 module.exports = {
   insertProductController,
@@ -213,4 +251,5 @@ module.exports = {
   getReviewController,
   deleteReviewController,
   getWritingPadController,
+  getProductCategoriController,
 };
