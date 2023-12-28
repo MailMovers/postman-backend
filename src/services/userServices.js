@@ -292,6 +292,24 @@ class UserService {
             throw error;
         }
     };
+
+    updatePhone = async ({ userId, newPhone }) => {
+        try {
+            const [user] = await this.userDao.getPhoneByUserId({ userId });
+
+            // 기존 휴대폰번호와 새로 입력받은 휴대폰 번호가 같을 경우
+            if (user.phone === newPhone) {
+                throw new CustomError(
+                    ErrorNames.PhoneNumberError,
+                    '휴대폰번호를 다시 확인해주세요.'
+                );
+            }
+
+            return await this.userDao.updateUserPhone({ userId, newPhone });
+        } catch (error) {
+            throw error;
+        }
+    };
 }
 
 module.exports = UserService;

@@ -4,6 +4,7 @@ const {
     authNumberSchema,
     signInSchema,
     updatePasswordSchema,
+    updatePhoneSchema,
 } = require('../utils/validation');
 const { UserService } = require('../services');
 const { ErrorNames, CustomError } = require('../utils/customErrors');
@@ -320,7 +321,34 @@ class UserController {
             }
             return res
                 .status(400)
-                .json({ success: true, message: '비밀번호 변경에 실패했습니다.', error });
+                .json({ success: false, message: '비밀번호 변경에 실패했습니다.', error });
+        }
+    };
+
+    // 회원 휴대폰번호 변경
+    updatePhone = async (req, res, next) => {
+        try {
+            const userId = req.userId;
+            const { newPhone } = await updatePhoneSchema.validateAsync(req.body);
+
+            await this.userService.updatePhone({ userId, newPhone });
+
+            return res.status(200).json({ success: true, message: '전화번호를 변경하였습니다.' });
+        } catch (error) {
+            console.log(error);
+            // Joi
+            if (error.isJoi) {
+                const { message } = error.details[0];
+                return res.status(400).json({ success: false, message, error });
+            }
+
+            if (error.name == 'PhoneNumberError') {
+                return res.status(400).json({ success: false, message: error.message, error });
+            }
+
+            return res
+                .status(400)
+                .json({ success: false, message: '전화번호 변경에 실패했습니다.', error });
         }
     };
 }

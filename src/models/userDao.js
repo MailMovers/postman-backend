@@ -55,6 +55,27 @@ class UserDao {
             throw error;
         }
     };
+
+    getPhoneByUserId = async ({ userId }) => {
+        try {
+            return await AppDataSource.query(`SELECT email, phone FROM users WHERE id = (?)`, [
+                userId,
+            ]);
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    updateUserPhone = async ({ userId, newPhone }) => {
+        try {
+            return await AppDataSource.query(`UPDATE users SET phone = (?) WHERE id = (?)`, [
+                newPhone,
+                userId,
+            ]);
+        } catch (error) {
+            throw error;
+        }
+    };
 }
 
 module.exports = UserDao;
