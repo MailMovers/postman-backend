@@ -4,6 +4,11 @@ const upDateProductDao = async (
   productId,
   name,
   imgUrl1,
+  imgUrl2,
+  imgUrl3,
+  imgUrl4,
+  imgUrl5,
+  descriptionImgUrl,
   padImgUrl,
   price,
   addPrice,
@@ -14,12 +19,28 @@ const upDateProductDao = async (
     const updateProduct = await AppDataSource.query(
       `
           UPDATE writing_pads 
-          SET name = ?, img_url_1 = ?, pad_img_url = ?, price = ?, add_price = ?, description = ?, category = ?
+          SET name = ?,
+          img_url_1 = ?,
+          img_url_2 = ?, 
+          img_url_3 = ?, 
+          img_url_4 = ?, 
+          img_url_5, 
+          description_img_url =?, 
+          pad_img_url = ?, 
+          price = ?, 
+          add_price = ?, 
+          description = ?, 
+          category = ?
           WHERE id = ?
         `,
       [
         name,
         imgUrl1,
+        imgUrl2,
+        imgUrl3,
+        imgUrl4,
+        imgUrl5,
+        descriptionImgUrl,
         padImgUrl,
         price,
         addPrice,

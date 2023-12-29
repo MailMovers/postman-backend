@@ -3,6 +3,11 @@ const { AppDataSource } = require("./dataSource");
 const insertProductDao = async (
   name,
   imgUrl1,
+  imgUrl2,
+  imgUrl3,
+  imgUrl4,
+  imgUrl5,
+  descriptionImgUrl,
   padImgUrl,
   price,
   addPrice,
@@ -12,11 +17,36 @@ const insertProductDao = async (
   const insertProduct = await AppDataSource.query(
     `
         INSERT INTO writing_pads
-        (name,img_url_1,pad_img_url,price,add_price,description,category)
+        (
+          name, 
+          img_url_1,
+          img_url_2,
+          img_url_3,
+          img_url_4,
+          img_url_5,
+          descirption_img_url,
+          pad_img_url,
+          price,add_price,
+          description,
+          category
+          )
         VALUES
-        (?,?,?,?,?,?)
+        (?,?,?,?,?,?,?,?,?,?,?)
         `,
-    [name, imgUrl1, padImgUrl, price, addPrice, description, category]
+    [
+      name,
+      imgUrl1,
+      imgUrl2,
+      imgUrl3,
+      imgUrl4,
+      imgUrl5,
+      descriptionImgUrl,
+      padImgUrl,
+      price,
+      addPrice,
+      description,
+      category,
+    ]
   );
   return insertProduct;
 };
@@ -64,6 +94,11 @@ const getProductDao = async (productId) => {
       id,
       name,
       img_url_1,
+      img_url_2,
+      img_url_3,
+      img_url_4,
+      img_url_5,
+      descirption_img_url,
       price,
       add_price,
       description,

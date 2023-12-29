@@ -14,6 +14,11 @@ const {
 const insertProductService = async (
   name,
   imgUrl1,
+  imgUrl2,
+  imgUrl3,
+  imgUrl4,
+  imgUrl5,
+  descriptionImgUrl,
   padImgUrl,
   price,
   addPrice,
@@ -23,6 +28,11 @@ const insertProductService = async (
   await insertProductDao(
     name,
     imgUrl1,
+    imgUrl2,
+    imgUrl3,
+    imgUrl4,
+    imgUrl5,
+    descriptionImgUrl,
     padImgUrl,
     price,
     addPrice,

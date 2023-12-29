@@ -14,9 +14,13 @@ const updataProductController = async (req, res, next) => {
   try {
     const userId = req.userId;
     const {
-      productId,
       name,
       imgUrl1,
+      imgUrl2,
+      imgUrl3,
+      imgUrl4,
+      imgUrl5,
+      descriptionImgUrl,
       padImgUrl,
       price,
       addPrice,
@@ -59,6 +63,11 @@ const updataProductController = async (req, res, next) => {
       productId,
       name,
       imgUrl1,
+      imgUrl2,
+      imgUrl3,
+      imgUrl4,
+      imgUrl5,
+      descriptionImgUrl,
       padImgUrl,
       price,
       addPrice,
