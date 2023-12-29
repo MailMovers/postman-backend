@@ -316,6 +316,7 @@ const historyLetterDao = async (userId) => {
     const result = await AppDataSource.query(
       `
       SELECT 
+          l.id as letterId,
           wp.name,
           da.delivery_address,
           da.delivery_address_detail,
@@ -347,42 +348,7 @@ const historyLetterDao = async (userId) => {
     throw error;
   }
 };
-const historyDetailLetterDao = async (letterId) => {
-  try {//상세 페이지 내일 추가 구현 금액부분
-    const result = await AppDataSource.query(
-      `
-      SELECT 
-          letters.id,
-          letters.page,
-          letters.photo_count,
-          writing_pads.img_url AS writing_pad_img_url,
-          letters.stamp_id,
-          letters.writing_pad_id,
-          send_address.send_address,
-          send_address.send_address_detail,
-          send_address.send_phone,
-          send_address.send_name,
-          delivery_address.delivery_address,
-          delivery_address.delivery_address_detail,
-          delivery_address.delivery_phone,
-          delivery_address.delivery_name
-      FROM 
-          letters
-      LEFT JOIN writing_pads ON letters.writing_pad_id = writing_pads.id
-      LEFT JOIN send_address ON letters.send_address_id = send_address.id
-      LEFT JOIN delivery_address ON letters.delivery_address_id = delivery_address.id
-      JOIN orders ON letters.id = orders.letter_id AND orders.status = 'DONE'
-      WHERE 
-          letters.id = ?;
-      `,
-      [letterId]
-    );
-    return result;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
+
 
 module.exports = {
   letterDao,
@@ -402,5 +368,4 @@ module.exports = {
   getContentDao,
   getPhotosDao,
   historyLetterDao,
-  historyDetailLetterDao,
 };
