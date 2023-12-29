@@ -11,7 +11,7 @@ const {
 const updateProductService = async (
   productId,
   name,
-  imgUrl,
+  imgUrl1,
   padImgUrl,
   price,
   addPrice,
@@ -21,7 +21,7 @@ const updateProductService = async (
   return await upDateProductDao(
     productId,
     name,
-    imgUrl,
+    imgUrl1,
     padImgUrl,
     price,
     addPrice,

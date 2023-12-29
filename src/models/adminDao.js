@@ -3,7 +3,7 @@ const { AppDataSource } = require("./dataSource");
 const upDateProductDao = async (
   productId,
   name,
-  imgUrl,
+  imgUrl1,
   padImgUrl,
   price,
   addPrice,
@@ -14,12 +14,12 @@ const upDateProductDao = async (
     const updateProduct = await AppDataSource.query(
       `
           UPDATE writing_pads 
-          SET name = ?, img_url = ?, pad_img_url = ?, price = ?, add_price = ?, description = ?, category = ?
+          SET name = ?, img_url_1 = ?, pad_img_url = ?, price = ?, add_price = ?, description = ?, category = ?
           WHERE id = ?
         `,
       [
         name,
-        imgUrl,
+        imgUrl1,
         padImgUrl,
         price,
         addPrice,
