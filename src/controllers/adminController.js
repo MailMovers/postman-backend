@@ -16,7 +16,7 @@ const updataProductController = async (req, res, next) => {
     const {
       productId,
       name,
-      imgUrl,
+      imgUrl1,
       padImgUrl,
       price,
       addPrice,
@@ -34,7 +34,7 @@ const updataProductController = async (req, res, next) => {
     if (name.length === 0) {
       return res.status(400).json({ message: "상품 이름이 없습니다" });
     }
-    if (imgUrl.length === 0) {
+    if (imgUrl1.length === 0) {
       return res.status(400).json({ message: "편지봉투 이미지가 없습니다" });
     }
     if (padImgUrl.length === 0) {
@@ -58,7 +58,7 @@ const updataProductController = async (req, res, next) => {
     await updateProductService(
       productId,
       name,
-      imgUrl,
+      imgUrl1,
       padImgUrl,
       price,
       addPrice,

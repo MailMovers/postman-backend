@@ -3,7 +3,7 @@ const { AppDataSource } = require("./dataSource");
 const upDateProductDao = async (
   productId,
   name,
-  imgUrl,
+  imgUrl1,
   padImgUrl,
   price,
   addPrice,
@@ -19,7 +19,7 @@ const upDateProductDao = async (
         `,
       [
         name,
-        imgUrl,
+        imgUrl1,
         padImgUrl,
         price,
         addPrice,

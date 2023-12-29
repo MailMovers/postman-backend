@@ -2,7 +2,7 @@ const { AppDataSource } = require("./dataSource");
 //상품 등록
 const insertProductDao = async (
   name,
-  imgUrl,
+  imgUrl1,
   padImgUrl,
   price,
   addPrice,
@@ -12,11 +12,11 @@ const insertProductDao = async (
   const insertProduct = await AppDataSource.query(
     `
         INSERT INTO writing_pads
-        (name,img_url,pad_img_url,price,add_price,description,category)
+        (name,img_url_1,pad_img_url,price,add_price,description,category)
         VALUES
         (?,?,?,?,?,?)
         `,
-    [name, imgUrl, padImgUrl, price, addPrice, description, category]
+    [name, imgUrl1, padImgUrl, price, addPrice, description, category]
   );
   return insertProduct;
 };
@@ -63,7 +63,7 @@ const getProductDao = async (productId) => {
     SELECT
       id,
       name,
-      img_url,
+      img_url_1,
       price,
       add_price,
       description,
@@ -85,7 +85,7 @@ const getProductListDao = async (startItem, pageSize) => {
       SELECT
         id,
         name,
-        img_url,
+        img_url_1,
         price,
         add_price,
         description,
@@ -216,7 +216,7 @@ const getCategoryListWithCountDao = async (startItem, pageSize, category) => {
       SELECT
         id,
         name,
-        img_url,
+        img_url_1,
         price,
         add_price,
         description,
