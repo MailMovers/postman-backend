@@ -171,23 +171,6 @@ CREATE TABLE `orders` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `pad_details`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `pad_details` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `detail_img_url` varchar(500) NOT NULL,
-  `writing_pad_id` int NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `writing_pad_id` (`writing_pad_id`),
-  CONSTRAINT `pad_details_ibfk_1` FOREIGN KEY (`writing_pad_id`) REFERENCES `writing_pads` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `photos`
 --
 
@@ -248,7 +231,7 @@ CREATE TABLE `roles` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `schema_migrations` (
-  `version` varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+  `version` varchar(255) COLLATE latin1_bin NOT NULL,
   PRIMARY KEY (`version`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -324,8 +307,13 @@ CREATE TABLE `users` (
 CREATE TABLE `writing_pads` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL,
-  `img_url` varchar(500) NOT NULL,
   `pad_img_url` varchar(500) NOT NULL,
+  `img_url_1` varchar(500) NOT NULL,
+  `img_url_2` varchar(500) DEFAULT NULL,
+  `img_url_3` varchar(500) DEFAULT NULL,
+  `img_url_4` varchar(500) DEFAULT NULL,
+  `img_url_5` varchar(500) DEFAULT NULL,
+  `description_img_url` varchar(500) DEFAULT NULL,
   `category` varchar(500) NOT NULL,
   `price` smallint NOT NULL,
   `add_price` smallint NOT NULL,
@@ -371,6 +359,5 @@ INSERT INTO `schema_migrations` (version) VALUES
   ('20231107052701'),
   ('20231107052707'),
   ('20231116095747'),
-  ('20231212095859'),
-  ('20231223085727');
+  ('20231212095859');
 UNLOCK TABLES;

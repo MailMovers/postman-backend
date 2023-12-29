@@ -5,7 +5,7 @@ CREATE TABLE `customer_service` (
   `content` varchar(50) NOT NULL,
   `user_id` int NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `deleted_at` timestamp DEFAULT NULL
+  `deleted_at` timestamp NULL
 );
 ALTER TABLE `customer_service` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 -- migrate:down
