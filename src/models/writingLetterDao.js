@@ -283,7 +283,7 @@ const confirmLetterDao = async (letterId) => {
         letters.id,
         letters.page,
         letters.photo_count,
-        writing_pads.img_url AS writing_pad_img_url,
+        writing_pads.pad_img_url AS writing_pad_img_url,
         letters.stamp_id,
         letters.writing_pad_id,
         send_address.send_address,
