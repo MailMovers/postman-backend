@@ -88,30 +88,60 @@ const deleteProductDao = async (productId) => {
 
 //상품 상세정보 불러오기
 const getProductDao = async (productId) => {
-  const getProduct = await AppDataSource.query(
-    `
-    SELECT
-      id,
-      name,
-      img_url_1,
-      img_url_2,
-      img_url_3,
-      img_url_4,
-      img_url_5,
-      description_img_url,
-      price,
-      add_price,
-      description,
-      category
-    FROM
-      writing_pads
-    WHERE
-      writing_pads.id = ?;
-    `,
-    [productId]
-  );
-  return getProduct;
+  try {
+    const getProductQuery = `
+      SELECT
+        id,
+        name,
+        description_img_url,
+        price,
+        add_price,
+        description,
+        category
+      FROM
+        writing_pads
+      WHERE
+        writing_pads.id = ?;
+    `;
+
+    const imgUrlQuery = `
+      SELECT 
+        img_url_1,
+        img_url_2,
+        img_url_3,
+        img_url_4,
+        img_url_5
+      FROM
+        writing_pads
+      WHERE
+        writing_pads.id = ?;
+    `;
+
+    // 각각의 쿼리를 병렬로 실행
+    const [productResult, imgUrlResult] = await Promise.all([
+      AppDataSource.query(getProductQuery, [productId]),
+      AppDataSource.query(imgUrlQuery, [productId]),
+    ]);
+
+    // 결과를 객체로 정리
+    const productInfo = productResult[0] || null;
+    const imgUrls = imgUrlResult[0] || null;
+
+    // imgUrls를 배열로 변환
+    const imgUrlsArray = Object.entries(imgUrls).map(([key, value]) => ({
+      [key]: value,
+    }));
+
+    return {
+      productInfo,
+      imgUrls: imgUrlsArray,
+    };
+  } catch (error) {
+    console.error("getProductDao에서 오류:", error);
+    throw error;
+  }
 };
+
 //상품 리스트 가져오기
 const getProductListDao = async (startItem, pageSize) => {
   try {
