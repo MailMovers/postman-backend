@@ -293,6 +293,17 @@ CREATE TABLE `stamps` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `user_deletion_reasons`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_deletion_reasons` (
+  `reason` text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `users`
 --
 
@@ -379,5 +390,6 @@ INSERT INTO `schema_migrations` (version) VALUES
   ('20231107052707'),
   ('20231116095747'),
   ('20231212095859'),
-  ('20240101102137');
+  ('20240101102137'),
+  ('20240101124750');
 UNLOCK TABLES;
