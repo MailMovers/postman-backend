@@ -85,5 +85,20 @@ const getRecipe = async (letterId) => {
   );
   return result;
 };
-
-module.exports = { paymentInsertInfoDao, getPricesDao, addPointDao, getRecipe };
+const confirmPoint = async (userId) => {
+  const result = await AppDataSource.query(
+    `
+    SELECT point FROM users
+    WHERE id = ?
+    `,
+    [userId]
+  );
+  return result;
+};
+module.exports = {
+  paymentInsertInfoDao,
+  getPricesDao,
+  addPointDao,
+  getRecipe,
+  confirmPoint,
+};
