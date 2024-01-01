@@ -13,19 +13,36 @@ const {
   getUserByIdDao,
   getUserByReviewDao,
   getCountProductListDao,
-  getCountCategoryListDao,
 } = require("../models/productDao");
 
 //어드민 계정일 경우에만 상품을 등록할수있습니다.
 const insertProductController = async (req, res, next) => {
   try {
     const userId = req.userId;
-    const { name, imgUrl, padImgUrl, price, addPrice, description, category } =
-      req.body;
-    await insertProductService(
-      userId,
+    const {
       name,
-      imgUrl,
+      imgUrl1,
+      imgUrl2,
+      imgUrl3,
+      imgUrl4,
+      imgUrl5,
+      descriptionImgUrl,
+      padImgUrl,
+      price,
+      addPrice,
+      description,
+      category,
+    } = req.body;
+    await insertProductService(
+      name,
+      imgUrl1,
+      imgUrl2,
+      imgUrl3,
+      imgUrl4,
+      imgUrl5,
+      descriptionImgUrl,
+      padImgUrl,
+      price,
       addPrice,
       description,
       category
@@ -42,7 +59,7 @@ const insertProductController = async (req, res, next) => {
     if (!name) {
       return res.status(400).json({ message: "상품이름을 작성해주세요" });
     }
-    if (!imgUrl) {
+    if (!imgUrl1) {
       return res.status(400).json({ message: "상품이미지를 넣어주세요" });
     }
     if (!padImgUrl) {

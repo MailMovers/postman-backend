@@ -6,7 +6,7 @@ CREATE TABLE `notice` (
   `user_id` int NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `deleted_at` timestamp DEFAULT NULL
+  `deleted_at` timestamp NULL
 );
 ALTER TABLE `notice` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 

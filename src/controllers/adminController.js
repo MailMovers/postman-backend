@@ -14,9 +14,13 @@ const updataProductController = async (req, res, next) => {
   try {
     const userId = req.userId;
     const {
-      productId,
       name,
-      imgUrl,
+      imgUrl1,
+      imgUrl2,
+      imgUrl3,
+      imgUrl4,
+      imgUrl5,
+      descriptionImgUrl,
       padImgUrl,
       price,
       addPrice,
@@ -34,7 +38,7 @@ const updataProductController = async (req, res, next) => {
     if (name.length === 0) {
       return res.status(400).json({ message: "상품 이름이 없습니다" });
     }
-    if (imgUrl.length === 0) {
+    if (imgUrl1.length === 0) {
       return res.status(400).json({ message: "편지봉투 이미지가 없습니다" });
     }
     if (padImgUrl.length === 0) {
@@ -58,7 +62,12 @@ const updataProductController = async (req, res, next) => {
     await updateProductService(
       productId,
       name,
-      imgUrl,
+      imgUrl1,
+      imgUrl2,
+      imgUrl3,
+      imgUrl4,
+      imgUrl5,
+      descriptionImgUrl,
       padImgUrl,
       price,
       addPrice,
