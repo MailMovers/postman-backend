@@ -8,14 +8,23 @@ const s3 = new AWS.S3({
 });
 
 const getPreSignedUrl = async (file) => {
+  const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const newFileName = `${uniqueSuffix}-${file.originalname}`;
+  const encodedFileName = encodeURIComponent(newFileName);
   const params = {
-    Bucket: process.env.AWS_BUCKET_NAME, // S3 버킷 이름
-    Key: file.originalname, // 파일 이름
-    Expires: 3000, // url이 만료되는 시간(초)
-    ContentType: file.mimetype, // 파일의 MIME 타입
+    Bucket: process.env.AWS_BUCKET_NAME,
+    Key: encodedFileName,
+    Expires: 3000,
+    ContentType: file.mimetype,
+    Metadata: {
+      'original-name': file.originalname
+    }
   };
-  const preSignedUrl = await s3.getSignedUrlPromise("putObject", params); // 업로드된 파일의 URL 반환
-  return preSignedUrl;
+  const preSignedUrl = await s3.getSignedUrlPromise("putObject", params);
+  return {
+    preSignedUrl,
+    fileName: newFileName
+  };
 };
 
 const {
@@ -108,9 +117,14 @@ const photoController = async (req, res, next) => {
     const Bucket = process.env.AWS_BUCKET_NAME;
     const region = process.env.AWS_REGION;
     const { letterId, originalname } = req.body;
-    const s3Url = `https://${Bucket}.s3.${region}.amazonaws.com/${originalname}`;
+
+    // 파일 이름을 URL 인코딩합니다.
+    const encodedFileName = encodeURIComponent(originalname);
+    const s3Url = `https://${Bucket}.s3.${region}.amazonaws.com/${encodedFileName}`;
+
     const photoId = await PhotoService(s3Url, letterId);
     await countPhotoService(letterId);
+
     return res.status(201).json({
       success: true,
       message: "photoController pass.",
