@@ -9,10 +9,11 @@ const s3 = new AWS.S3({
 
 const getPreSignedUrl = async (file) => {
   const uniqueSuffix = `${Date.now()}`;
-  const newFileName = `${uniqueSuffix}`.replace(/[^\w\s]/gi, '');
+  const newFileName = `${file.originalname}_${uniqueSuffix}`; // 원본 파일 이름에 현재 시간 추가
+  const encodedFileName = encodeURIComponent(newFileName); // 파일 이름을 URL 인코딩
   const params = {
     Bucket: process.env.AWS_BUCKET_NAME,
-    Key: newFileName,
+    Key: encodedFileName, // 인코딩된 파일 이름 사용
     Expires: 3000,
     ContentType: file.mimetype,
     Metadata: {
@@ -22,7 +23,7 @@ const getPreSignedUrl = async (file) => {
   const preSignedUrl = await s3.getSignedUrlPromise("putObject", params);
   return {
     preSignedUrl,
-    fileName: newFileName
+    fileName: encodedFileName
   };
 };
 
