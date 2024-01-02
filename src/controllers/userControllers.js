@@ -199,12 +199,20 @@ class UserController {
             // Joi
             if (error.isJoi) {
                 const { message } = error.details[0];
-                return res.status(400).json({ success: false, message });
+                return res.status(400).json({ success: false, message, error });
             }
-            if (error.name === 'UserNotFoundError' || error.name === 'PasswordNotMatchedError') {
-                return res.status(400).json({ success: false, message: error.message });
+
+            if (
+                ['UserNotFoundError', 'PasswordNotMatchedError', 'WithdrawUserError'].includes(
+                    error.name
+                )
+            ) {
+                return res.status(400).json({ success: false, message: error.message, error });
             }
-            return res.status(400).json({ success: false, message: '로그인에 실패했습니다.' });
+
+            return res
+                .status(400)
+                .json({ success: false, message: '로그인에 실패했습니다.', error });
         }
     };
 

@@ -90,6 +90,11 @@ class UserService {
                 );
             }
 
+            // 회원 탈퇴한 유저 체크
+            if (user.deleted_at) {
+                throw new CustomError(ErrorNames.WithdrawUserError, '이미 탈퇴한 회원입니다.');
+            }
+
             const isMatched = await bcrypt.compareSync(password, user.password);
 
             if (!isMatched) {
@@ -125,6 +130,11 @@ class UserService {
                 return { userId: insertId };
             }
 
+            // 회원 탈퇴한 유저 체크
+            if (user.deleted_at) {
+                throw new CustomError(ErrorNames.WithdrawUserError, '이미 탈퇴한 회원입니다.');
+            }
+
             return { userId: user.id };
         } catch (error) {
             throw error;
@@ -150,6 +160,11 @@ class UserService {
                 return { userId: insertId };
             }
 
+            // 회원 탈퇴한 유저 체크
+            if (user.deleted_at) {
+                throw new CustomError(ErrorNames.WithdrawUserError, '이미 탈퇴한 회원입니다.');
+            }
+
             return { userId: user.id };
         } catch (error) {
             throw error;
@@ -173,6 +188,11 @@ class UserService {
                 });
 
                 return { userId: insertId };
+            }
+
+            // 회원 탈퇴한 유저 체크
+            if (user.deleted_at) {
+                throw new CustomError(ErrorNames.WithdrawUserError, '이미 탈퇴한 회원입니다.');
             }
 
             return { userId: user.id };
