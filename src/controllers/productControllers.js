@@ -8,24 +8,42 @@ const {
   deleteReviewService,
   getWritingPadService,
   getProductCategoriService,
+  getReviewListService,
 } = require("../services/productServices");
 const {
   getUserByIdDao,
   getUserByReviewDao,
   getCountProductListDao,
-  getCountCategoryListDao,
 } = require("../models/productDao");
 
 //어드민 계정일 경우에만 상품을 등록할수있습니다.
 const insertProductController = async (req, res, next) => {
   try {
     const userId = req.userId;
-    const { name, imgUrl, padImgUrl, price, addPrice, description, category } =
-      req.body;
-    await insertProductService(
-      userId,
+    const {
       name,
-      imgUrl,
+      imgUrl1,
+      imgUrl2,
+      imgUrl3,
+      imgUrl4,
+      imgUrl5,
+      descriptionImgUrl,
+      padImgUrl,
+      price,
+      addPrice,
+      description,
+      category,
+    } = req.body;
+    await insertProductService(
+      name,
+      imgUrl1,
+      imgUrl2,
+      imgUrl3,
+      imgUrl4,
+      imgUrl5,
+      descriptionImgUrl,
+      padImgUrl,
+      price,
       addPrice,
       description,
       category
@@ -42,7 +60,7 @@ const insertProductController = async (req, res, next) => {
     if (!name) {
       return res.status(400).json({ message: "상품이름을 작성해주세요" });
     }
-    if (!imgUrl) {
+    if (!imgUrl1) {
       return res.status(400).json({ message: "상품이미지를 넣어주세요" });
     }
     if (!padImgUrl) {
@@ -242,6 +260,26 @@ const getProductCategoriController = async (req, res, next) => {
   }
 };
 
+const getReviewListController = async (req, res, next) => {
+  try {
+    const userId = req.userId;
+    if (!userId || userId.length === 0)
+      return res.status(400).json({ message: "KEY_ERROR" });
+    const myReviews = await getReviewListService(userId);
+
+    if (!myReviews || myReviews.length === 0) {
+      return res.status(400).json({ message: "NO_DATA" });
+    }
+    return res.status(200).json({
+      message: "SUCCESS",
+      data: myReviews,
+    });
+  } catch (err) {
+    console.error("getReviewListController에서 발생한 오류", err);
+    next(err);
+  }
+};
+
 module.exports = {
   insertProductController,
   deleteProductController,
@@ -252,4 +290,5 @@ module.exports = {
   deleteReviewController,
   getWritingPadController,
   getProductCategoriController,
+  getReviewListController,
 };

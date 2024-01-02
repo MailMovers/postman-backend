@@ -188,6 +188,25 @@ CREATE TABLE `photos` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `point_transactions`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `point_transactions` (
+  `transaction_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `points_change` int NOT NULL,
+  `transaction_type` varchar(20) NOT NULL,
+  `transaction_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `description` varchar(500) DEFAULT NULL,
+  PRIMARY KEY (`transaction_id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `point_transactions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `reviews`
 --
 
@@ -233,7 +252,7 @@ CREATE TABLE `roles` (
 CREATE TABLE `schema_migrations` (
   `version` varchar(255) COLLATE latin1_bin NOT NULL,
   PRIMARY KEY (`version`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -269,6 +288,19 @@ CREATE TABLE `stamps` (
   `name` varchar(20) NOT NULL,
   `price` smallint NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `user_deletion_reasons`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_deletion_reasons` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `reason` text,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -359,5 +391,7 @@ INSERT INTO `schema_migrations` (version) VALUES
   ('20231107052701'),
   ('20231107052707'),
   ('20231116095747'),
-  ('20231212095859');
+  ('20231212095859'),
+  ('20240101102137'),
+  ('20240101124750');
 UNLOCK TABLES;

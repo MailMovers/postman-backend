@@ -9,11 +9,17 @@ const {
   deleteReviewDao,
   getWritingPadDao,
   getCategoryListWithCountDao,
+  getReviewListDao,
 } = require("../models/productDao");
 
 const insertProductService = async (
   name,
-  imgUrl,
+  imgUrl1,
+  imgUrl2,
+  imgUrl3,
+  imgUrl4,
+  imgUrl5,
+  descriptionImgUrl,
   padImgUrl,
   price,
   addPrice,
@@ -22,7 +28,12 @@ const insertProductService = async (
 ) => {
   await insertProductDao(
     name,
-    imgUrl,
+    imgUrl1,
+    imgUrl2,
+    imgUrl3,
+    imgUrl4,
+    imgUrl5,
+    descriptionImgUrl,
     padImgUrl,
     price,
     addPrice,
@@ -89,6 +100,10 @@ const getProductCategoriService = async (startItem, pageSize, category) => {
   }
 };
 
+const getReviewListService = async (userId) => {
+  return await getReviewListDao(userId);
+};
+
 module.exports = {
   insertProductService,
   deleteProductService,
@@ -99,4 +114,5 @@ module.exports = {
   deleteReviewService,
   getWritingPadService,
   getProductCategoriService,
+  getReviewListService,
 };
