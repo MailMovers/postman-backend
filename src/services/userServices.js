@@ -310,6 +310,25 @@ class UserService {
             throw error;
         }
     };
+
+    withdrawal = async ({ userId, password, reason }) => {
+        try {
+            const [user] = await this.userDao.getPasswordByUserId({ userId });
+
+            const isVerified = await bcrypt.compareSync(password, user.password);
+
+            if (!isVerified) {
+                throw new CustomError(
+                    ErrorNames.PasswordNotMatchedError,
+                    '비밀번호가 일치하지 않습니다.'
+                );
+            }
+
+            await this.userDao.withdrawal({ userId, reason });
+        } catch (error) {
+            throw error;
+        }
+    };
 }
 
 module.exports = UserService;

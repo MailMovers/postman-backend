@@ -123,6 +123,18 @@ const updatePhoneSchema = Joi.object({
     }),
 });
 
+// 회원탈퇴 유효성검사
+const withdrawalSchema = Joi.object({
+    password: Joi.string().required().messages({
+        'string.base': '비밀번호는 문자열이어야 합니다.',
+        'any.required': '비밀번호를 입력해주세요.',
+    }),
+    reason: Joi.string().max(500).allow('', null).optional().messages({
+        'string.base': '탈퇴사유는 문자열이어야 합니다.',
+        'string.max': '탈퇴사유는 최대 500자입니다.',
+    }),
+});
+
 const customMessages = {
     'any.required': '{{#label}} is required.',
     'string.base': '{{#label}} must be a string.',
@@ -138,4 +150,5 @@ module.exports = {
     signInSchema,
     updatePasswordSchema,
     updatePhoneSchema,
+    withdrawalSchema,
 };

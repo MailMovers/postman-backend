@@ -76,6 +76,36 @@ class UserDao {
             throw error;
         }
     };
+
+    withdrawal = async ({ userId, reason }) => {
+        const queryRunner = AppDataSource.createQueryRunner();
+
+        // 트랜잭션 사용을 위해 queryRunner 연결.
+        await queryRunner.connect();
+        // 트랜잭션 시작.
+        await queryRunner.startTransaction();
+        try {
+            /* 비즈니스 로직.. */
+            // 탈퇴사유 저장
+            await queryRunner.manager.query(
+                `INSERT INTO user_deletion_reasons(reason) VALUES (?)`,
+                [reason]
+            );
+
+            // 회원탈퇴 - Soft Delete
+            await queryRunner.manager.query(`UPDATE users SET deleted_at = (?) WHERE id = (?)`, [
+                new Date(),
+                userId,
+            ]);
+        } catch (error) {
+            // 트랜잭션 실패 시 롤백.
+            await queryRunner.rollbackTransaction();
+            throw error;
+        } finally {
+            // 트랜잭션 종료 시 연결 종료.
+            await queryRunner.release();
+        }
+    };
 }
 
 module.exports = UserDao;
