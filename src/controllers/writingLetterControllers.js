@@ -8,12 +8,11 @@ const s3 = new AWS.S3({
 });
 
 const getPreSignedUrl = async (file) => {
-  const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-  const newFileName = `${uniqueSuffix}-${file.originalname}`;
-  const encodedFileName = encodeURIComponent(newFileName);
+  const uniqueSuffix = `${Date.now()}`;
+  const newFileName = `${uniqueSuffix}`.replace(/[^\w\s]/gi, '');
   const params = {
     Bucket: process.env.AWS_BUCKET_NAME,
-    Key: encodedFileName,
+    Key: newFileName,
     Expires: 3000,
     ContentType: file.mimetype,
     Metadata: {
