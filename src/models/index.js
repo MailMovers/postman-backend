@@ -51,6 +51,8 @@ const {
   getPricesDao,
   addPointDao,
   getRecipe,
+  recordPointTransactionDao,
+  confirmPoint,
 } = require("./paymentDao");
 
 const {
@@ -135,4 +137,6 @@ module.exports = {
   getPhotosDao,
   historyLetterDao,
   getRecipe,
+  recordPointTransactionDao,
+  confirmPoint,
 };

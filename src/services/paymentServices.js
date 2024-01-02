@@ -3,6 +3,8 @@ const {
   getPricesDao,
   paymentInsertInfoDao,
   addPointDao,
+  recordPointTransactionDao,
+  confirmPointDao,
 } = require("../models/paymentDao");
 
 const PAGE_PRICE = 500;
@@ -43,6 +45,7 @@ const paymentSuccessService = async (userId, paymentInfo) => {
       await paymentInsertInfoDao(paymentInfo, userId, letterId);
       const point = total * POINT_PERCENTAGE;
       await addPointDao(userId, point);
+      await recordPointTransactionDao(userId, point, 'save', 'save point');
       return { message: "success" };
     } else {
       throw new Error("결제오류");

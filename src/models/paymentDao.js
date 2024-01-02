@@ -27,7 +27,6 @@ const getPricesDao = async (writingPadId, stampId) => {
 
   return prices;
 };
-
 const paymentInsertInfoDao = async (response, userId, letterId) => {
   const {
     orderName,
@@ -95,10 +94,25 @@ const confirmPoint = async (userId) => {
   );
   return result;
 };
+const recordPointTransactionDao = async (
+  userId,
+  pointsChange,
+  transactionType,
+  description
+) => {
+  await AppDataSource.query(
+    `
+    INSERT INTO point_transactions (user_id, points_change, transaction_type, description)
+    VALUES (?, ?, ?, ?);
+    `,
+    [userId, pointsChange, transactionType, description]
+  );
+};
 module.exports = {
   paymentInsertInfoDao,
   getPricesDao,
   addPointDao,
   getRecipe,
   confirmPoint,
+  recordPointTransactionDao,
 };
