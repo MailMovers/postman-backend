@@ -249,37 +249,59 @@ const checkExistingDeliveryAddressDao = async (
     throw error;
   }
 };
+const getContentDao = async (letterId) => {
+  try {
+    const contents = await AppDataSource.query(
+      `SELECT content_count as pageNum, content FROM content WHERE letter_id = ?`,
+      [letterId]
+    );
+    return contents;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+const getPhotosDao = async (letterId) => {
+  try {
+    const photos = await AppDataSource.query(
+      `SELECT img_url FROM photos WHERE letter_id = ?`,
+      [letterId]
+    );
+    return photos;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 // 최종확인
 const confirmLetterDao = async (letterId) => {
   try {
     const letterInfo = await AppDataSource.query(
       `
-  SELECT
-      letters.id,
-      letters.page,
-      content.content,
-      letters.photo_count,
-      photos.img_url AS photo_img_url,
-      writing_pads.img_url AS writing_pad_img_url,
-      letters.stamp_id,
-      send_address.send_address,
-      send_address.send_address_detail,
-      send_address.send_phone,
-      send_address.send_name,
-      delivery_address.delivery_address,
-      delivery_address.delivery_address_detail,
-      delivery_address.delivery_phone,
-      delivery_address.delivery_name
-  FROM
-      letters
-  LEFT JOIN content ON letters.id = content.letter_id
-  LEFT JOIN photos ON letters.id = photos.letter_id
-  LEFT JOIN writing_pads ON letters.writing_pad_id = writing_pads.id
-  LEFT JOIN send_address ON letters.send_address_id = send_address.id
-  LEFT JOIN delivery_address ON letters.delivery_address_id = delivery_address.id
-  WHERE
-      letters.id =?
-    `,
+    SELECT
+        letters.id,
+        letters.page,
+        letters.photo_count,
+        writing_pads.pad_img_url AS writing_pad_img_url,
+        letters.stamp_id,
+        letters.writing_pad_id,
+        send_address.send_address,
+        send_address.send_address_detail,
+        send_address.send_phone,
+        send_address.send_name,
+        delivery_address.delivery_address,
+        delivery_address.delivery_address_detail,
+        delivery_address.delivery_phone,
+        delivery_address.delivery_name
+    FROM
+        letters
+    LEFT JOIN writing_pads ON letters.writing_pad_id = writing_pads.id
+    LEFT JOIN send_address ON letters.send_address_id = send_address.id
+    LEFT JOIN delivery_address ON letters.delivery_address_id = delivery_address.id
+    WHERE
+        letters.id =?
+  `,
       [letterId]
     );
     return letterInfo;
@@ -288,6 +310,45 @@ const confirmLetterDao = async (letterId) => {
     throw error;
   }
 };
+
+const historyLetterDao = async (userId) => {
+  try {
+    const result = await AppDataSource.query(
+      `
+      SELECT 
+          l.id as letterId,
+          wp.name,
+          da.delivery_address,
+          da.delivery_address_detail,
+          da.delivery_phone,
+          da.delivery_name
+      FROM 
+          users u
+      JOIN 
+          letters l 
+          ON u.id = l.user_id
+      JOIN 
+          writing_pads wp 
+          ON l.writing_pad_id = wp.id
+      JOIN 
+          orders o 
+          ON u.id = o.user_id 
+          AND o.status = 'DONE'
+      JOIN 
+          delivery_address da 
+          ON u.id = da.user_id
+      WHERE 
+          u.id = ?;
+      `,
+      [userId]
+    );
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 
 module.exports = {
   letterDao,
@@ -304,4 +365,7 @@ module.exports = {
   deleteContentsDao,
   updateCountPhotoDao,
   delPhotoDao,
+  getContentDao,
+  getPhotosDao,
+  historyLetterDao,
 };

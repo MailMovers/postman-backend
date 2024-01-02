@@ -24,6 +24,9 @@ const {
   deleteContentsDao,
   updateCountPhotoDao,
   delPhotoDao,
+  getContentDao,
+  getPhotosDao,
+  historyLetterDao,
 } = require("./writingLetterDao");
 
 // user dao
@@ -39,12 +42,15 @@ const {
   insertReviewDao,
   getReviewDao,
   deleteReviewDao,
+  getCountProductListDao,
+  getCategoryListWithCountDao,
 } = require("./productDao");
 
 const {
   paymentInsertInfoDao,
   getPricesDao,
   addPointDao,
+  getRecipe,
 } = require("./paymentDao");
 
 const {
@@ -95,6 +101,8 @@ module.exports = {
   insertReviewDao,
   getReviewDao,
   deleteReviewDao,
+  getCountProductListDao,
+  getCategoryListWithCountDao,
   cs: {
     insertCsDao,
     insertCsAnswerDao,
@@ -123,4 +131,8 @@ module.exports = {
   deleteContentsDao,
   updateCountPhotoDao,
   delPhotoDao,
+  getContentDao,
+  getPhotosDao,
+  historyLetterDao,
+  getRecipe,
 };

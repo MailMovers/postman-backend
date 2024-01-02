@@ -7,15 +7,46 @@ const {
   getReviewService,
   deleteReviewService,
   getWritingPadService,
+  getProductCategoriService,
 } = require("../services/productServices");
-const { getUserByIdDao, getUserByReviewDao } = require("../models/productDao");
+const {
+  getUserByIdDao,
+  getUserByReviewDao,
+  getCountProductListDao,
+} = require("../models/productDao");
 
 //어드민 계정일 경우에만 상품을 등록할수있습니다.
 const insertProductController = async (req, res, next) => {
   try {
     const userId = req.userId;
-    const { name, imgUrl, padImgUrl, price, addPrice, discription } = req.body;
-    await insertProductService(userId, name, imgUrl, addPrice, discription);
+    const {
+      name,
+      imgUrl1,
+      imgUrl2,
+      imgUrl3,
+      imgUrl4,
+      imgUrl5,
+      descriptionImgUrl,
+      padImgUrl,
+      price,
+      addPrice,
+      description,
+      category,
+    } = req.body;
+    await insertProductService(
+      name,
+      imgUrl1,
+      imgUrl2,
+      imgUrl3,
+      imgUrl4,
+      imgUrl5,
+      descriptionImgUrl,
+      padImgUrl,
+      price,
+      addPrice,
+      description,
+      category
+    );
     if (!userId) {
       return res.status(400).json({ message: "KEY_ERROR" });
     }
@@ -28,7 +59,7 @@ const insertProductController = async (req, res, next) => {
     if (!name) {
       return res.status(400).json({ message: "상품이름을 작성해주세요" });
     }
-    if (!imgUrl) {
+    if (!imgUrl1) {
       return res.status(400).json({ message: "상품이미지를 넣어주세요" });
     }
     if (!padImgUrl) {
@@ -37,8 +68,11 @@ const insertProductController = async (req, res, next) => {
     if (!price) {
       return res.status(400).json({ message: "가격을 작성해주세요" });
     }
-    if (!discription) {
+    if (!description) {
       return res.status(400).json({ message: "상품설명을 작성해주세요" });
+    }
+    if (!category) {
+      return res.statrs(400).json({ message: "카테고리를 작성해주세요" });
     }
     return res.status(200).json({
       message: "SUCCESS",
@@ -95,10 +129,10 @@ const getProductController = async (req, res, next) => {
 const getProductListController = async (req, res, next) => {
   try {
     const page = req.query.page || 1;
-    const pageSize = 20;
+    const pageSize = 8;
     const startItem = (page - 1) * pageSize;
     const productList = await getProductListService(startItem, pageSize);
-
+    const count = await getCountProductListDao();
     if (!productList || productList.length === 0) {
       return res.status(400).json({
         message: "상품 목록을 불러올 수 없습니다",
@@ -106,6 +140,7 @@ const getProductListController = async (req, res, next) => {
     }
     return res.status(200).json({
       message: "SUCCESS",
+      count: count,
       data: productList,
     });
   } catch (err) {
@@ -198,6 +233,31 @@ const getWritingPadController = async (req, res, next) => {
     next(err);
   }
 };
+const getProductCategoriController = async (req, res, next) => {
+  try {
+    const page = req.query.page || 1;
+    const pageSize = 8;
+    const startItem = (page - 1) * pageSize;
+    const category = req.query.category; // req.params.category 대신 req.query.category 사용
+    const productList = await getProductCategoriService(
+      startItem,
+      pageSize,
+      category
+    );
+    if (!productList || productList.length === 0) {
+      return res.status(400).json({
+        message: "상품 목록을 불러올 수 없습니다",
+      });
+    }
+    return res.status(200).json({
+      message: "SUCCESS",
+      data: productList,
+    });
+  } catch (err) {
+    console.error("getProductCategoriController에서 오류:", err);
+    next(err);
+  }
+};
 
 module.exports = {
   insertProductController,
@@ -208,4 +268,5 @@ module.exports = {
   getReviewController,
   deleteReviewController,
   getWritingPadController,
+  getProductCategoriController,
 };

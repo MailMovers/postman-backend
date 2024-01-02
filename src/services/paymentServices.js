@@ -8,7 +8,6 @@ const {
 const PAGE_PRICE = 500;
 const PHOTO_PRICE = 500;
 const MAX_FREE_PAGES = 3;
-const ERROR_STATUS = 400;
 const POINT_PERCENTAGE = 0.05;
 
 // Function to calculate total cost

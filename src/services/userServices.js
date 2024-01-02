@@ -269,6 +269,47 @@ class UserService {
             throw error;
         }
     };
+
+    updatePassword = async ({ userId, password, newPassword }) => {
+        try {
+            console.log(userId, password, newPassword);
+
+            const [user] = await this.userDao.getPasswordByUserId({ userId });
+
+            const isVerified = await bcrypt.compareSync(password, user.password);
+
+            if (!isVerified) {
+                throw new CustomError(
+                    ErrorNames.PasswordNotMatchedError,
+                    '비밀번호가 일치하지 않습니다.'
+                );
+            }
+
+            const hashedNewPassword = await bcrypt.hashSync(newPassword, 10);
+
+            return await this.userDao.updateUserPassword({ userId, hashedNewPassword });
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    updatePhone = async ({ userId, newPhone }) => {
+        try {
+            const [user] = await this.userDao.getPhoneByUserId({ userId });
+
+            // 기존 휴대폰번호와 새로 입력받은 휴대폰 번호가 같을 경우
+            if (user.phone === newPhone) {
+                throw new CustomError(
+                    ErrorNames.PhoneNumberError,
+                    '휴대폰번호를 다시 확인해주세요.'
+                );
+            }
+
+            return await this.userDao.updateUserPhone({ userId, newPhone });
+        } catch (error) {
+            throw error;
+        }
+    };
 }
 
 module.exports = UserService;

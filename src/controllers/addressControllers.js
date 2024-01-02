@@ -9,7 +9,8 @@ const {
   getDeliveryAddressService,
 } = require("../services/addressServices");
 
-//받는사람 주소등록
+//받는사람 주소등록 //todo 내일 리펙토링
+
 const insertDeliveryAddressController = async (req, res, next) => {
   const userId = req.userId;
   try {
@@ -19,6 +20,12 @@ const insertDeliveryAddressController = async (req, res, next) => {
       deliveryPhone,
       deliveryName,
     } = req.body;
+    await insertAddressService(
+      deliveryAddress,
+      deliveryAddressDetail,
+      deliveryPhone,
+      deliveryName
+    );
 
     if (!userId) {
       return res.status(400).json({ message: "KEY_ERROR" });
@@ -112,9 +119,10 @@ const getSendAddressListController = async (req, res, next) => {
     const userId = req.userId;
     if (userId.length === 0 || !userId)
       return res.status(400).json({ message: "KEY_ERROR" });
+    const result = await getSendListAddressService(userId);
     return res.status(200).json({
       message: "SUCCESS",
-      data: await getSendListAddressService(userId),
+      data: result,
     });
   } catch (err) {
     console.error(err);
@@ -127,9 +135,10 @@ const getDeliveryAddressListController = async (req, res, next) => {
     const userId = req.userId;
     if (userId.length === 0 || !userId)
       return res.status(400).json({ message: "KEY_ERROR" });
+    const result = await getDeliveryListAddressService(userId);
     return res.status(200).json({
       message: "SUCCESS",
-      data: await getDeliveryListAddressService(userId),
+      data: result,
     });
   } catch (err) {
     console.error(err);

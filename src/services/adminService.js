@@ -11,20 +11,32 @@ const {
 const updateProductService = async (
   productId,
   name,
-  imgUrl,
+  imgUrl1,
+  imgUrl2,
+  imgUrl3,
+  imgUrl4,
+  imgUrl5,
+  descriptionImgUrl,
   padImgUrl,
   price,
   addPrice,
-  discription
+  description,
+  category
 ) => {
   return await upDateProductDao(
     productId,
     name,
-    imgUrl,
+    imgUrl1,
+    imgUrl2,
+    imgUrl3,
+    imgUrl4,
+    imgUrl5,
+    descriptionImgUrl,
     padImgUrl,
     price,
     addPrice,
-    discription
+    description,
+    category
   );
 };
 //편지안에 주소 모두 불러오기

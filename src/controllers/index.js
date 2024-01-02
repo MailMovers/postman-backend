@@ -10,13 +10,14 @@ const {
 } = require("./addressControllers");
 
 const {
-  letterContoller,
+  letterController,
   photoController,
-  confirmLetterContoller,
+  confirmLetterController,
   stampController,
   checkLetterController,
   getUploadUrl,
   delPhotoController,
+  historyLetterController,
 } = require("./writingLetterControllers");
 
 // user controller class
@@ -31,6 +32,7 @@ const {
   getReviewController,
   deleteReviewController,
   getWritingPadController,
+  getProductCategoriController,
 } = require("./productControllers");
 
 const { paymentSuccessController } = require("./paymentControllers.js");
@@ -72,13 +74,14 @@ module.exports = {
     getDeliveryAddressController,
   },
   writingLetterController: {
-    letterContoller,
+    letterController,
     photoController,
     stampController,
-    confirmLetterContoller,
+    confirmLetterController,
     checkLetterController,
     getUploadUrl,
     delPhotoController,
+    historyLetterController,
   },
 
   productController: {
@@ -90,6 +93,7 @@ module.exports = {
     getReviewController,
     deleteReviewController,
     getWritingPadController,
+    getProductCategoriController,
   },
   paymentController: {
     paymentSuccessController,

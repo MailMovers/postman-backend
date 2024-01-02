@@ -87,6 +87,42 @@ const signInSchema = Joi.object({
         }),
 });
 
+// 비밀번호 변경 유효성검사
+const updatePasswordSchema = Joi.object({
+    password: Joi.string()
+        .pattern(new RegExp('^(?=.*[a-z])(?=.*[0-9])(?=.*[!@#%^&*-_+=])[a-z0-9!@#%^&*-_+=]+$'))
+        .min(8)
+        .max(12)
+        .required()
+        .messages({
+            'string.base': '비밀번호는 문자열이어야 합니다.',
+            'any.required': '비밀번호를 입력해주세요.',
+            'string.min': '비밀번호는 최소 8자리입니다.',
+            'string.max': '비밀번호는 최대 12자리입니다.',
+            'string.pattern.base': '비밀번호가 형식에 맞지 않습니다.',
+        }),
+    newPassword: Joi.string()
+        .pattern(new RegExp('^(?=.*[a-z])(?=.*[0-9])(?=.*[!@#%^&*-_+=])[a-z0-9!@#%^&*-_+=]+$'))
+        .min(8)
+        .max(12)
+        .required()
+        .messages({
+            'string.base': '비밀번호는 문자열이어야 합니다.',
+            'any.required': '비밀번호를 입력해주세요.',
+            'string.min': '비밀번호는 최소 8자리입니다.',
+            'string.max': '비밀번호는 최대 12자리입니다.',
+            'string.pattern.base': '비밀번호가 형식에 맞지 않습니다.',
+        }),
+});
+
+// 전화번호 변경 유효성검사
+const updatePhoneSchema = Joi.object({
+    newPhone: Joi.string().required().messages({
+        'string.base': '전화번호는 문자열이어야 합니다.',
+        'any.required': '전화번호를 입력해주세요.',
+    }),
+});
+
 const customMessages = {
     'any.required': '{{#label}} is required.',
     'string.base': '{{#label}} must be a string.',
@@ -100,4 +136,6 @@ module.exports = {
     emailAuthSchema,
     authNumberSchema,
     signInSchema,
+    updatePasswordSchema,
+    updatePhoneSchema,
 };

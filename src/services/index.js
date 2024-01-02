@@ -18,7 +18,8 @@ const {
   checkAndInsertAddressService,
   updateLetterService,
   PhotoService,
-  deletePhotoService,
+  delPhotoService,
+  historyLetterService,
 } = require("./writingLetterServices");
 
 const { paymentSuccessService } = require("./paymentServices");
@@ -35,6 +36,7 @@ const {
   getReviewService,
   deleteReviewService,
   getWritingPadService,
+  getProductCategoriService,
 } = require("./productServices");
 
 const {
@@ -80,6 +82,7 @@ module.exports = {
   deleteReviewService,
   paymentSuccessService,
   getWritingPadService,
+  getProductCategoriService,
   cs: {
     insertCsService,
     insertCsAnswerService,
@@ -104,5 +107,6 @@ module.exports = {
   updateLetterService,
   countPhotoService,
   PhotoService,
-  deletePhotoService,
+  delPhotoService,
+  historyLetterService,
 };

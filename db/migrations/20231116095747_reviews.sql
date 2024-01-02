@@ -7,7 +7,7 @@ CREATE TABLE `reviews` (
   `score` int NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `deleted_at` timestamp DEFAULT NULL
+  `deleted_at` timestamp NULL
 );
 ALTER TABLE `reviews` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 ALTER TABLE `reviews` ADD FOREIGN KEY (`writing_pad_id`) REFERENCES `writing_pads` (`id`);

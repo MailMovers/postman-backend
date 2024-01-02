@@ -9,7 +9,7 @@ const { errorHandler } = require('./src/utils/errorHandler');
 const router = require('./src/routes');
 
 // cors whitelist
-const whitelist = ['http://localhost:3000'];
+const whitelist = ['http://localhost:3000', 'https://postman-frontend-beige.vercel.app'];
 
 const createApp = () => {
     const app = express();

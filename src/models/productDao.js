@@ -2,20 +2,51 @@ const { AppDataSource } = require("./dataSource");
 //상품 등록
 const insertProductDao = async (
   name,
-  imgUrl,
+  imgUrl1,
+  imgUrl2,
+  imgUrl3,
+  imgUrl4,
+  imgUrl5,
+  descriptionImgUrl,
   padImgUrl,
   price,
   addPrice,
-  discription
+  description,
+  category
 ) => {
   const insertProduct = await AppDataSource.query(
     `
         INSERT INTO writing_pads
-        (name,img_url,pad_img_url,price,add_price,discription)
+        (
+          name, 
+          img_url_1,
+          img_url_2,
+          img_url_3,
+          img_url_4,
+          img_url_5,
+          description_img_url,
+          pad_img_url,
+          price,add_price,
+          description,
+          category
+          )
         VALUES
-        (?,?,?,?,?,?)
+        (?,?,?,?,?,?,?,?,?,?,?)
         `,
-    [name, imgUrl, padImgUrl, price, addPrice, discription]
+    [
+      name,
+      imgUrl1,
+      imgUrl2,
+      imgUrl3,
+      imgUrl4,
+      imgUrl5,
+      descriptionImgUrl,
+      padImgUrl,
+      price,
+      addPrice,
+      description,
+      category,
+    ]
   );
   return insertProduct;
 };
@@ -57,35 +88,73 @@ const deleteProductDao = async (productId) => {
 
 //상품 상세정보 불러오기
 const getProductDao = async (productId) => {
-  const getProduct = await AppDataSource.query(
-    `
-    SELECT
-      id,
-      name,
-      img_url,
-      price,
-      add_price,
-      discription
-    FROM
-      writing_pads
-    WHERE
-      writing_pads.id = ?;
-    `,
-    [productId]
-  );
-  return getProduct;
+  try {
+    const getProductQuery = `
+      SELECT
+        id,
+        name,
+        description_img_url,
+        price,
+        add_price,
+        description,
+        category
+      FROM
+        writing_pads
+      WHERE
+        writing_pads.id = ?;
+    `;
+
+    const imgUrlQuery = `
+      SELECT 
+        img_url_1,
+        img_url_2,
+        img_url_3,
+        img_url_4,
+        img_url_5
+      FROM
+        writing_pads
+      WHERE
+        writing_pads.id = ?;
+    `;
+
+    // 각각의 쿼리를 병렬로 실행
+    const [productResult, imgUrlResult] = await Promise.all([
+      AppDataSource.query(getProductQuery, [productId]),
+      AppDataSource.query(imgUrlQuery, [productId]),
+    ]);
+
+    // 결과를 객체로 정리
+    const productInfo = productResult[0] || null;
+    const imgUrls = imgUrlResult[0] || null;
+
+    // imgUrls를 배열로 변환
+    const imgUrlsArray = Object.entries(imgUrls).map(([key, value]) => ({
+      [key]: value,
+    }));
+
+    return {
+      productInfo,
+      imgUrls: imgUrlsArray,
+    };
+  } catch (error) {
+    console.error("getProductDao에서 오류:", error);
+    throw error;
+  }
 };
+
 //상품 리스트 가져오기
 const getProductListDao = async (startItem, pageSize) => {
   try {
     const productList = await AppDataSource.query(
       `
       SELECT
+        id,
         name,
-        img_url,
+        img_url_1,
         price,
         add_price,
-        discription,
+        description,
+        category,
         deleted_at
       FROM
         writing_pads
@@ -188,6 +257,65 @@ const getWritingPadDao = async (productId) => {
   );
   return writingPad;
 };
+//편지지 숫자
+const getCountProductListDao = async () => {
+  try {
+    const writingPadCountQuery = `
+      SELECT COUNT(*) AS count FROM writing_pads WHERE deleted_at IS NULL
+    `;
+    const resultCount = await AppDataSource.query(writingPadCountQuery);
+
+    // resultCount가 배열 형태일 경우 첫 번째 요소를 사용ㅊ
+    const count = resultCount[0]?.count || 0;
+
+    return { count };
+  } catch (error) {
+    console.error("getCountProductListDao 오류:", error);
+    throw error; // 에러를 다시 throw하여 상위에서 처리할 수 있도록 함
+  }
+};
+//카테고리 별로 편지지 리스트를 불러옵니다.
+const getCategoryListWithCountDao = async (startItem, pageSize, category) => {
+  try {
+    const productListQuery = `
+      SELECT
+        id,
+        name,
+        img_url_1,
+        price,
+        add_price,
+        description,
+        category,
+        deleted_at
+      FROM
+        writing_pads
+      WHERE
+        deleted_at IS NULL AND category = ?
+      LIMIT ? OFFSET ?;
+    `;
+    const countQuery = `
+      SELECT COUNT(*) AS count FROM writing_pads WHERE deleted_at IS NULL AND category = ?;
+    `;
+
+    // 동시에 실행할 쿼리 배열
+    const queries = [productListQuery, countQuery];
+
+    // 쿼리 실행 및 결과를 배열로 받음
+    const [productList, countResult] = await Promise.all([
+      AppDataSource.query(productListQuery, [category, pageSize, startItem]),
+      AppDataSource.query(countQuery, [category]),
+    ]);
+
+    // 결과 반환
+    return {
+      productList,
+      count: countResult[0]?.count || 0,
+    };
+  } catch (error) {
+    console.error("getCategoryListWithCountDao에서 오류:", error);
+    throw error;
+  }
+};
 
 module.exports = {
   insertProductDao,
@@ -200,4 +328,6 @@ module.exports = {
   getReviewDao,
   deleteReviewDao,
   getWritingPadDao,
+  getCountProductListDao,
+  getCategoryListWithCountDao,
 };

@@ -11,7 +11,7 @@ const getPreSignedUrl = async (file) => {
   const params = {
     Bucket: process.env.AWS_BUCKET_NAME, // S3 버킷 이름
     Key: file.originalname, // 파일 이름
-    Expires: 1520, // url이 만료되는 시간(초)
+    Expires: 3000, // url이 만료되는 시간(초)
     ContentType: file.mimetype, // 파일의 MIME 타입
   };
   const preSignedUrl = await s3.getSignedUrlPromise("putObject", params); // 업로드된 파일의 URL 반환
@@ -28,9 +28,10 @@ const {
   countPhotoService,
   PhotoService,
   delPhotoService,
+  historyLetterService,
 } = require("../services/writingLetterServices");
 
-const letterContoller = async (req, res, next) => {
+const letterController = async (req, res, next) => {
   try {
     const userId = req.userId;
     // const letterId = req.query.letterId;
@@ -76,7 +77,7 @@ const checkLetterController = async (req, res, next) => {
     });
   } catch (error) {
     console.error("error in continueLetterController", error);
-    return res.status(400)({
+    return res.status(400).json({
       success: false,
       message: "error in continueLetterController",
     });
@@ -87,6 +88,7 @@ const getUploadUrl = async (req, res, next) => {
   try {
     const { originalname } = req.file;
     const result = await getPreSignedUrl({ originalname });
+    console.log("uploadUrl",result)
     return res.status(201).json({
       success: true,
       message: "getUploadUrl pass.",
@@ -179,7 +181,7 @@ const stampController = async (req, res, next) => {
   }
 };
 
-const confirmLetterContoller = async (req, res, next) => {
+const confirmLetterController = async (req, res, next) => {
   try {
     const letterId = req.query.letterId;
     const result = await confirmLetterService(letterId);
@@ -197,13 +199,34 @@ const confirmLetterContoller = async (req, res, next) => {
   }
 };
 
+const historyLetterController = async (req, res, next) => {
+  try {
+    // const userId = req.userId;
+    const userId = req.body.userId;
+    const letterId = req.body.letterId;
+    const result = await historyLetterService(userId, letterId);
+    return res.status(201).json({
+      success: true,
+      message: "historyLetterContoller pass.",
+      data: result,
+    });
+  } catch (error) {
+    console.error("Error in historyLetterContoller :", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error in historyLetterContoller. Please try again later.",
+    });
+  }
+};
+
 module.exports = {
-  letterContoller,
+  letterController,
   photoController,
-  confirmLetterContoller,
+  confirmLetterController,
   stampController,
   getPreSignedUrl,
   checkLetterController,
   getUploadUrl,
   delPhotoController,
+  historyLetterController,
 };

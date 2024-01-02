@@ -13,14 +13,17 @@ const {
   updateCountPhotoDao,
   photoDao,
   delPhotoDao,
+  getContentDao,
+  getPhotosDao,
+  historyLetterDao,
 } = require("../models/writingLetterDao");
 
 const { getProductDao } = require("../models/productDao");
-
 const {
   insertDeliveryAddressDao,
   insertSendAddressDao,
 } = require("../models/addressDao");
+const { getPricesDao, getRecipe } = require("../models/paymentDao");
 
 const letterService = async (userId, writingPadId, contents) => {
   try {
@@ -36,7 +39,6 @@ const letterService = async (userId, writingPadId, contents) => {
     throw error;
   }
 };
-
 const updateLetterService = async (contents, letterId) => {
   try {
     // 기존 contents를 삭제합니다.
@@ -53,7 +55,6 @@ const updateLetterService = async (contents, letterId) => {
     throw error;
   }
 };
-
 const checkAndInsertAddressService = async (
   userId,
   letterId,
@@ -117,7 +118,6 @@ const checkAndInsertAddressService = async (
     throw error;
   }
 };
-
 const checkLetterService = async (userId) => {
   try {
     const result = await checkLetterDao(userId);
@@ -136,7 +136,6 @@ const checkLetterService = async (userId) => {
               content: row.content,
             },
           ],
-          productPic: productPic,
         };
       })
     );
@@ -147,7 +146,6 @@ const checkLetterService = async (userId) => {
     throw error;
   }
 };
-
 const PhotoService = async (s3Url, letterId) => {
   try {
     const photoId = await photoDao(s3Url, letterId);
@@ -179,7 +177,6 @@ const countPhotoService = async (letterId) => {
     throw error;
   }
 };
-
 const stampService = async (stampId, letterId) => {
   try {
     const result = await stampDao(stampId, letterId);
@@ -192,36 +189,73 @@ const stampService = async (stampId, letterId) => {
 
 const confirmLetterService = async (letterId) => {
   try {
+    const PAGE_PRICE = 500;
+    const PHOTO_PRICE = 500;
+    const MAX_FREE_PAGES = 3;
+
     const result = await confirmLetterDao(letterId);
-    const formattedResult = result.map((item) => {
-      return {
-        letterId: item.id,
-        writingPadId: item.writing_pad_id,
-        writingPadImgUrl: item.pad_img_url,
-        contents: [
-          {
-            pageNum: item.content_count,
-            content: item.content,
-          },
-        ],
-        photoCount: item.photo_count,
-        photos: [
-          {
-            photoUrl: item.photo_img_url,
-          },
-        ],
-        stampId: item.stamp_id,
-        deliveryAddress: item.delivery_address,
-        deliveryAddressDetail: item.delivery_address_detail,
-        deliveryPhone: item.delivery_phone,
-        deliveryName: item.delivery_name,
-        sendAddress: item.send_address,
-        sendAddressDetail: item.send_address_detail,
-        sendPhone: item.send_phone,
-        sendName: item.send_name,
-      };
-    });
-    return formattedResult;
+    console.log("result",result)
+    const writingPadId = result[0].writing_pad_id;
+    const stampId = result[0].stamp_id;
+    const prices = await getPricesDao([writingPadId], [stampId]);
+    console.log("prices:", prices);
+    const formattedResult = await Promise.all(
+      result.map(async (item) => {
+        const additionalPageCost =
+          item.page > MAX_FREE_PAGES
+            ? PAGE_PRICE * (item.page - MAX_FREE_PAGES)
+            : 0;
+        const photoCost = item.photo_count * PHOTO_PRICE;
+        const totalCost =
+          prices[0].writingPadPrice +
+          additionalPageCost +
+          photoCost +
+          prices[0].stampFee;
+        
+        const contents = await getContentDao(item.id);
+        const photos = await getPhotosDao(item.id);
+        console.log("additionalPageCost : ",additionalPageCost)
+        return {
+          letterId: item.id,
+          writingPadId: item.writing_pad_id,
+          writingPadImgUrl: item.writing_pad_img_url,
+          contents: contents.map((content) => ({
+            pageNum: content.pageNum, // pageNum을 직접 사용
+            content: content.content,
+          })),
+          photoCount: item.photo_count,
+          photos: photos.map((photo) => ({
+            photoUrl: photo.img_url,
+          })),
+          stampId: item.stamp_id,
+          deliveryAddress: item.delivery_address,
+          deliveryAddressDetail: item.delivery_address_detail,
+          deliveryPhone: item.delivery_phone,
+          deliveryName: item.delivery_name,
+          sendAddress: item.send_address,
+          sendAddressDetail: item.send_address_detail,
+          sendPhone: item.send_phone,
+          sendName: item.send_name,
+          totalCost: totalCost,
+        };
+      })
+    );
+    return formattedResult[0];
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+const historyLetterService = async (userId, letterId) => {
+  try {
+    if (letterId) {
+      const letterInformation = await confirmLetterDao(letterId);
+      const price = await getRecipe(letterId);
+      return [letterInformation, price];
+    }
+    const result = await historyLetterDao(userId);
+    return result;
   } catch (error) {
     console.error(error);
     throw error;
@@ -238,4 +272,5 @@ module.exports = {
   countPhotoService,
   PhotoService,
   delPhotoService,
+  historyLetterService,
 };
