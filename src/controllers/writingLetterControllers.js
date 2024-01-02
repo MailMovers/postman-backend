@@ -23,7 +23,7 @@ const getPreSignedUrl = async (file) => {
   const preSignedUrl = await s3.getSignedUrlPromise("putObject", params);
   return {
     preSignedUrl,
-    fileName: encodedFileName
+    fileName: newFileName
   };
 };
 
