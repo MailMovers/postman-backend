@@ -8,22 +8,15 @@ const s3 = new AWS.S3({
 });
 
 const getPreSignedUrl = async (file) => {
-  const uniqueSuffix = `${Date.now()}`;
-  const newFileName = `${file.originalname}_${uniqueSuffix}`; // 원본 파일 이름에 현재 시간 추가
-  const encodedFileName = encodeURIComponent(newFileName); // 파일 이름을 URL 인코딩
   const params = {
     Bucket: process.env.AWS_BUCKET_NAME,
-    Key: encodedFileName, // 인코딩된 파일 이름 사용
+    Key: file.originalname, // 원본 파일 이름 사용
     Expires: 3000,
-    ContentType: file.mimetype,
-    Metadata: {
-      'original-name': file.originalname
-    }
+    ContentType: file.mimetype
   };
   const preSignedUrl = await s3.getSignedUrlPromise("putObject", params);
   return {
-    preSignedUrl,
-    fileName: newFileName
+    preSignedUrl
   };
 };
 
@@ -118,9 +111,7 @@ const photoController = async (req, res, next) => {
     const region = process.env.AWS_REGION;
     const { letterId, originalname } = req.body;
 
-    // 파일 이름을 URL 인코딩합니다.
-    const encodedFileName = encodeURIComponent(originalname);
-    const s3Url = `https://${Bucket}.s3.${region}.amazonaws.com/${encodedFileName}`;
+    const s3Url = `https://${Bucket}.s3.${region}.amazonaws.com/${originalname}`;
 
     const photoId = await PhotoService(s3Url, letterId);
     await countPhotoService(letterId);
