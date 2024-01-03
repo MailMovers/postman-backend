@@ -155,9 +155,9 @@ const PhotoService = async (s3Url, letterId) => {
     throw error;
   }
 };
-const delPhotoService = async (photoId, letterId) => {
+const delPhotoService = async (fileName, letterId) => {
   try {
-    await delPhotoDao(photoId);
+    await delPhotoDao(fileName);
     const currentPhotoCount = await countPhotoDao(letterId);
     const photoCount = currentPhotoCount[0].photo_count - 1;
     await updateCountPhotoDao(photoCount, letterId);
