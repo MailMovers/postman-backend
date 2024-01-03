@@ -8,15 +8,20 @@ const s3 = new AWS.S3({
 });
 
 const getPreSignedUrl = async (file) => {
+  const decoded = decodeURIComponent(file.originalname);
+  const fileExtension = decoded.split(".")[1];
+  const newFileName = `${decoded.split(".")[0]}-${Date.now()}.${fileExtension}`;
+
   const params = {
     Bucket: process.env.AWS_BUCKET_NAME,
-    Key: file.originalname, // 원본 파일 이름 사용
+    Key: newFileName,
     Expires: 3000,
-    ContentType: file.mimetype
+    ContentType: file.mimetype,
   };
   const preSignedUrl = await s3.getSignedUrlPromise("putObject", params);
   return {
-    preSignedUrl
+    preSignedUrl,
+    newFileName,
   };
 };
 
@@ -89,8 +94,8 @@ const checkLetterController = async (req, res, next) => {
 const getUploadUrl = async (req, res, next) => {
   try {
     const { originalname } = req.file;
-    const result = await getPreSignedUrl({ originalname });
-    console.log("uploadUrl",result)
+    const result = await getPreSignedUrl({ originalname: originalname });
+    console.log("uploadUrl", result);
     return res.status(201).json({
       success: true,
       message: "getUploadUrl pass.",
