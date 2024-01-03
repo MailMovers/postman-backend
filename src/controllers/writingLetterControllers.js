@@ -8,9 +8,11 @@ const s3 = new AWS.S3({
 });
 
 const getPreSignedUrl = async (file) => {
-  const decoded = decodeURIComponent(file.originalname);
-  const fileExtension = decoded.split(".")[1];
-  const newFileName = `${decoded.split(".")[0]}-${Date.now()}.${fileExtension}`;
+  const decodedFileName = decodeURIComponent(file.originalname);
+  const fileExtension = decodedFileName.split('.').pop();
+  const timestamp = Date.now();
+  const newFileName = `${decodedFileName}_${timestamp}.${fileExtension}`;
+  const encodedNewFileName = encodeURIComponent(newFileName);
 
   const params = {
     Bucket: process.env.AWS_BUCKET_NAME,
@@ -21,7 +23,7 @@ const getPreSignedUrl = async (file) => {
   const preSignedUrl = await s3.getSignedUrlPromise("putObject", params);
   return {
     preSignedUrl,
-    newFileName,
+    encodedNewFileName,
   };
 };
 
