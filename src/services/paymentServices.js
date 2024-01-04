@@ -5,7 +5,7 @@ const {
   paymentInsertInfoDao,
   addPointDao,
   recordPointTransactionDao,
-  confirmPointDao,
+  confirmPoint,
   getPaymentInfoDao,
 } = require("../models/paymentDao");
 
@@ -14,7 +14,6 @@ const PHOTO_PRICE = 500;
 const MAX_FREE_PAGES = 3;
 const POINT_PERCENTAGE = 0.05;
 
-// Function to calculate total cost
 const calculateTotal = (userLetters, prices) => {
   let total = 0;
   for (let i = 0; i < userLetters.length; i++) {
@@ -30,8 +29,7 @@ const calculateTotal = (userLetters, prices) => {
   return total;
 };
 
-const paymentSuccessService = async (userId, paymentInfo) => {
-  // next parameter added
+const paymentSuccessService = async (userId, paymentInfo, usePoint) => {
   try {
     const userLetters = await confirmLettersDao(userId);
     const letterId = userLetters[0].id;
@@ -41,13 +39,24 @@ const paymentSuccessService = async (userId, paymentInfo) => {
 
     const prices = await getPricesDao(writingPadId, stampId);
 
-    const total = calculateTotal(userLetters, prices);
+    let total = calculateTotal(userLetters, prices);
+
+    if (usePoint) {
+      const userPoint = await confirmPoint(userId);
+      if (userPoint < total) {
+        total -= userPoint;
+        await addPointDao(userId, -userPoint);
+        await recordPointTransactionDao(userId, -userPoint, "use", "use point");
+      } else {
+        throw new Error("포인트가 결제 금액보다 많습니다.");
+      }
+    }
 
     if (total === Number(paymentInfo.totalAmount)) {
       await paymentInsertInfoDao(paymentInfo, userId, letterId);
       const point = total * POINT_PERCENTAGE;
       await addPointDao(userId, point);
-      await recordPointTransactionDao(userId, point, "save", "save point");
+      await recordPointTransactionDao(userId, point, "save", "save");
       return { message: "success" };
     } else {
       throw new Error("결제오류");

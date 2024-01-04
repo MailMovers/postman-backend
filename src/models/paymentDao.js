@@ -27,7 +27,7 @@ const getPricesDao = async (writingPadId, stampId) => {
 
   return prices;
 };
-const paymentInsertInfoDao = async (response, userId, letterId) => {
+const paymentInsertInfoDao = async (paymentInfo, userId, letterId) => {
   const {
     orderName,
     orderId,
@@ -38,7 +38,7 @@ const paymentInsertInfoDao = async (response, userId, letterId) => {
     suppliedAmount,
     approvedAt,
     status,
-  } = response;
+  } = paymentInfo;
   const result = await AppDataSource.query(
     `
     INSERT INTO orders (
