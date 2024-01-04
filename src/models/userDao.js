@@ -97,6 +97,8 @@ class UserDao {
                 new Date(),
                 userId,
             ]);
+
+            await queryRunner.commitTransaction();
         } catch (error) {
             // 트랜잭션 실패 시 롤백.
             await queryRunner.rollbackTransaction();
