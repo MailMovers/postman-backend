@@ -10,7 +10,7 @@ CREATE TABLE `send_address` (
   `updated_at` timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP
 );
-ALTER TABLE `send_address` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+ALTER TABLE `send_address` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 ALTER TABLE `send_address` MODIFY COLUMN `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
 ALTER TABLE `send_address` MODIFY COLUMN `deleted_at` timestamp NULL;
 

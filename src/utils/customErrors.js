@@ -8,6 +8,7 @@ const ErrorNames = {
     RefreshTokenNotMatchedError: 'RefreshTokenNotMatchedError',
     NeedLoginError: 'NeedLoginError',
     PhoneNumberError: 'PhoneNumberError',
+    WithdrawUserError: 'WithdrawUserError',
 };
 
 class CustomError extends Error {

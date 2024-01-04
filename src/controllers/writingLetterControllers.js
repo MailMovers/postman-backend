@@ -8,14 +8,23 @@ const s3 = new AWS.S3({
 });
 
 const getPreSignedUrl = async (file) => {
+  const decodedFileName = decodeURIComponent(file.originalname);
+  const fileExtension = decodedFileName.split('.').pop();
+  const timestamp = Date.now();
+  const newFileName = `${decodedFileName}_${timestamp}.${fileExtension}`;
+  const encodedNewFileName = encodeURIComponent(newFileName);
+
   const params = {
-    Bucket: process.env.AWS_BUCKET_NAME, // S3 버킷 이름
-    Key: file.originalname, // 파일 이름
-    Expires: 3000, // url이 만료되는 시간(초)
-    ContentType: file.mimetype, // 파일의 MIME 타입
+    Bucket: process.env.AWS_BUCKET_NAME,
+    Key: newFileName,
+    Expires: 3000,
+    ContentType: file.mimetype,
   };
-  const preSignedUrl = await s3.getSignedUrlPromise("putObject", params); // 업로드된 파일의 URL 반환
-  return preSignedUrl;
+  const preSignedUrl = await s3.getSignedUrlPromise("putObject", params);
+  return {
+    preSignedUrl,
+    encodedNewFileName,
+  };
 };
 
 const {
@@ -87,8 +96,8 @@ const checkLetterController = async (req, res, next) => {
 const getUploadUrl = async (req, res, next) => {
   try {
     const { originalname } = req.file;
-    const result = await getPreSignedUrl({ originalname });
-    console.log("uploadUrl",result)
+    const result = await getPreSignedUrl({ originalname: originalname });
+    console.log("uploadUrl", result);
     return res.status(201).json({
       success: true,
       message: "getUploadUrl pass.",
@@ -108,9 +117,12 @@ const photoController = async (req, res, next) => {
     const Bucket = process.env.AWS_BUCKET_NAME;
     const region = process.env.AWS_REGION;
     const { letterId, originalname } = req.body;
+
     const s3Url = `https://${Bucket}.s3.${region}.amazonaws.com/${originalname}`;
+
     const photoId = await PhotoService(s3Url, letterId);
     await countPhotoService(letterId);
+
     return res.status(201).json({
       success: true,
       message: "photoController pass.",
@@ -127,8 +139,12 @@ const photoController = async (req, res, next) => {
 
 const delPhotoController = async (req, res, next) => {
   try {
-    const { photoId, letterId } = req.body;
-    await delPhotoService(photoId, letterId);
+    const { fileName, letterId } = req.body;
+    await delPhotoService(fileName, letterId);
+    return res.status(201).json({
+      success: true,
+      message: "delPhotoController pass.",
+    });
   } catch (error) {
     console.error("Error in delPhotoController :", error);
     return res.status(400).json({

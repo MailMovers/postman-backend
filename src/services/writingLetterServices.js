@@ -149,15 +149,15 @@ const checkLetterService = async (userId) => {
 const PhotoService = async (s3Url, letterId) => {
   try {
     const photoId = await photoDao(s3Url, letterId);
-    return photoId.id;
+    return photoId;
   } catch (error) {
     console.error(error);
     throw error;
   }
 };
-const delPhotoService = async (photoId, letterId) => {
+const delPhotoService = async (fileName, letterId) => {
   try {
-    await delPhotoDao(photoId);
+    await delPhotoDao(fileName);
     const currentPhotoCount = await countPhotoDao(letterId);
     const photoCount = currentPhotoCount[0].photo_count - 1;
     await updateCountPhotoDao(photoCount, letterId);
