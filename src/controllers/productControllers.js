@@ -8,6 +8,7 @@ const {
   deleteReviewService,
   getWritingPadService,
   getProductCategoriService,
+  getReviewListService,
 } = require("../services/productServices");
 const {
   getUserByIdDao,
@@ -259,6 +260,26 @@ const getProductCategoriController = async (req, res, next) => {
   }
 };
 
+const getReviewListController = async (req, res, next) => {
+  try {
+    const userId = req.userId;
+    if (!userId || userId.length === 0)
+      return res.status(400).json({ message: "KEY_ERROR" });
+    const myReviews = await getReviewListService(userId);
+
+    if (!myReviews || myReviews.length === 0) {
+      return res.status(400).json({ message: "NO_DATA" });
+    }
+    return res.status(200).json({
+      message: "SUCCESS",
+      data: myReviews,
+    });
+  } catch (err) {
+    console.error("getReviewListController에서 발생한 오류", err);
+    next(err);
+  }
+};
+
 module.exports = {
   insertProductController,
   deleteProductController,
@@ -269,4 +290,5 @@ module.exports = {
   deleteReviewController,
   getWritingPadController,
   getProductCategoriController,
+  getReviewListController,
 };

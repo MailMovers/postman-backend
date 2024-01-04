@@ -50,4 +50,7 @@ userRoute.post('/update-password', auth, userController.updatePassword);
 // update phone
 userRoute.post('/update-phone', auth, userController.updatePhone);
 
+// withdrawal
+userRoute.post('/withdraw', auth, userController.withdrawal);
+
 module.exports = userRoute;

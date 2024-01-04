@@ -316,6 +316,36 @@ const getCategoryListWithCountDao = async (startItem, pageSize, category) => {
     throw error;
   }
 };
+const getReviewListDao = async (userId) => {
+  try {
+    const getReviewListQuery = `
+      SELECT
+      reviews.writing_pad_id,
+        writing_pads.name,
+        writing_pads.img_url_1,
+        reviews.id,
+        reviews.content,
+        reviews.user_id,
+        writing_pads.deleted_at AS writing_pads_deleted_at,
+        reviews.score,
+        reviews.created_at AS review_created_at,
+        reviews.deleted_at AS review_deleted_at
+      FROM reviews
+      LEFT JOIN writing_pads ON reviews.writing_pad_id = writing_pads.id
+      WHERE 
+        reviews.deleted_at IS NULL AND 
+        writing_pads.deleted_at IS NULL AND
+        reviews.user_id = ?;
+    `;
+
+    const result = await AppDataSource.query(getReviewListQuery, [userId]);
+
+    return result;
+  } catch (err) {
+    console.error("getReviewListDao에서 오류:", err);
+    throw err;
+  }
+};
 
 module.exports = {
   insertProductDao,
@@ -330,4 +360,5 @@ module.exports = {
   getWritingPadDao,
   getCountProductListDao,
   getCategoryListWithCountDao,
+  getReviewListDao,
 };

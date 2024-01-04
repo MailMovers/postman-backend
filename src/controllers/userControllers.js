@@ -5,6 +5,7 @@ const {
     signInSchema,
     updatePasswordSchema,
     updatePhoneSchema,
+    withdrawalSchema,
 } = require('../utils/validation');
 const { UserService } = require('../services');
 const { ErrorNames, CustomError } = require('../utils/customErrors');
@@ -198,12 +199,20 @@ class UserController {
             // Joi
             if (error.isJoi) {
                 const { message } = error.details[0];
-                return res.status(400).json({ success: false, message });
+                return res.status(400).json({ success: false, message, error });
             }
-            if (error.name === 'UserNotFoundError' || error.name === 'PasswordNotMatchedError') {
-                return res.status(400).json({ success: false, message: error.message });
+
+            if (
+                ['UserNotFoundError', 'PasswordNotMatchedError', 'WithdrawUserError'].includes(
+                    error.name
+                )
+            ) {
+                return res.status(400).json({ success: false, message: error.message, error });
             }
-            return res.status(400).json({ success: false, message: '로그인에 실패했습니다.' });
+
+            return res
+                .status(400)
+                .json({ success: false, message: '로그인에 실패했습니다.', error });
         }
     };
 
@@ -349,6 +358,34 @@ class UserController {
             return res
                 .status(400)
                 .json({ success: false, message: '전화번호 변경에 실패했습니다.', error });
+        }
+    };
+
+    // 회원 탈퇴
+    withdrawal = async (req, res, next) => {
+        try {
+            const userId = req.userId;
+            const { password, reason } = await withdrawalSchema.validateAsync(req.body);
+
+            await this.userService.withdrawal({ userId, password, reason });
+
+            return res
+                .status(200)
+                .json({ success: true, message: '성공적으로 회원탈퇴 되었습니다.' });
+        } catch (error) {
+            console.log(error);
+            // Joi
+            if (error.isJoi) {
+                const { message } = error.details[0];
+                return res.status(400).json({ success: false, message, error });
+            }
+            if (error.name === 'PasswordNotMatchedError') {
+                return res.status(400).json({ success: false, message: error.message, error });
+            }
+
+            return res
+                .status(400)
+                .json({ success: false, message: '회원탈퇴에 실패했습니다.', error });
         }
     };
 }

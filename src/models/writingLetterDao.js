@@ -123,24 +123,36 @@ const photoDao = async (s3Url, letterId) => {
         `,
       [s3Url, letterId]
     );
-    return photo;
+    return photo.insertId;
   } catch (error) {
     console.error(error);
     throw error;
   }
 };
 
-const delPhotoDao = async (photoId) => {
+const delPhotoDao = async (fileName) => {
   try {
+    const escapedFileName = fileName.replace(/%/g, "\\%");
     const photo = await AppDataSource.query(
       `
+      SELECT id FROM photos
+      WHERE img_url LIKE ?;
+      `,
+      [`%${escapedFileName}`]
+    );
+    if (photo.length === 0) {
+      throw new Error("Image not found");
+    }
+    const photoId = photo[0].id;
+    await AppDataSource.query(
+      `
       DELETE FROM photos
-      WHERE id = ?
-        );
-        `,
+      WHERE id = ?;
+      `,
       [photoId]
     );
-    return photo;
+
+    return fileName;
   } catch (error) {
     console.error(error);
     throw error;
@@ -348,7 +360,6 @@ const historyLetterDao = async (userId) => {
     throw error;
   }
 };
-
 
 module.exports = {
   letterDao,

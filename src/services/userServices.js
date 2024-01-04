@@ -26,9 +26,12 @@ class UserService {
     sendEmail = async ({ email }) => {
         try {
             // 이메일 중복검사
-            const isEmailExist = await this.userDao.findUserByEmail({ email, provider: 'local' });
+            const [user] = await this.userDao.getUserInfoByEmail({
+                email,
+                provider: 'local',
+            });
 
-            if (isEmailExist.length > 0) {
+            if (!user) {
                 throw new CustomError(ErrorNames.EmailExistError, '이미 가입된 이메일입니다.');
             }
 
@@ -78,13 +81,18 @@ class UserService {
 
     signIn = async ({ email, password }) => {
         try {
-            const [user] = await this.userDao.findUserByEmail({ email, provider: 'local' });
+            const [user] = await this.userDao.getUserInfoByEmail({ email, provider: 'local' });
 
             if (!user) {
                 throw new CustomError(
                     ErrorNames.UserNotFoundError,
                     '이메일 또는 비밀번호를 다시 확인해주세요.'
                 );
+            }
+
+            // 회원 탈퇴한 유저 체크
+            if (user.deleted_at) {
+                throw new CustomError(ErrorNames.WithdrawUserError, '이미 탈퇴한 회원입니다.');
             }
 
             const isMatched = await bcrypt.compareSync(password, user.password);
@@ -104,7 +112,7 @@ class UserService {
 
     kakaoSignUp = async ({ name, email, phone_number }) => {
         try {
-            const [user] = await this.userDao.findUserByEmail({ email, provider: 'kakao' });
+            const [user] = await this.userDao.getUserInfoByEmail({ email, provider: 'kakao' });
 
             if (!user) {
                 // 비밀번호 암호화
@@ -122,6 +130,11 @@ class UserService {
                 return { userId: insertId };
             }
 
+            // 회원 탈퇴한 유저 체크
+            if (user.deleted_at) {
+                throw new CustomError(ErrorNames.WithdrawUserError, '이미 탈퇴한 회원입니다.');
+            }
+
             return { userId: user.id };
         } catch (error) {
             throw error;
@@ -130,7 +143,7 @@ class UserService {
 
     naverSignUp = async ({ email, mobile, name }) => {
         try {
-            const [user] = await this.userDao.findUserByEmail({ email, provider: 'naver' });
+            const [user] = await this.userDao.getUserInfoByEmail({ email, provider: 'naver' });
 
             if (!user) {
                 const hashedPassword = await bcrypt.hashSync(SOCIAL_PASSWORD, 10);
@@ -147,6 +160,11 @@ class UserService {
                 return { userId: insertId };
             }
 
+            // 회원 탈퇴한 유저 체크
+            if (user.deleted_at) {
+                throw new CustomError(ErrorNames.WithdrawUserError, '이미 탈퇴한 회원입니다.');
+            }
+
             return { userId: user.id };
         } catch (error) {
             throw error;
@@ -155,7 +173,7 @@ class UserService {
 
     googleLogin = async ({ name, email }) => {
         try {
-            const [user] = await this.userDao.findUserByEmail({ email, provider: 'google' });
+            const [user] = await this.userDao.getUserInfoByEmail({ email, provider: 'google' });
 
             if (!user) {
                 const hashedPassword = await bcrypt.hashSync(SOCIAL_PASSWORD, 10);
@@ -170,6 +188,11 @@ class UserService {
                 });
 
                 return { userId: insertId };
+            }
+
+            // 회원 탈퇴한 유저 체크
+            if (user.deleted_at) {
+                throw new CustomError(ErrorNames.WithdrawUserError, '이미 탈퇴한 회원입니다.');
             }
 
             return { userId: user.id };
@@ -306,6 +329,25 @@ class UserService {
             }
 
             return await this.userDao.updateUserPhone({ userId, newPhone });
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    withdrawal = async ({ userId, password, reason }) => {
+        try {
+            const [user] = await this.userDao.getPasswordByUserId({ userId });
+
+            const isVerified = await bcrypt.compareSync(password, user.password);
+
+            if (!isVerified) {
+                throw new CustomError(
+                    ErrorNames.PasswordNotMatchedError,
+                    '비밀번호가 일치하지 않습니다.'
+                );
+            }
+
+            await this.userDao.withdrawal({ userId, reason });
         } catch (error) {
             throw error;
         }
