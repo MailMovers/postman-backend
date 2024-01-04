@@ -102,7 +102,7 @@ CREATE TABLE `letters` (
   `status` enum('save','delete') DEFAULT 'save',
   `photo_count` int DEFAULT '0',
   `user_id` int DEFAULT NULL,
-  `writing_pad_id` int NOT NULL,
+  `writing_pad_id` int DEFAULT NULL,
   `stamp_id` int DEFAULT NULL,
   `send_address_id` int DEFAULT NULL,
   `delivery_address_id` int DEFAULT NULL,
@@ -114,7 +114,7 @@ CREATE TABLE `letters` (
   KEY `send_address_id` (`send_address_id`),
   KEY `delivery_address_id` (`delivery_address_id`),
   CONSTRAINT `letters_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `letters_ibfk_2` FOREIGN KEY (`writing_pad_id`) REFERENCES `writing_pads` (`id`),
+  CONSTRAINT `letters_ibfk_2` FOREIGN KEY (`writing_pad_id`) REFERENCES `writing_pads` (`id`) ON DELETE SET NULL,
   CONSTRAINT `letters_ibfk_3` FOREIGN KEY (`stamp_id`) REFERENCES `stamps` (`id`),
   CONSTRAINT `letters_ibfk_4` FOREIGN KEY (`send_address_id`) REFERENCES `send_address` (`id`) ON DELETE SET NULL,
   CONSTRAINT `letters_ibfk_5` FOREIGN KEY (`delivery_address_id`) REFERENCES `delivery_address` (`id`) ON DELETE SET NULL
