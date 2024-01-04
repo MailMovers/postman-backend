@@ -6,7 +6,7 @@ CREATE TABLE `point_transactions` (
   `transaction_type` varchar(20) NOT NULL,
   `transaction_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `description` varchar(500) NULL,
-  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)
+  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
 );
 
 -- migrate:down
