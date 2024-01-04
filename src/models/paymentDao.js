@@ -27,8 +27,7 @@ const getPricesDao = async (writingPadId, stampId) => {
 
   return prices;
 };
-
-const paymentInsertInfoDao = async (response, userId, letterId) => {
+const paymentInsertInfoDao = async (paymentInfo, userId, letterId) => {
   const {
     orderName,
     orderId,
@@ -39,7 +38,7 @@ const paymentInsertInfoDao = async (response, userId, letterId) => {
     suppliedAmount,
     approvedAt,
     status,
-  } = response;
+  } = paymentInfo;
   const result = await AppDataSource.query(
     `
     INSERT INTO orders (
@@ -85,5 +84,87 @@ const getRecipe = async (letterId) => {
   );
   return result;
 };
+const confirmPoint = async (userId) => {
+  const result = await AppDataSource.query(
+    `
+    SELECT point FROM users
+    WHERE id = ?
+    `,
+    [userId]
+  );
+  return result;
+};
+const recordPointTransactionDao = async (
+  userId,
+  pointsChange,
+  transactionType,
+  description
+) => {
+  await AppDataSource.query(
+    `
+    INSERT INTO point_transactions (user_id, points_change, transaction_type, description)
+    VALUES (?, ?, ?, ?);
+    `,
+    [userId, pointsChange, transactionType, description]
+  );
+};
 
-module.exports = { paymentInsertInfoDao, getPricesDao, addPointDao, getRecipe };
+const getPaymentInfoDao = async (userId) => {
+  const result = await AppDataSource.query(
+    `
+    SELECT order_id as orderId, product_name as productName, product_count as productCount, total_amount as totalAmount
+    FROM orders 
+    WHERE user_id = ?
+    `,
+    [userId]
+  );
+  return result;
+};
+
+const getOrderByIdDao = async (orderId) => {
+  const result = await AppDataSource.query(
+    `
+    SELECT * FROM orders
+    WHERE order_id = ?
+    `,
+    [orderId]
+  );
+  return result;
+};
+
+const getWritingPadNameByIdDao = async (writingPadId) => {
+  const result = await AppDataSource.query(
+    `
+      SELECT name
+      FROM writing_pads
+      WHERE id = ?
+    `,
+    [writingPadId]
+  );
+  return result[0].name;
+};
+
+const getStampNameByIdDao = async (stampId) => {
+  const result = await AppDataSource.query(
+    `
+      SELECT name
+      FROM stamps
+      WHERE id = ?
+    `,
+    [stampId]
+  );
+  return result[0].name;
+};
+
+module.exports = {
+  paymentInsertInfoDao,
+  getPricesDao,
+  addPointDao,
+  getRecipe,
+  confirmPoint,
+  recordPointTransactionDao,
+  getPaymentInfoDao,
+  getOrderByIdDao,
+  getWritingPadNameByIdDao,
+  getStampNameByIdDao,
+};

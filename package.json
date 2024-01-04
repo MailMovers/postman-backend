@@ -42,6 +42,7 @@
         "passport-naver-v2": "^2.0.8",
         "redis": "^4.6.11",
         "supertest": "^6.3.3",
-        "typeorm": "^0.3.17"
+        "typeorm": "^0.3.17",
+        "uuid": "^9.0.1"
     }
 }

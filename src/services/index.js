@@ -22,7 +22,10 @@ const {
   historyLetterService,
 } = require("./writingLetterServices");
 
-const { paymentSuccessService } = require("./paymentServices");
+const {
+  paymentSuccessService,
+  getPaymentInfoService,
+} = require("./paymentServices");
 
 // user service class
 const UserService = require("./userServices");
@@ -111,4 +114,5 @@ module.exports = {
   PhotoService,
   delPhotoService,
   historyLetterService,
+  getPaymentInfoService,
 };
