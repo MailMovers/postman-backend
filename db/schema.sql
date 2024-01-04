@@ -116,8 +116,8 @@ CREATE TABLE `letters` (
   CONSTRAINT `letters_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL,
   CONSTRAINT `letters_ibfk_2` FOREIGN KEY (`writing_pad_id`) REFERENCES `writing_pads` (`id`),
   CONSTRAINT `letters_ibfk_3` FOREIGN KEY (`stamp_id`) REFERENCES `stamps` (`id`),
-  CONSTRAINT `letters_ibfk_4` FOREIGN KEY (`send_address_id`) REFERENCES `send_address` (`id`),
-  CONSTRAINT `letters_ibfk_5` FOREIGN KEY (`delivery_address_id`) REFERENCES `delivery_address` (`id`)
+  CONSTRAINT `letters_ibfk_4` FOREIGN KEY (`send_address_id`) REFERENCES `send_address` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `letters_ibfk_5` FOREIGN KEY (`delivery_address_id`) REFERENCES `delivery_address` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
