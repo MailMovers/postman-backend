@@ -1,12 +1,16 @@
-const confirmLettersDao = require("../models/writingLetterDao");
 const { v4: uuidv4 } = require("uuid");
+
+const { confirmLettersDao } = require("../models/writingLetterDao");
+
 const {
   getPricesDao,
   paymentInsertInfoDao,
   addPointDao,
   recordPointTransactionDao,
   confirmPoint,
-  getPaymentInfoDao,
+  getOrderByIdDao,
+  getWritingPadNameByIdDao,
+  getStampNameByIdDao,
 } = require("../models/paymentDao");
 
 const PAGE_PRICE = 500;
@@ -51,9 +55,34 @@ const paymentSuccessService = async (userId, paymentInfo, usePoint) => {
         throw new Error("포인트가 결제 금액보다 많습니다.");
       }
     }
+    const {
+      orderName,
+      orderId,
+      paymentKey,
+      method,
+      totalAmount,
+      vat,
+      suppliedAmount,
+      approvedAt,
+      status,
+    } = paymentInfo;
 
     if (total === Number(paymentInfo.totalAmount)) {
-      await paymentInsertInfoDao(paymentInfo, userId, letterId);
+      await paymentInsertInfoDao(
+        {
+          orderName,
+          orderId,
+          paymentKey,
+          method,
+          totalAmount,
+          vat,
+          suppliedAmount,
+          approvedAt,
+          status,
+        },
+        userId,
+        letterId
+      );
       const point = total * POINT_PERCENTAGE;
       await addPointDao(userId, point);
       await recordPointTransactionDao(userId, point, "save", "save");
@@ -66,27 +95,41 @@ const paymentSuccessService = async (userId, paymentInfo, usePoint) => {
     throw error;
   }
 };
-
 const getPaymentInfoService = async (userId) => {
-  const order = await getPaymentInfoDao(userId);
+  const userLetters = await confirmLettersDao(userId);
 
-  // orderId 생성
-  const orderId = uuidv4();
+  let orderId;
+  let isUnique = false;
 
-  // orderName 생성
-  const orderName = `${order.productName} 외 ${order.productCount}건`;
+  while (!isUnique) {
+    orderId = uuidv4();
+    const existingOrder = await getOrderByIdDao(orderId);
+    if (!existingOrder) {
+      isUnique = true;
+    }
+  }
 
-  // successUrl, failUrl 설정
+  const writingPadName = await getWritingPadNameByIdDao(
+    userLetters[0].writing_pad_id
+  );
+  const stampName = await getStampNameByIdDao(userLetters[0].stamp_id);
+
+  const orderName = `${writingPadName}, ${userLetters[0].page}장 사진 ${userLetters[0].photo_count}장 외 ${stampName}우표`;
+
   const successUrl = "http://localhost:8080/success";
   const failUrl = "http://localhost:8080/fail";
+
+  const writingPadId = userLetters.map((letter) => letter.writing_pad_id);
+  const stampId = userLetters.map((letter) => letter.stamps_id);
+  const prices = await getPricesDao(writingPadId, stampId);
+  const totalAmount = calculateTotal(userLetters, prices);
 
   return {
     orderId,
     orderName,
     successUrl,
     failUrl,
-    amount: order.totalAmount,
+    amount: totalAmount,
   };
 };
-
 module.exports = { paymentSuccessService, getPaymentInfoService };

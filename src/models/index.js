@@ -55,6 +55,9 @@ const {
   recordPointTransactionDao,
   confirmPoint,
   getPaymentInfoDao,
+  getOrderByIdDao,
+  getWritingPadNameByIdDao,
+  getStampNameByIdDao,
 } = require("./paymentDao");
 
 const {
@@ -143,4 +146,7 @@ module.exports = {
   recordPointTransactionDao,
   confirmPoint,
   getPaymentInfoDao,
+  getOrderByIdDao,
+  getWritingPadNameByIdDao,
+  getStampNameByIdDao,
 };
