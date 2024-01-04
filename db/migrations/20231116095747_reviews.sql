@@ -9,7 +9,7 @@ CREATE TABLE `reviews` (
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL
 );
-ALTER TABLE `reviews` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+ALTER TABLE `reviews` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 ALTER TABLE `reviews` ADD FOREIGN KEY (`writing_pad_id`) REFERENCES `writing_pads` (`id`);
 
 -- migrate:down
