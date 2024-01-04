@@ -1,10 +1,12 @@
 const confirmLettersDao = require("../models/writingLetterDao");
+const { v4: uuidv4 } = require("uuid");
 const {
   getPricesDao,
   paymentInsertInfoDao,
   addPointDao,
   recordPointTransactionDao,
   confirmPointDao,
+  getPaymentInfoDao,
 } = require("../models/paymentDao");
 
 const PAGE_PRICE = 500;
@@ -45,7 +47,7 @@ const paymentSuccessService = async (userId, paymentInfo) => {
       await paymentInsertInfoDao(paymentInfo, userId, letterId);
       const point = total * POINT_PERCENTAGE;
       await addPointDao(userId, point);
-      await recordPointTransactionDao(userId, point, 'save', 'save point');
+      await recordPointTransactionDao(userId, point, "save", "save point");
       return { message: "success" };
     } else {
       throw new Error("결제오류");
@@ -56,4 +58,26 @@ const paymentSuccessService = async (userId, paymentInfo) => {
   }
 };
 
-module.exports = { paymentSuccessService };
+const getPaymentInfoService = async (userId) => {
+  const order = await getPaymentInfoDao(userId);
+
+  // orderId 생성
+  const orderId = uuidv4();
+
+  // orderName 생성
+  const orderName = `${order.productName} 외 ${order.productCount}건`;
+
+  // successUrl, failUrl 설정
+  const successUrl = "http://localhost:8080/success";
+  const failUrl = "http://localhost:8080/fail";
+
+  return {
+    orderId,
+    orderName,
+    successUrl,
+    failUrl,
+    amount: order.totalAmount,
+  };
+};
+
+module.exports = { paymentSuccessService, getPaymentInfoService };

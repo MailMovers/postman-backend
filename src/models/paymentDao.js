@@ -108,6 +108,15 @@ const recordPointTransactionDao = async (
     [userId, pointsChange, transactionType, description]
   );
 };
+
+const getPaymentInfoDao = async (userId) => {
+  const result = await AppDataSource.query(
+    `SELECT * FROM orders WHERE user_id = ?`,
+    [userId]
+  );
+  return result;
+};
+
 module.exports = {
   paymentInsertInfoDao,
   getPricesDao,
@@ -115,4 +124,5 @@ module.exports = {
   getRecipe,
   confirmPoint,
   recordPointTransactionDao,
+  getPaymentInfoDao,
 };

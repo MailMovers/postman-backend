@@ -1,12 +1,12 @@
 const axios = require("axios");
 
-const { paymentSuccessService } = require("../services/paymentServices");
+const { paymentSuccessService,getPaymentInfoService } = require("../services/paymentServices");
 
 const secretKey = process.env.TOSSPAYMENTS_SECRET_KEY;
 
 const paymentSuccessController = async (req, res) => {
   try {
-    const userId = req.userId
+    const userId = req.userId;
     const { orderId, amount, paymentKey } = req.query; // userId added
     const response = await axios.post(
       "https://api.tosspayments.com/v1/payments/confirm",
@@ -50,5 +50,10 @@ const paymentSuccessController = async (req, res) => {
     );
   }
 };
+const getPaymentInfoController = async (req, res) => {
+  const { userId } = req.userId;
+  const paymentInfo = await getPaymentInfoService(userId);
+  res.json(paymentInfo);
+};
 
-module.exports = { paymentSuccessController };
+module.exports = { paymentSuccessController, getPaymentInfoController };

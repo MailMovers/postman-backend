@@ -36,7 +36,10 @@ const {
   getReviewListController,
 } = require("./productControllers");
 
-const { paymentSuccessController } = require("./paymentControllers.js");
+const {
+  paymentSuccessController,
+  getPaymentInfoController,
+} = require("./paymentControllers.js");
 
 const {
   insertCsController,
@@ -96,6 +99,7 @@ module.exports = {
   },
   paymentController: {
     paymentSuccessController,
+    getPaymentInfoController,
   },
   csController: {
     insertCsController,

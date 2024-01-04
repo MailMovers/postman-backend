@@ -54,6 +54,7 @@ const {
   getRecipe,
   recordPointTransactionDao,
   confirmPoint,
+  getPaymentInfoDao,
 } = require("./paymentDao");
 
 const {
@@ -141,4 +142,5 @@ module.exports = {
   getRecipe,
   recordPointTransactionDao,
   confirmPoint,
+  getPaymentInfoDao,
 };
