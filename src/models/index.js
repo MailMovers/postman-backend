@@ -72,6 +72,8 @@ const {
   getNoticeDetailDao,
   getNoticeListDao,
   deleteNoticeDao,
+  adminDeleteReview,
+  getProductReviewListDao,
 } = require("./adminDao");
 
 module.exports = {
@@ -121,6 +123,8 @@ module.exports = {
     getNoticeDetailDao,
     getNoticeListDao,
     deleteNoticeDao,
+    adminDeleteReview,
+    getProductReviewListDao,
   },
   contentDao,
   checkLetterDao,

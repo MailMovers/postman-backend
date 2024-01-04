@@ -59,6 +59,8 @@ const {
   getLetterController,
   getPhotoController,
   getAddressController,
+  adminDeleteReviewController,
+  getProductReviewlistController,
 } = require("./adminController");
 
 module.exports = {
@@ -119,5 +121,7 @@ module.exports = {
     getLetterController,
     getPhotoController,
     getAddressController,
+    adminDeleteReviewController,
+    getProductReviewlistController,
   },
 };

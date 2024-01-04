@@ -13,12 +13,13 @@ const {
   getLetterController,
   getPhotoController,
   getAddressController,
+  adminDeleteReviewController,
+  getProductReviewlistController,
 } = require("../controllers/adminController");
 
 const {
   insertProductController,
   deleteProductController,
-  deleteReviewController,
 } = require("../controllers/productControllers");
 
 const {
@@ -37,7 +38,9 @@ adminRoute.post("/updateProduct", auth, updataProductController);
 //상품 삭제
 adminRoute.post("/deleteProduct", auth, deleteProductController);
 //상품 리뷰삭제
-adminRoute.post("/deleteProductReview", auth, deleteReviewController);
+adminRoute.post("/deleteProductReview", auth, adminDeleteReviewController);
+//상품 리뷰 불러오기
+adminRoute.get("/getProductReviewLIst", auth, getProductReviewlistController);
 //편지 주소 불러오기
 adminRoute.get("/letterAddress", auth, getAllAddressController);
 //공지사항 입력
