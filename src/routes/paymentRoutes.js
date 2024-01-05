@@ -8,6 +8,6 @@ const {
 const paymentRoute = express.Router();
 
 paymentRoute.get("/success", auth, paymentSuccessController);
-paymentRoute.get("/paymentInfo", auth, getPaymentInfoController);
+paymentRoute.get("/paymentInfo",  getPaymentInfoController);
 
 module.exports = { paymentRoute };

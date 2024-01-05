@@ -10,7 +10,7 @@ const secretKey = process.env.TOSSPAYMENTS_SECRET_KEY;
 const paymentSuccessController = async (req, res) => {
   try {
     const userId = req.userId;
-    const { orderId, amount, paymentKey, usePoint } = req.query; // usePoint added
+    const { orderId, amount, paymentKey, usePoint, letterId } = req.query; // usePoint added
 
     const response = await axios.post(
       "https://api.tosspayments.com/v1/payments/confirm",
@@ -35,7 +35,12 @@ const paymentSuccessController = async (req, res) => {
     }
 
     const paymentInfo = response.data;
-    await paymentSuccessService(userId, paymentInfo, usePoint === "true"); // usePoint passed
+    await paymentSuccessService(
+      userId,
+      letterId,
+      paymentInfo,
+      usePoint === "true"
+    ); // usePoint passed
 
     res.status(201).json({
       message: "success",
@@ -50,7 +55,7 @@ const paymentSuccessController = async (req, res) => {
   }
 };
 const getPaymentInfoController = async (req, res) => {
-  const letterId = req.query.letterId
+  const letterId = req.query.letterId;
   const paymentInfo = await getPaymentInfoService(letterId);
   res.json(paymentInfo);
 };

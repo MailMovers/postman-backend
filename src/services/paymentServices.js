@@ -2,6 +2,8 @@ const { v4: uuidv4 } = require("uuid");
 
 const { confirmLetterDao } = require("../models/writingLetterDao");
 
+const { confirmLetterService } = require("./writingLetterServices");
+
 const {
   getPricesDao,
   paymentInsertInfoDao,
@@ -33,10 +35,14 @@ const calculateTotal = (userLetters, prices) => {
   return total;
 };
 
-const paymentSuccessService = async (userId, paymentInfo, usePoint) => {
+const paymentSuccessService = async (
+  userId,
+  letterId,
+  paymentInfo,
+  usePoint
+) => {
   try {
-    const userLetters = await confirmLettersDao(userId);
-    const letterId = userLetters[0].id;
+    const userLetters = await confirmLetterDao(letterId);
 
     const writingPadId = userLetters.map((letter) => letter.writing_pad_id);
     const stampId = userLetters.map((letter) => letter.stamps_id);
@@ -96,24 +102,22 @@ const paymentSuccessService = async (userId, paymentInfo, usePoint) => {
   }
 };
 const getPaymentInfoService = async (letterId) => {
-  const userLetters = await confirmLetterDao(letterId);
-
+  const letterInfo = await confirmLetterService(letterId);
+  console.log(letterInfo)
+  const totalAmount = letterInfo.totalCost;
+  console.log(letterInfo);
   const orderId = uuidv4();
 
   const writingPadName = await getWritingPadNameByIdDao(
-    userLetters[0].writing_pad_id
+    letterInfo.writingPadId
   );
-  const stampName = await getStampNameByIdDao(userLetters[0].stamp_id);
-
-  const orderName = `${writingPadName}, ${userLetters[0].page}장 사진 ${userLetters[0].photo_count}장 외 ${stampName}우표`;
-
+  console.log("writingPadName : ", writingPadName);
+  const stampName = await getStampNameByIdDao(letterInfo.stampId);
+  console.log("stampName : ", stampName);
+  const orderName = `${writingPadName}, ${letterInfo.page}장 사진 ${letterInfo.photoCount}장 외 ${stampName}우표`;
+  console.log(orderName);
   const successUrl = "http://localhost:8080/success";
   const failUrl = "http://localhost:8080/fail";
-
-  const writingPadId = userLetters.map((letter) => letter.writing_pad_id);
-  const stampId = userLetters.map((letter) => letter.stamps_id);
-  const prices = await getPricesDao(writingPadId, stampId);
-  const totalAmount = calculateTotal(userLetters, prices);
 
   return {
     orderId,
