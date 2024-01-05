@@ -6,6 +6,8 @@ const {
   getNoticeDetailService,
   getNoticeListService,
   deleteNoticeService,
+  adminDeleteReviewService,
+  getProductReviewService,
 } = require("../services/adminService");
 const { getCsDetailService } = require("../services/csServices");
 const { getUserByIdDao } = require("../models/productDao");
@@ -227,6 +229,62 @@ const adminGetCsDetailController = async (req, res, next) => {
     }
   }
 };
+const getLetterController = async (req, res, next) => {
+  try {
+    await getLetterService();
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+};
+const getPhotoController = async (req, res, next) => {
+  try {
+    await getPhotoService();
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+};
+const getAddressController = async (req, res, next) => {
+  try {
+    await getAllAddressService();
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+};
+
+const adminDeleteReviewController = async (req, res, next) => {
+  try {
+    const reviewId = req.body.reviewId;
+
+    await adminDeleteReviewService(reviewId);
+    if (!reviewId || reviewId.length === 0) {
+      return res.status(400).json({ message: "삭제할 리뷰를 선택해주세요" });
+    }
+    return res.status(200).json({ message: "SUCCESS" });
+  } catch (err) {
+    console.error("deleteReviewController에서 발생한 오류", err);
+    next(err);
+  }
+};
+
+const getProductReviewlistController = async (req, res, next) => {
+  try {
+    const data = await getProductReviewService(productId);
+    const productId = req.body.productId;
+    if (!productId || productId.length === 0) {
+      return res.status(400).json({ message: "상품 아이디를 입력해주세요" });
+    }
+    return res.status(200).json({
+      message: "SUCCESS",
+      data: data,
+    });
+  } catch (err) {
+    console.error("getProductReviewlistController에서 발생한 오류", err);
+    next(err);
+  }
+};
 
 module.exports = {
   updataProductController,
@@ -237,4 +295,9 @@ module.exports = {
   getNoticeListController,
   deleteNoticeController,
   adminGetCsDetailController,
+  getLetterController,
+  getPhotoController,
+  getAddressController,
+  adminDeleteReviewController,
+  getProductReviewlistController,
 };

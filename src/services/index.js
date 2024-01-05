@@ -62,6 +62,8 @@ const {
   getNoticeDetailService,
   getNoticeListService,
   deleteNoticeService,
+  adminDeleteReviewService,
+  getProductReviewService,
 } = require("./adminService");
 
 module.exports = {
@@ -106,6 +108,8 @@ module.exports = {
     getNoticeDetailService,
     getNoticeListService,
     deleteNoticeService,
+    adminDeleteReviewService,
+    getProductReviewService,
   },
   checkLetterService,
   checkAndInsertAddressService,

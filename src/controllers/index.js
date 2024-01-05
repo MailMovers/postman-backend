@@ -60,6 +60,11 @@ const {
   getNoticeDetailController,
   getNoticeListController,
   deleteNoticeController,
+  getLetterController,
+  getPhotoController,
+  getAddressController,
+  adminDeleteReviewController,
+  getProductReviewlistController,
 } = require("./adminController");
 
 module.exports = {
@@ -119,5 +124,10 @@ module.exports = {
     getNoticeDetailController,
     getNoticeListController,
     deleteNoticeController,
+    getLetterController,
+    getPhotoController,
+    getAddressController,
+    adminDeleteReviewController,
+    getProductReviewlistController,
   },
 };

@@ -181,7 +181,7 @@ const insertReviewController = async (req, res, next) => {
 const getReviewController = async (req, res, next) => {
   try {
     const page = req.query.page || 1;
-    const pageSize = 20;
+    const pageSize = 10;
     const startItem = (page - 1) * pageSize;
 
     // 여기서 postId 가져오는 부분 확인
