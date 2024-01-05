@@ -50,8 +50,8 @@ const paymentSuccessController = async (req, res) => {
   }
 };
 const getPaymentInfoController = async (req, res) => {
-  const { userId } = req.userId;
-  const paymentInfo = await getPaymentInfoService(userId);
+  const letterId = req.body.letterId
+  const paymentInfo = await getPaymentInfoService(letterId);
   res.json(paymentInfo);
 };
 

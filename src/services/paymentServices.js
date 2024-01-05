@@ -1,6 +1,6 @@
 const { v4: uuidv4 } = require("uuid");
 
-const { confirmLettersDao } = require("../models/writingLetterDao");
+const { confirmLetterDao } = require("../models/writingLetterDao");
 
 const {
   getPricesDao,
@@ -95,8 +95,8 @@ const paymentSuccessService = async (userId, paymentInfo, usePoint) => {
     throw error;
   }
 };
-const getPaymentInfoService = async (userId) => {
-  const userLetters = await confirmLettersDao(userId);
+const getPaymentInfoService = async (letterId) => {
+  const userLetters = await confirmLetterDao(letterId);
 
   let orderId;
   let isUnique = false;
