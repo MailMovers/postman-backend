@@ -98,16 +98,7 @@ const paymentSuccessService = async (userId, paymentInfo, usePoint) => {
 const getPaymentInfoService = async (letterId) => {
   const userLetters = await confirmLetterDao(letterId);
 
-  let orderId;
-  let isUnique = false;
-
-  while (!isUnique) {
-    orderId = uuidv4();
-    const existingOrder = await getOrderByIdDao(orderId);
-    if (!existingOrder) {
-      isUnique = true;
-    }
-  }
+  const orderId = uuidv4();
 
   const writingPadName = await getWritingPadNameByIdDao(
     userLetters[0].writing_pad_id
