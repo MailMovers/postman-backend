@@ -219,6 +219,7 @@ const confirmLetterService = async (letterId) => {
           letterId: item.id,
           writingPadId: item.writing_pad_id,
           writingPadImgUrl: item.writing_pad_img_url,
+          page: item.page,
           contents: contents.map((content) => ({
             pageNum: content.pageNum, // pageNum을 직접 사용
             content: content.content,
