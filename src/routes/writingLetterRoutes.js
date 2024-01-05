@@ -18,13 +18,13 @@ const {
 
 const writingLetterRoute = express.Router();
 
-writingLetterRoute.post("/write",  letterController);
-writingLetterRoute.post("/upload",  upload.single("file"), getUploadUrl);
-writingLetterRoute.get("/check",  checkLetterController);
-writingLetterRoute.post("/photo",  photoController);
-writingLetterRoute.post("/delPhoto",  delPhotoController);
-writingLetterRoute.post("/stamp",  stampController);
-writingLetterRoute.get("/confirm",  confirmLetterController);
-writingLetterRoute.get("/history",  historyLetterController);
+writingLetterRoute.post("/write", auth, letterController);
+writingLetterRoute.post("/upload", auth, upload.single("file"), getUploadUrl);
+writingLetterRoute.get("/check", auth, checkLetterController);
+writingLetterRoute.post("/photo", auth, photoController);
+writingLetterRoute.post("/delPhoto", auth, delPhotoController);
+writingLetterRoute.post("/stamp", auth, stampController);
+writingLetterRoute.get("/confirm", auth, confirmLetterController);
+writingLetterRoute.get("/history", historyLetterController);
 
 module.exports = { writingLetterRoute };

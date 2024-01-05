@@ -156,7 +156,7 @@ const delPhotoController = async (req, res, next) => {
 
 const stampController = async (req, res, next) => {
   try {
-    const userId = req.body.userId;
+    const userId = req.userId;
     const {
       stampId,
       letterId,
