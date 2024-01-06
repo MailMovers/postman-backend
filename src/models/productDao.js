@@ -316,6 +316,8 @@ const getCategoryListWithCountDao = async (startItem, pageSize, category) => {
     throw error;
   }
 };
+
+//내가 작성한 리부 불러오기
 const getReviewListDao = async (userId) => {
   try {
     const getReviewListQuery = `
