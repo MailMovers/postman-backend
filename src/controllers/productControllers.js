@@ -285,7 +285,7 @@ const getProductCategoriController = async (req, res, next) => {
 //내가 작성한 리뷰 불러오기
 const getReviewListController = async (req, res, next) => {
   try {
-    const userId = 1;
+    const userId = req.userId;
     const page = req.query.page || 1;
     const pageSize = 8;
     const startItem = (page - 1) * pageSize;
