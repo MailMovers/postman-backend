@@ -253,7 +253,7 @@ const getAddressController = async (req, res, next) => {
     next(err);
   }
 };
-
+//상품 리뷰 삭제
 const adminDeleteReviewController = async (req, res, next) => {
   try {
     const reviewId = req.body.reviewId;
@@ -268,14 +268,14 @@ const adminDeleteReviewController = async (req, res, next) => {
     next(err);
   }
 };
-
+//상품 리뷰 불러오기
 const getProductReviewlistController = async (req, res, next) => {
   try {
-    const data = await getProductReviewService(productId);
     const productId = req.body.productId;
     if (!productId || productId.length === 0) {
       return res.status(400).json({ message: "상품 아이디를 입력해주세요" });
     }
+    const data = await getProductReviewService(productId);
     return res.status(200).json({
       message: "SUCCESS",
       data: data,
