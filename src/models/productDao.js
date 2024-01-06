@@ -227,9 +227,28 @@ const getReviewDao = async (startItem, pageSize, productId) => {
       created_at DESC
     LIMIT ? OFFSET ?;
   `,
+
     [productId, pageSize, startItem]
   );
   return getReview;
+};
+//리뷰 데이터카운트
+const getReviewCountDao = async (productId) => {
+  try {
+    const getReviewCountQuery = `
+      SELECT COUNT(*) AS count FROM reviews WHERE writing_pad_id = ? AND deleted_at IS NULL
+    `;
+    const resultCount = await AppDataSource.query(getReviewCountQuery, [
+      productId,
+    ]);
+
+    const count = resultCount[0]?.count || 0;
+
+    return { count };
+  } catch (error) {
+    console.error("getReviewCountDao에서 발생한 오류", error);
+    throw error;
+  }
 };
 
 //상품 리뷰 지우기
@@ -363,4 +382,5 @@ module.exports = {
   getCountProductListDao,
   getCategoryListWithCountDao,
   getReviewListDao,
+  getReviewCountDao,
 };

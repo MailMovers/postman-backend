@@ -14,6 +14,7 @@ const {
   getUserByIdDao,
   getUserByReviewDao,
   getCountProductListDao,
+  getReviewCountDao,
 } = require("../models/productDao");
 
 //어드민 계정일 경우에만 상품을 등록할수있습니다.
@@ -126,7 +127,7 @@ const getProductController = async (req, res, next) => {
     next(err);
   }
 };
-//상품의 목록을 페이지 기준 20개씩 보내줍니다.
+//상품의 목록을 페이지 기준 8개씩 보내줍니다.
 const getProductListController = async (req, res, next) => {
   try {
     const page = req.query.page || 1;
@@ -177,7 +178,7 @@ const insertReviewController = async (req, res, next) => {
     next(err);
   }
 };
-//상품 리뷰를 한 페이지당 20개의 댓글을 보여줍니다.
+//상품 리뷰를 한 페이지당 10개의 댓글을 보여줍니다.
 const getReviewController = async (req, res, next) => {
   try {
     const page = req.query.page || 1;
@@ -188,12 +189,14 @@ const getReviewController = async (req, res, next) => {
     const productId = req.params.productId; // 수정된 부분
 
     const reviewList = await getReviewService(productId, pageSize, startItem);
+    const count = await getReviewCountDao(productId);
 
     if (!reviewList || reviewList.length === 0)
       return res.status(400).json({ message: "리뷰를 불러올 수 없습니다" });
 
     return res.status(200).json({
       message: "SUCCESS",
+      count: count,
       data: reviewList,
     });
   } catch (err) {
