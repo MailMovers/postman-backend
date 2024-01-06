@@ -287,7 +287,7 @@ const getReviewListController = async (req, res, next) => {
   try {
     const userId = req.userId;
     const page = req.query.page || 1;
-    const pageSize = 8;
+    const pageSize = 6;
     const startItem = (page - 1) * pageSize;
     const myReviews = await getReviewListService(startItem, pageSize, userId);
 
