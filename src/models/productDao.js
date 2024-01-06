@@ -250,7 +250,18 @@ const getReviewCountDao = async (productId) => {
     throw error;
   }
 };
-
+//상품 리뷰 지우기
+const deleteMyReviewDao = async (userId, reviewId, productId) => {
+  const deleteReview = await AppDataSource.query(
+    `
+    UPDATE reviews
+    SET reviews.deleted_at = NOW()
+    WHERE reviews.user_id = ? AND reviews.id = ? AND writing_pad_Id = ?
+    `,
+    [userId, reviewId, productId]
+  );
+  return deleteReview;
+};
 //상품 리뷰 지우기
 const deleteReviewDao = async (userId, reviewId) => {
   const deleteReview = await AppDataSource.query(
@@ -383,4 +394,5 @@ module.exports = {
   getCategoryListWithCountDao,
   getReviewListDao,
   getReviewCountDao,
+  deleteMyReviewDao,
 };
