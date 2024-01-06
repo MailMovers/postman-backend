@@ -224,6 +224,8 @@ const deleteReviewController = async (req, res, next) => {
     next(err);
   }
 };
+
+//내가 작성한 리뷰 삭제하기
 const deleteMyreviewController = async (req, res, next) => {
   try {
     const userId = req.userId;
@@ -284,8 +286,6 @@ const getProductCategoriController = async (req, res, next) => {
 const getReviewListController = async (req, res, next) => {
   try {
     const userId = req.userId;
-    if (!userId || userId.length === 0)
-      return res.status(400).json({ message: "KEY_ERROR" });
     const myReviews = await getReviewListService(userId);
 
     if (!myReviews || myReviews.length === 0) {
