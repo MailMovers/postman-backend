@@ -229,6 +229,7 @@ const confirmLetterService = async (letterId) => {
             photoUrl: photo.img_url,
           })),
           stampId: item.stamp_id,
+          potin: item.point,
           deliveryAddress: item.delivery_address,
           deliveryAddressDetail: item.delivery_address_detail,
           deliveryPhone: item.delivery_phone,
