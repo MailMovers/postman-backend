@@ -285,8 +285,11 @@ const getProductCategoriController = async (req, res, next) => {
 //내가 작성한 리뷰 불러오기
 const getReviewListController = async (req, res, next) => {
   try {
-    const userId = req.userId;
-    const myReviews = await getReviewListService(userId);
+    const userId = 1;
+    const page = req.query.page || 1;
+    const pageSize = 8;
+    const startItem = (page - 1) * pageSize;
+    const myReviews = await getReviewListService(startItem, pageSize, userId);
 
     if (!myReviews || myReviews.length === 0) {
       return res.status(400).json({ message: "NO_DATA" });

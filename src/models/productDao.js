@@ -346,33 +346,43 @@ const getCategoryListWithCountDao = async (startItem, pageSize, category) => {
     throw error;
   }
 };
-
-//내가 작성한 리부 불러오기
-const getReviewListDao = async (userId) => {
+const getReviewListDao = async (startItem, pageSize, userId) => {
   try {
+    const myReviewCountQuery = `
+      SELECT COUNT(*) AS count FROM reviews WHERE writing_pad_id = ? AND deleted_at IS NULL
+    `;
     const getReviewListQuery = `
       SELECT
-      reviews.writing_pad_id,
-        writing_pads.name,
+        reviews.writing_pad_id,
+        writing_pads.name AS writingPadName,
         writing_pads.img_url_1,
-        reviews.id,
-        reviews.content,
+        reviews.id AS reviewId,
         reviews.user_id,
-        writing_pads.deleted_at AS writing_pads_deleted_at,
         reviews.score,
+        reviews.content,
         reviews.created_at AS review_created_at,
+        writing_pads.deleted_at AS writing_pads_deleted_at,
         reviews.deleted_at AS review_deleted_at
       FROM reviews
       LEFT JOIN writing_pads ON reviews.writing_pad_id = writing_pads.id
       WHERE 
         reviews.deleted_at IS NULL AND 
         writing_pads.deleted_at IS NULL AND
-        reviews.user_id = ?;
+        reviews.user_id = ?
+      ORDER BY
+        reviews.created_at DESC
+      LIMIT ? OFFSET ?;
     `;
 
-    const result = await AppDataSource.query(getReviewListQuery, [userId]);
+    const [countResult, getReviewListResult] = await Promise.all([
+      AppDataSource.query(myReviewCountQuery, [userId]),
+      AppDataSource.query(getReviewListQuery, [userId, pageSize, startItem]),
+    ]);
 
-    return result;
+    return {
+      count: countResult[0]?.count || 0,
+      getReviewList: getReviewListResult,
+    };
   } catch (err) {
     console.error("getReviewListDao에서 오류:", err);
     throw err;
