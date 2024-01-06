@@ -218,7 +218,7 @@ const confirmLetterController = async (req, res, next) => {
 const historyLetterController = async (req, res, next) => {
   try {
     // const userId = req.userId;
-    const userId = req.body.userId;
+    const userId = req.userId;
     const letterId = req.body.letterId;
     const result = await historyLetterService(userId, letterId);
     return res.status(201).json({
