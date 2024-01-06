@@ -15,6 +15,7 @@ const {
   getUserByReviewDao,
   getCountProductListDao,
   getReviewCountDao,
+  deleteMyReviewDao,
 } = require("../models/productDao");
 
 //어드민 계정일 경우에만 상품을 등록할수있습니다.
@@ -223,6 +224,24 @@ const deleteReviewController = async (req, res, next) => {
     next(err);
   }
 };
+
+//내가 작성한 리뷰 삭제하기
+const deleteMyreviewController = async (req, res, next) => {
+  try {
+    const userId = req.userId;
+    const { reviewId, productId } = req.body;
+    await deleteMyReviewDao(userId, reviewId, productId);
+    if (!reviewId || reviewId.length === 0) {
+      return res.status(400).json({ message: "삭제할 리뷰를 선택해주세요" });
+    } else if (!productId || productId.length === 0) {
+      return res.status(400).json({ message: "상품 아이디가 없습니다" });
+    }
+    return res.status(200).json({ message: "SUCCESS" });
+  } catch (err) {
+    console.error("deleteMtreviewController에서 발생한 오류", err);
+    next(err);
+  }
+};
 // getWritingPadController
 const getWritingPadController = async (req, res, next) => {
   try {
@@ -237,6 +256,7 @@ const getWritingPadController = async (req, res, next) => {
     next(err);
   }
 };
+//카테고리 불러오기
 const getProductCategoriController = async (req, res, next) => {
   try {
     const page = req.query.page || 1;
@@ -262,13 +282,14 @@ const getProductCategoriController = async (req, res, next) => {
     next(err);
   }
 };
-
+//내가 작성한 리뷰 불러오기
 const getReviewListController = async (req, res, next) => {
   try {
     const userId = req.userId;
-    if (!userId || userId.length === 0)
-      return res.status(400).json({ message: "KEY_ERROR" });
-    const myReviews = await getReviewListService(userId);
+    const page = req.query.page || 1;
+    const pageSize = 6;
+    const startItem = (page - 1) * pageSize;
+    const myReviews = await getReviewListService(startItem, pageSize, userId);
 
     if (!myReviews || myReviews.length === 0) {
       return res.status(400).json({ message: "NO_DATA" });
@@ -294,4 +315,5 @@ module.exports = {
   getWritingPadController,
   getProductCategoriController,
   getReviewListController,
+  deleteMyreviewController,
 };

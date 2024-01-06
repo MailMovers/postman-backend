@@ -11,11 +11,14 @@ const {
   getWritingPadController,
   getProductCategoriController,
   getReviewListController,
+  deleteMyreviewController,
 } = productController;
 const productRoute = express.Router();
 
 //내가 작성한 상품 리뷰 불러오기
 productRoute.get("/myReviews", auth, getReviewListController);
+//내가 작성한 리뷰 삭제
+productRoute.post("/deleteReview", auth, deleteMyreviewController);
 //카테고리 별 불러오기
 productRoute.get("/category", getProductCategoriController);
 //상품 상세보기
