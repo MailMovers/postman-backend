@@ -85,6 +85,77 @@ const getRecipe = async (letterId) => {
   );
   return result;
 };
+const confirmPoint = async (userId) => {
+  const result = await AppDataSource.query(
+    `
+    SELECT point FROM users
+    WHERE id = ?
+    `,
+    [userId]
+  );
+  return result;
+};
+const recordPointTransactionDao = async (
+  userId,
+  pointsChange,
+  transactionType,
+  description
+) => {
+  await AppDataSource.query(
+    `
+    INSERT INTO point_transactions (user_id, points_change, transaction_type, description)
+    VALUES (?, ?, ?, ?);
+    `,
+    [userId, pointsChange, transactionType, description]
+  );
+};
+
+const getPaymentInfoDao = async (userId) => {
+  const result = await AppDataSource.query(
+    `
+    SELECT order_id as orderId, product_name as productName, product_count as productCount, total_amount as totalAmount
+    FROM orders 
+    WHERE user_id = ?
+    `,
+    [userId]
+  );
+  return result;
+};
+
+const getOrderByIdDao = async (orderId) => {
+  const result = await AppDataSource.query(
+    `
+    SELECT * FROM orders
+    WHERE order_id = ?
+    `,
+    [orderId]
+  );
+  return result;
+};
+
+const getWritingPadNameByIdDao = async (writingPadId) => {
+  const result = await AppDataSource.query(
+    `
+      SELECT name
+      FROM writing_pads
+      WHERE id = ?
+    `,
+    [writingPadId]
+  );
+  return result[0].name;
+};
+
+const getStampNameByIdDao = async (stampId) => {
+  const result = await AppDataSource.query(
+    `
+      SELECT name
+      FROM stamps
+      WHERE id = ?
+    `,
+    [stampId]
+  );
+  return result[0].name;
+};
 const getCostomerId = async (userId) => {
   const result = await AppDataSource.query(
     `
@@ -102,4 +173,5 @@ module.exports = {
   addPointDao,
   getRecipe,
   getCostomerId,
+  
 };
