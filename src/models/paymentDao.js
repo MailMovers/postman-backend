@@ -27,7 +27,8 @@ const getPricesDao = async (writingPadId, stampId) => {
 
   return prices;
 };
-const paymentInsertInfoDao = async (paymentInfo, userId, letterId) => {
+
+const paymentInsertInfoDao = async (response, userId, letterId) => {
   const {
     orderName,
     orderId,
@@ -38,7 +39,7 @@ const paymentInsertInfoDao = async (paymentInfo, userId, letterId) => {
     suppliedAmount,
     approvedAt,
     status,
-  } = paymentInfo;
+  } = response;
   const result = await AppDataSource.query(
     `
     INSERT INTO orders (
@@ -155,16 +156,27 @@ const getStampNameByIdDao = async (stampId) => {
   );
   return result[0].name;
 };
+const getCostomerId = async (userId) => {
+  const result = await AppDataSource.query(
+    `
+    SELECT customer_id FROM users
+    WHERE id = ?
+    `,
+    [userId]
+  );
+  return result;
+};
 
 module.exports = {
   paymentInsertInfoDao,
   getPricesDao,
   addPointDao,
   getRecipe,
-  confirmPoint,
-  recordPointTransactionDao,
-  getPaymentInfoDao,
-  getOrderByIdDao,
-  getWritingPadNameByIdDao,
+  getCostomerId,
   getStampNameByIdDao,
+  getWritingPadNameByIdDao,
+  getOrderByIdDao,
+  getPaymentInfoDao,
+  recordPointTransactionDao,
+  confirmPoint,
 };
