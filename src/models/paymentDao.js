@@ -164,7 +164,7 @@ const getCostomerId = async (userId) => {
     `,
     [userId]
   );
-  return result;
+  return result[0].customer_id;
 };
 
 module.exports = {
