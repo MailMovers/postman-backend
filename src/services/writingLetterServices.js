@@ -123,9 +123,8 @@ const checkLetterService = async (userId) => {
     const result = await checkLetterDao(userId);
     const letters = await Promise.all(
       result.map(async (row) => {
-        const product = await getProductDao(row.writing_pad_id);
-        console.log(product);
-        const productPic = product[0] ? product[0].img_url : null; // product가 null이 아닌 경우에만 img_url에 접근
+        const [product] = await getProductDao(row.writing_pad_id);
+        const productPic = product ? product.img_url : null;
         return {
           letterId: row.letter_id,
           writingPadId: row.writing_pad_id,
