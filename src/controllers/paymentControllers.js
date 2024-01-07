@@ -11,7 +11,14 @@ const paymentSuccessController = async (req, res) => {
   try {
     const userId = req.userId;
     const { orderId, amount, paymentKey, usePoint, letterId } = req.query; // usePoint added
-
+    console.log(
+      "orderId, amount, paymentKey, usePoint, letterId :",
+      orderId,
+      amount,
+      paymentKey,
+      usePoint,
+      letterId
+    );
     const response = await axios.post(
       "https://api.tosspayments.com/v1/payments/confirm",
       {
