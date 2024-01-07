@@ -12,7 +12,7 @@ const {
   confirmPoint,
   getWritingPadNameByIdDao,
   getStampNameByIdDao,
-  getCostomerId
+  getCostomerId,
 } = require("../models/paymentDao");
 
 const PAGE_PRICE = 500;
@@ -104,19 +104,14 @@ const paymentSuccessService = async (
 const getPaymentInfoService = async (letterId, userId) => {
   const letterInfo = await confirmLetterService(letterId);
   const customerId = await getCostomerId(userId);
-  console.log(letterInfo)
   const totalAmount = letterInfo.totalCost;
-  console.log(letterInfo);
   const orderId = uuidv4();
 
   const writingPadName = await getWritingPadNameByIdDao(
     letterInfo.writingPadId
   );
-  console.log("writingPadName : ", writingPadName);
   const stampName = await getStampNameByIdDao(letterInfo.stampId);
-  console.log("stampName : ", stampName);
   const orderName = `${writingPadName}, ${letterInfo.page}장 사진 ${letterInfo.photoCount}장 외 ${stampName}우표`;
-  console.log(orderName);
   const successUrl = "http://localhost:8080/success";
   const failUrl = "http://localhost:8080/fail";
 

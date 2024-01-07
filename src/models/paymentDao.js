@@ -173,5 +173,10 @@ module.exports = {
   addPointDao,
   getRecipe,
   getCostomerId,
-  
+  getStampNameByIdDao,
+  getWritingPadNameByIdDao,
+  getOrderByIdDao,
+  getPaymentInfoDao,
+  recordPointTransactionDao,
+  confirmPoint,
 };
