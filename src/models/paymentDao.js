@@ -78,7 +78,7 @@ const addPointDao = async (point, userId) => {
 const getRecipe = async (letterId) => {
   const result = await AppDataSource.query(
     `
-    SELECT * FROM orders
+    SELECT order_name, total_amount, method FROM orders
     WHERE letter_id = ?
     `,
     [letterId]
