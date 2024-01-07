@@ -4,6 +4,7 @@ const { UserDao } = require('../models');
 const { ErrorNames, CustomError } = require('../utils/customErrors');
 const smtpTransport = require('../config/email.config');
 const redisCli = require('../config/redis.config');
+const { v4: uuidv4 } = require('uuid');
 
 const SOCIAL_PASSWORD = 'a12345678';
 
@@ -15,9 +16,19 @@ class UserService {
             // 비밀번호 암호화
             const hashedPassword = await bcrypt.hashSync(password, 10);
 
+            // 회원 UUID
+            const customerId = uuidv4();
+
             const provider = 'local';
 
-            return await this.userDao.insertUser({ name, email, phone, hashedPassword, provider });
+            return await this.userDao.insertUser({
+                name,
+                email,
+                phone,
+                hashedPassword,
+                provider,
+                customerId,
+            });
         } catch (error) {
             throw error;
         }
@@ -119,12 +130,16 @@ class UserService {
                 const hashedPassword = await bcrypt.hashSync(SOCIAL_PASSWORD, 10);
                 const provider = 'kakao';
 
+                // 회원 UUID
+                const customerId = uuidv4();
+
                 const { insertId } = await this.userDao.insertUser({
                     name,
                     email,
                     phone: phone_number,
                     hashedPassword,
                     provider,
+                    customerId,
                 });
 
                 return { userId: insertId };
@@ -149,12 +164,16 @@ class UserService {
                 const hashedPassword = await bcrypt.hashSync(SOCIAL_PASSWORD, 10);
                 const provider = 'naver';
 
+                // 회원 UUID
+                const customerId = uuidv4();
+
                 const { insertId } = await this.userDao.insertUser({
                     name,
                     email,
                     phone: mobile,
                     hashedPassword,
                     provider,
+                    customerId,
                 });
 
                 return { userId: insertId };
@@ -179,12 +198,16 @@ class UserService {
                 const hashedPassword = await bcrypt.hashSync(SOCIAL_PASSWORD, 10);
                 const provider = 'google';
 
+                // 회원 UUID
+                const customerId = uuidv4();
+
                 const { insertId } = await this.userDao.insertUser({
                     name,
                     email,
                     phone: null,
                     hashedPassword,
                     provider,
+                    customerId,
                 });
 
                 return { userId: insertId };

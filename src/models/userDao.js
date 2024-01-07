@@ -1,11 +1,11 @@
 const { AppDataSource } = require('./dataSource');
 
 class UserDao {
-    insertUser = async ({ name, email, phone, hashedPassword, provider }) => {
+    insertUser = async ({ name, email, phone, hashedPassword, provider, customerId }) => {
         try {
             return await AppDataSource.query(
-                `INSERT INTO users(name, email, password, phone, role_id, provider) VALUES (?,?,?,?,?,?)`,
-                [name, email, hashedPassword, phone, 1, provider]
+                `INSERT INTO users(name, email, password, phone, role_id, provider, customer_id) VALUES (?,?,?,?,?,?,?)`,
+                [name, email, hashedPassword, phone, 1, provider, customerId]
             );
         } catch (error) {
             throw error;
@@ -26,7 +26,7 @@ class UserDao {
     getUserInfoByUserId = async ({ userId }) => {
         try {
             return await AppDataSource.query(
-                `SELECT name, email, phone, created_at FROM users WHERE id = (?)`,
+                `SELECT name, email, phone, customer_id, created_at FROM users WHERE id = (?)`,
                 [userId]
             );
         } catch (error) {

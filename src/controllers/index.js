@@ -34,6 +34,7 @@ const {
   getWritingPadController,
   getProductCategoriController,
   getReviewListController,
+  deleteMyreviewController,
 } = require("./productControllers");
 
 const {
@@ -101,6 +102,7 @@ module.exports = {
     getWritingPadController,
     getProductCategoriController,
     getReviewListController,
+    deleteMyreviewController,
   },
   paymentController: {
     paymentSuccessController,
