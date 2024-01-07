@@ -6,6 +6,7 @@ CREATE TABLE `users` (
   `phone` varchar(255) NULL,
   `role_id` int NOT NULL,
   `point` int NOT NULL DEFAULT 0,
+  `customer_id` varchar(500) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL,
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
