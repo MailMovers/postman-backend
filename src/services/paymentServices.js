@@ -10,9 +10,9 @@ const {
   addPointDao,
   recordPointTransactionDao,
   confirmPoint,
-  getOrderByIdDao,
   getWritingPadNameByIdDao,
   getStampNameByIdDao,
+  getCostomerId
 } = require("../models/paymentDao");
 
 const PAGE_PRICE = 500;
@@ -101,8 +101,9 @@ const paymentSuccessService = async (
     throw error;
   }
 };
-const getPaymentInfoService = async (letterId) => {
+const getPaymentInfoService = async (letterId, userId) => {
   const letterInfo = await confirmLetterService(letterId);
+  const customerId = await getCostomerId(userId);
   console.log(letterInfo)
   const totalAmount = letterInfo.totalCost;
   console.log(letterInfo);
@@ -120,6 +121,7 @@ const getPaymentInfoService = async (letterId) => {
   const failUrl = "http://localhost:8080/fail";
 
   return {
+    customerId,
     orderId,
     orderName,
     successUrl,
