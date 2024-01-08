@@ -50,7 +50,7 @@ const paymentSuccessController = async (req, res) => {
 
     // TODO: 결제 실패 비즈니스 로직 처리
     res.redirect(
-      `/fail?code=${error.response?.data?.code}&message=${error.response?.data?.message}`
+      `/fail?code=${error.response?.data?.code || 'UNKNOWN_ERROR'}&message=${error.response?.data?.message || 'Unknown error'}`
     );
   }
 };
