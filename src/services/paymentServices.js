@@ -112,8 +112,8 @@ const getPaymentInfoService = async (letterId, userId) => {
   );
   const stampName = await getStampNameByIdDao(letterInfo.stampId);
   const orderName = `${writingPadName}, ${letterInfo.page}장 사진 ${letterInfo.photoCount}장 외 ${stampName}우표`;
-  const successUrl = "http://localhost:8080/success";
-  const failUrl = "http://localhost:8080/fail";
+  const successUrl = "http://localhost:8080/letter/success";
+  const failUrl = "http://localhost:8080/letter/fail";
 
   return {
     customerId,
