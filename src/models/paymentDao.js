@@ -43,9 +43,9 @@ const paymentInsertInfoDao = async (response, userId, letterId) => {
   const result = await AppDataSource.query(
     `
     INSERT INTO orders (
-        order_name, order_id, payment_key, method, total_amount, vat, supplied_amount, approved_at, status, user_id, letter_id
+        order_name, order_id, payment_key, method, total_amount, vat, supplied_amount, approved_at, status, user_id, letter_id, total_price
     ) VALUES (
-        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
     );
     `,
     [
@@ -60,6 +60,7 @@ const paymentInsertInfoDao = async (response, userId, letterId) => {
       status,
       userId,
       letterId,
+      totalAmount,
     ]
   );
   return result;
