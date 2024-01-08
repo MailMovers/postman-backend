@@ -29,7 +29,7 @@ const calculateTotal = (userLetters, prices) => {
     } else {
       total += pagePrice;
     }
-    total += userLetters[i].photoCount * PHOTO_PRICE;
+    total += userLetters[i].photo_count * PHOTO_PRICE;
     total += prices[i].stampFee;
   }
   return total;
@@ -51,7 +51,7 @@ const paymentSuccessService = async (
     const writingPadId = userLetters.map((letter) => letter.writing_pad_id);
     const stampId = userLetters.map((letter) => letter.stamp_id);
 
-    const prices = await getPricesDao(writingPadId, stampId);
+    const prices = await getPricesDao([writingPadId], [stampId]);
     console.log('prices:', prices); // 데이터 유효성 검사를 위한 로그 추가
 
     if (!prices || prices.length !== userLetters.length) {
