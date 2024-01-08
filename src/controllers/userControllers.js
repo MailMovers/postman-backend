@@ -112,7 +112,16 @@ class UserController {
             );
         } catch (error) {
             console.log(error);
-            return res.redirect('http://localhost:3000');
+            return res.redirect(
+                url.format({
+                    pathname: 'http://localhost:3000/login/kakao',
+                    query: {
+                        success: false,
+                        message: error.message,
+                        error,
+                    },
+                })
+            );
         }
     };
 
@@ -142,7 +151,16 @@ class UserController {
             );
         } catch (error) {
             console.log(error);
-            return res.redirect('http://localhost:3000');
+            return res.redirect(
+                url.format({
+                    pathname: 'http://localhost:3000/login/naver',
+                    query: {
+                        success: false,
+                        message: error.message,
+                        error,
+                    },
+                })
+            );
         }
     };
 
@@ -172,7 +190,16 @@ class UserController {
             );
         } catch (error) {
             console.log(error);
-            return res.redirect('http://localhost:3000');
+            return res.redirect(
+                url.format({
+                    pathname: 'http://localhost:3000/login/google',
+                    query: {
+                        success: false,
+                        message: error.message,
+                        error,
+                    },
+                })
+            );
         }
     };
 
