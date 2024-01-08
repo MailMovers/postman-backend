@@ -78,6 +78,8 @@ const paymentSuccessService = async (
     console.log('paymentInfo.totalAmount:', paymentInfo.totalAmount); // 결제 금액 검증 로그 추가
     if (total === Number(paymentInfo.totalAmount)) {
       // 결제 정보를 데이터베이스에 기록
+      const approvedAt = new Date(paymentInfo.approvedAt).toISOString().replace('T', ' ').slice(0, 19);
+
       await paymentInsertInfoDao(
         {
           orderName: paymentInfo.orderName,
@@ -87,7 +89,7 @@ const paymentSuccessService = async (
           totalAmount: paymentInfo.totalAmount,
           vat: paymentInfo.vat,
           suppliedAmount: paymentInfo.suppliedAmount,
-          approvedAt: paymentInfo.approvedAt,
+          approvedAt: approvedAt,
           status: paymentInfo.status,
         },
         userId,
