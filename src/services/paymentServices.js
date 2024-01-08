@@ -45,7 +45,7 @@ const paymentSuccessService = async (
     const userLetters = await confirmLetterDao(letterId);
 
     const writingPadId = userLetters.map((letter) => letter.writing_pad_id);
-    const stampId = userLetters.map((letter) => letter.stamps_id);
+    const stampId = userLetters.map((letter) => letter.stamp_id);
 
     const prices = await getPricesDao(writingPadId, stampId);
 
