@@ -34,7 +34,6 @@ const calculateTotal = (userLetters, prices) => {
   }
   return total;
 };
-
 const paymentSuccessService = async (
   userId,
   letterId,
@@ -43,48 +42,53 @@ const paymentSuccessService = async (
 ) => {
   try {
     const userLetters = await confirmLetterDao(letterId);
+    console.log('userLetters:', userLetters); // 데이터 유효성 검사를 위한 로그 추가
+
+    if (!userLetters || userLetters.length === 0) {
+      throw new Error('userLetters 데이터가 없습니다.');
+    }
 
     const writingPadId = userLetters.map((letter) => letter.writing_pad_id);
     const stampId = userLetters.map((letter) => letter.stamp_id);
 
     const prices = await getPricesDao(writingPadId, stampId);
+    console.log('prices:', prices); // 데이터 유효성 검사를 위한 로그 추가
+
+    if (!prices || prices.length !== userLetters.length) {
+      throw new Error('prices 데이터 검증 오류');
+    }
 
     let total = calculateTotal(userLetters, prices);
+    console.log('Calculated total:', total); // 결제 금액 검증을 위한 로그 추가
 
     if (usePoint) {
       const userPoint = await confirmPoint(userId);
+      console.log('User points:', userPoint); // 포인트 사용 로직 검사를 위한 로그 추가
+
       if (userPoint < total) {
         total -= userPoint;
         await addPointDao(userId, -userPoint);
         await recordPointTransactionDao(userId, -userPoint, "use", "use point");
       } else {
+        console.error('포인트가 결제 금액보다 많습니다.'); // 포인트 사용 로직 오류 로그 추가
         throw new Error("포인트가 결제 금액보다 많습니다.");
       }
     }
-    const {
-      orderName,
-      orderId,
-      paymentKey,
-      method,
-      totalAmount,
-      vat,
-      suppliedAmount,
-      approvedAt,
-      status,
-    } = paymentInfo;
 
+    console.log('paymentInfo.totalAmount:', paymentInfo.totalAmount); // 결제 금액 검증 로그 추가
     if (total === Number(paymentInfo.totalAmount)) {
+      // 결제 정보를 데이터베이스에 기록
       await paymentInsertInfoDao(
         {
-          orderName,
-          orderId,
-          paymentKey,
-          method,
-          totalAmount,
-          vat,
-          suppliedAmount,
-          approvedAt,
-          status,
+          orderName: paymentInfo.orderName,
+          orderId: paymentInfo.orderId,
+          paymentKey: paymentInfo.paymentKey,
+          method: paymentInfo.method,
+          totalAmount: paymentInfo.totalAmount,
+          vat: paymentInfo.vat,
+          suppliedAmount: paymentInfo.suppliedAmount,
+          approvedAt: paymentInfo.approvedAt,
+          status: paymentInfo.status,
         },
         userId,
         letterId
@@ -94,6 +98,7 @@ const paymentSuccessService = async (
       await recordPointTransactionDao(userId, point, "save", "save");
       return { message: "success" };
     } else {
+      console.error('결제 금액 불일치 오류'); // 결제 금액 불일치 오류 로그 추가
       throw new Error("결제오류");
     }
   } catch (error) {
