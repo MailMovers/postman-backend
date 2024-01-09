@@ -10,48 +10,27 @@ const secretKey = process.env.TOSSPAYMENTS_SECRET_KEY;
 const paymentSuccessController = async (req, res) => {
   try {
     const userId = req.userId;
-    const { orderId, amount, paymentKey } = req.query; // usePoint added
+    const { orderId, amount, paymentKey } = req.query;
     const { usePoint, letterId } = req.body;
-    const response = await axios.post(
-      "https://api.tosspayments.com/v1/payments/confirm",
-      {
-        orderId,
-        amount,
-        paymentKey,
-      },
-      {
-        headers: {
-          Authorization:
-            "Basic " + Buffer.from(secretKey + ":").toString("base64"),
-          "Content-Type": "application/json",
-        },
-        responseType: "json",
-      }
-    );
 
-    if (response.data.error) {
-      console.error("API 응답에서 오류:", response.data.error);
-      throw new Error(response.data.error);
-    }
-
-    const paymentInfo = response.data;
+    // paymentSuccessService 호출
     await paymentSuccessService(
       userId,
       letterId,
-      paymentInfo,
+      { orderId, amount, paymentKey },
       usePoint === "true"
-    ); // usePoint passed
+    );
 
     res.status(201).json({
       message: "success",
     });
   } catch (error) {
     console.error("결제 성공 컨트롤러에서 오류:", error);
-
-    // TODO: 결제 실패 비즈니스 로직 처리
-    res.redirect(
-      `/fail?code=${error.response?.data?.code || 'UNKNOWN_ERROR'}&message=${error.response?.data?.message || 'Unknown error'}`
-    );
+    // 오류 처리 로직
+    res.status(500).json({
+      message: "Internal Server Error",
+      error: error.message,
+    });
   }
 };
 const getPaymentInfoController = async (req, res) => {
