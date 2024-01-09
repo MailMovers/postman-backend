@@ -1,7 +1,5 @@
 const { v4: uuidv4 } = require("uuid");
 const axios = require("axios");
-const secretKey = process.env.TOSSPAYMENTS_SECRET_KEY;
-const encryptedSecretKey = Buffer.from(`${secretKey}:`).toString('base64');
 
 const { confirmLetterDao } = require("../models/writingLetterDao");
 
@@ -38,7 +36,9 @@ const calculateTotal = (userLetters, prices) => {
   return total;
 };
 
-const verifyPayment = async (paymentKey) => {
+const verifyPayment = async (orderId, amount, paymentKey) => {
+  const secretKey = process.env.TOSSPAYMENTS_SECRET_KEY;
+  const encryptedSecretKey = Buffer.from(`${secretKey}:`).toString("base64");
   try {
     const response = await axios.post(
       "https://api.tosspayments.com/v1/payments/confirm",
@@ -68,7 +68,6 @@ const paymentSuccessService = async (
   usePoint
 ) => {
   try {
-
     const userLetters = await confirmLetterDao(letterId);
     if (!userLetters || userLetters.length === 0) {
       throw new Error("userLetters 데이터가 없습니다.");
@@ -96,7 +95,7 @@ const paymentSuccessService = async (
       }
     }
 
-    const paymentVerification = await verifyPayment(paymentKey);
+    const paymentVerification = await verifyPayment(orderId, amount, paymentKey);
     if (paymentVerification.status !== "DONE") {
       throw new Error("결제 확인 실패");
     }
