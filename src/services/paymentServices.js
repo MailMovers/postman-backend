@@ -1,4 +1,6 @@
 const { v4: uuidv4 } = require("uuid");
+const axios = require("axios");
+const secretKey = process.env.TOSSPAYMENTS_SECRET_KEY;
 
 const { confirmLetterDao } = require("../models/writingLetterDao");
 
@@ -34,6 +36,23 @@ const calculateTotal = (userLetters, prices) => {
   }
   return total;
 };
+
+const verifyPayment = async (paymentKey) => {
+  try {
+    const response = await axios({
+      method: "get",
+      url: `https://api.tosspayments.com/v1/payments/${paymentKey}`,
+      headers: {
+        Authorization: `Bearer ${secretKey}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("결제 확인 중 오류 발생:", error);
+    throw error;
+  }
+};
+
 const paymentSuccessService = async (
   userId,
   letterId,
@@ -73,6 +92,12 @@ const paymentSuccessService = async (
     }
 
     // 주문 정보를 가져와서 검증합니다.
+
+    // 결제 확인을 위한 verifyPayment 함수 호출
+    const paymentVerification = await verifyPayment(paymentKey);
+    if (paymentVerification.status !== "DONE") {
+      throw new Error("결제 확인 실패");
+    }
     const letterInfo = await confirmLetterService(letterId);
     if (letterInfo.orderId !== orderId) {
       throw new Error("주문 ID가 일치하지 않습니다.");
@@ -80,12 +105,14 @@ const paymentSuccessService = async (
     if (letterInfo.totalCost !== Number(amount)) {
       throw new Error("결제 금액이 일치하지 않습니다.");
     }
-
     // 결제 금액이 일치하는지 확인합니다.
     if (total !== Number(amount)) {
       throw new Error("계산된 총액이 결제 금액과 일치하지 않습니다.");
     }
-
+    const writingPadName = await getWritingPadNameByIdDao(
+      letterInfo.writingPadId
+    );
+    const stampName = await getStampNameByIdDao(letterInfo.stampId);
     // 결제 정보를 데이터베이스에 기록합니다.
     const approvedAt = new Date().toISOString().replace("T", " ").slice(0, 19);
     await paymentInsertInfoDao(
@@ -93,17 +120,16 @@ const paymentSuccessService = async (
         orderName: `${writingPadName}, ${letterInfo.page}장 사진 ${letterInfo.photoCount}장 외 ${stampName}우표`,
         orderId,
         paymentKey,
-        method: "card", // 예시로 'card'를 사용했습니다. 실제 방법을 사용해야 합니다.
-        totalAmount: amount,
-        vat: Math.floor(Number(amount) * 0.1), // VAT는 10%로 가정했습니다.
-        suppliedAmount: Math.floor(Number(amount) * 0.9),
-        approvedAt,
-        status: "paid", // 예시로 'paid'를 사용했습니다. 실제 상태를 사용해야 합니다.
+        method: paymentInfo.method,
+        totalAmount: paymentInfo.totalAmount,
+        vat: paymentInfo.vat,
+        suppliedAmount: paymentInfo.suppliedAmount,
+        approvedAt: approvedAt,
+        status: paymentInfo.status,
       },
       userId,
       letterId
     );
-
     // 포인트를 적립합니다.
     const point = total * POINT_PERCENTAGE;
     await addPointDao(userId, point);
