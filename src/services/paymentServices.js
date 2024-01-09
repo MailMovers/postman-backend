@@ -100,9 +100,6 @@ const paymentSuccessService = async (
       throw new Error("결제 확인 실패");
     }
     const letterInfo = await confirmLetterService(letterId);
-    if (letterInfo.orderId !== orderId) {
-      throw new Error("주문 ID가 일치하지 않습니다.");
-    }
     if (letterInfo.totalCost !== Number(amount)) {
       throw new Error("결제 금액이 일치하지 않습니다.");
     }
