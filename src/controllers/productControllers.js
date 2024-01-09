@@ -131,7 +131,6 @@ const getProductController = async (req, res, next) => {
 //상품의 목록을 페이지 기준 8개씩 보내줍니다.
 const getProductListController = async (req, res, next) => {
   try {
-    const page = req.query.page || 1;
     const pageSize = 8;
     const startItem = (page - 1) * pageSize;
     const productList = await getProductListService(startItem, pageSize);
