@@ -69,16 +69,10 @@ const paymentSuccessService = async (
 ) => {
   try {
     const userLetters = await confirmLetterDao(letterId);
-    if (!userLetters || userLetters.length === 0) {
-      throw new Error("userLetters 데이터가 없습니다.");
-    }
-
     const writingPadId = userLetters.map((letter) => letter.writing_pad_id);
     const stampId = userLetters.map((letter) => letter.stamp_id);
     const prices = await getPricesDao(writingPadId, stampId);
-    if (!prices || prices.length !== userLetters.length) {
-      throw new Error("prices 데이터 검증 오류");
-    }
+    
 
     let total = calculateTotal(userLetters, prices);
 
