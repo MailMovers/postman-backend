@@ -70,17 +70,19 @@ const CsListDao = async (startItem, pageSize) => {
   try {
     const csList = await AppDataSource.query(
       `
-        SELECT
-        id,
-        title,
-        user_id,
-        created_at,
-        deleted_at
-        FROM customer_service
-        WHERE customer_service.deleted_at IS NULL
-        ORDER BY
-        created_at DESC 
-        LIMIT ? OFFSET ?;
+      SELECT
+      id,
+      title,
+      user_id,
+      created_at,
+      deleted_at
+  FROM
+      customer_service
+  WHERE
+      customer_service.deleted_at IS NULL
+  ORDER BY
+      created_at ASC
+  LIMIT ? OFFSET ?;
       `,
       [pageSize, startItem]
     );
