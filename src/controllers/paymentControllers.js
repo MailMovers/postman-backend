@@ -3,15 +3,12 @@ const {
   getPaymentInfoService,
 } = require("../services/paymentServices");
 
-const secretKey = process.env.TOSSPAYMENTS_SECRET_KEY;
-
 const paymentSuccessController = async (req, res) => {
   try {
     const userId = req.userId;
     const { orderId, amount, paymentKey } = req.query;
     const { usePoint, letterId } = req.body;
 
-    // paymentSuccessService 호출
     await paymentSuccessService(
       userId,
       letterId,
@@ -24,7 +21,6 @@ const paymentSuccessController = async (req, res) => {
     });
   } catch (error) {
     console.error("결제 성공 컨트롤러에서 오류:", error);
-    // 오류 처리 로직
     res.status(500).json({
       message: "Internal Server Error",
       error: error.message,
