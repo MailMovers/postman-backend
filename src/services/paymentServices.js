@@ -1,6 +1,7 @@
 const { v4: uuidv4 } = require("uuid");
 const axios = require("axios");
 const secretKey = process.env.TOSSPAYMENTS_SECRET_KEY;
+const encryptedSecretKey = Buffer.from(`${secretKey}:`).toString('base64');
 
 const { confirmLetterDao } = require("../models/writingLetterDao");
 
@@ -39,13 +40,20 @@ const calculateTotal = (userLetters, prices) => {
 
 const verifyPayment = async (paymentKey) => {
   try {
-    const response = await axios({
-      method: "get",
-      url: `https://api.tosspayments.com/v1/payments/${paymentKey}`,
-      headers: {
-        Authorization: `Bearer ${secretKey}`,
+    const response = await axios.post(
+      "https://api.tosspayments.com/v1/payments/confirm",
+      {
+        orderId: orderId,
+        amount: amount,
+        paymentKey: paymentKey,
       },
-    });
+      {
+        headers: {
+          Authorization: `Basic ${encryptedSecretKey}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     console.error("결제 확인 중 오류 발생:", error);
