@@ -26,11 +26,12 @@ const calculateTotal = async (userLetters) => {
   for (let i = 0; i < userLetters.length; i++) {
     console.log("편지 가격 계산 중:", userLetters[i]);
     console.log("가격 정보 조회 중:", userLetters[i].writing_pad_id, userLetters[i].stamp_id);
-    const prices = await getPricesDao([userLetters[i].writing_pad_id], [userLetters[i].stamp_id]);
-    console.log("가격 정보:", prices);
-    const writingPadPrice = prices[0].writingPadPrice;
+    const priceInfo = await getPricesDao([userLetters[i].writing_pad_id], [userLetters[i].stamp_id]);
+    console.log("가격 정보:", priceInfo);
+
+    const writingPadPrice = priceInfo.writingPadPrices.find(p => p.id === userLetters[i].writing_pad_id).writingPadPrice;
+    const stampFee = priceInfo.stampFees.find(p => p.id === userLetters[i].stamp_id).stampFee;
     console.log("페이지 가격:", writingPadPrice);
-    const stampFee = prices[0].stampFee;
     console.log("우표 가격:", stampFee);
 
     if (userLetters[i].page > MAX_FREE_PAGES) {
