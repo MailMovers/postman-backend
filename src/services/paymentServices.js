@@ -51,7 +51,7 @@ const calculateTotal = async (userLetters) => {
     } else {
       total += writingPadPrice;
     }
-    total += userLetters[i].photoCount * PHOTO_PRICE;
+    total += userLetters[i].photo_count * PHOTO_PRICE;
     total += stampFee;
   }
   return total;
@@ -97,7 +97,7 @@ const paymentSuccessService = async (
 
     let total = await calculateTotal(userLetters, prices);
 
-    console.log("총 가격:", total);
+    console.log("결제 금액:", total);
 
     if (usePoint) {
       const userPoint = await confirmPoint(userId);
