@@ -97,6 +97,8 @@ const paymentSuccessService = async (
 
     let total = await calculateTotal(userLetters, prices);
 
+    console.log("총 가격:", total);
+
     if (usePoint) {
       const userPoint = await confirmPoint(userId);
       if (userPoint >= total) {
