@@ -37,6 +37,30 @@ const calculateTotal = async (userLetters) => {
   }
   return total;
 };
+const verifyPayment = async (orderId, amount, paymentKey) => {
+  const secretKey = process.env.TOSSPAYMENTS_SECRET_KEY;
+  const encryptedSecretKey = Buffer.from(`${secretKey}:`).toString("base64");
+  try {
+    const response = await axios.post(
+      "https://api.tosspayments.com/v1/payments/confirm",
+      {
+        orderId: orderId,
+        amount: amount,
+        paymentKey: paymentKey,
+      },
+      {
+        headers: {
+          Authorization: `Basic ${encryptedSecretKey}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("결제 확인 중 오류 발생:", error);
+    throw error;
+  }
+};
 
 const paymentSuccessService = async (
   userId,
@@ -46,7 +70,6 @@ const paymentSuccessService = async (
 ) => {
   try {
     const userLetters = await confirmLetterDao(letterId);
-
     const writingPadId = userLetters[0].writing_pad_id;
     const stampId = userLetters[0].stamp_id;
     const prices = await getPricesDao([writingPadId], [stampId]);
@@ -55,49 +78,50 @@ const paymentSuccessService = async (
 
     if (usePoint) {
       const userPoint = await confirmPoint(userId);
-      if (userPoint < total) {
+      if (userPoint >= total) {
+        await addPointDao(userId, -total);
+        await recordPointTransactionDao(userId, -total, "use", "use point");
+        total = 0;
+      } else {
         total -= userPoint;
         await addPointDao(userId, -userPoint);
         await recordPointTransactionDao(userId, -userPoint, "use", "use point");
-      } else {
-        throw new Error("포인트가 결제 금액보다 많습니다.");
       }
     }
-    const {
-      orderName,
-      orderId,
-      paymentKey,
-      method,
-      totalAmount,
-      vat,
-      suppliedAmount,
-      approvedAt,
-      status,
-    } = paymentInfo;
 
-    if (total === Number(paymentInfo.totalAmount)) {
-      await paymentInsertInfoDao(
-        {
-          orderName,
-          orderId,
-          paymentKey,
-          method,
-          totalAmount,
-          vat,
-          suppliedAmount,
-          approvedAt,
-          status,
-        },
-        userId,
-        letterId
-      );
-      const point = total * POINT_PERCENTAGE;
-      await addPointDao(userId, point);
-      await recordPointTransactionDao(userId, point, "save", "save");
-      return { message: "success" };
-    } else {
-      throw new Error("결제오류");
+    const paymentVerification = await verifyPayment(orderId, amount, paymentKey);
+    if (paymentVerification.status !== "DONE") {
+      throw new Error("결제 확인 실패");
     }
+    const letterInfo = await confirmLetterService(letterId);
+    if (letterInfo.totalCost !== Number(amount)) {
+      throw new Error("결제 금액이 일치하지 않습니다.");
+    }
+    if (total !== Number(amount)) {
+      throw new Error("계산된 총액이 결제 금액과 일치하지 않습니다.");
+    }
+    const approvedAt = new Date().toISOString().replace("T", " ").slice(0, 19);
+    await paymentInsertInfoDao(
+      {
+        orderName: paymentVerification.orderName,
+        orderId: paymentVerification.orderId,
+        paymentKey: paymentVerification.paymentKey,
+        method: paymentVerification.method,
+        totalAmount: paymentVerification.totalAmount,
+        vat: paymentVerification.vat,
+        suppliedAmount: paymentVerification.suppliedAmount,
+        approvedAt: approvedAt,
+        status: paymentVerification.status,
+      },
+      userId,
+      letterId
+    );
+
+    const point = total * POINT_PERCENTAGE;
+    await addPointDao(userId, point);
+    await recordPointTransactionDao(userId, point, "save", "save point");
+
+    return { message: "success" };
   } catch (error) {
     console.error("결제 서비스에서 오류 :", error);
     throw error;
