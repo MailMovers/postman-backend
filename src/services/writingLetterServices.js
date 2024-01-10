@@ -123,8 +123,9 @@ const checkLetterService = async (userId) => {
     const result = await checkLetterDao(userId);
     const letters = await Promise.all(
       result.map(async (row) => {
-        const [product] = await getProductDao(row.writing_pad_id);
-        const productPic = product ? product.img_url : null;
+        const product = await getProductDao(row.writing_pad_id);
+        console.log(product);
+        const productPic = product[0] ? product[0].img_url : null; // product가 null이 아닌 경우에만 img_url에 접근
         return {
           letterId: row.letter_id,
           writingPadId: row.writing_pad_id,
@@ -200,16 +201,18 @@ const confirmLetterService = async (letterId) => {
     console.log("prices:", prices);
     const formattedResult = await Promise.all(
       result.map(async (item) => {
+        const writingPadPrice = prices.writingPadPrices[0].writingPadPrice;
+        const stampFee = prices.stampFees[0].stampFee;
         const additionalPageCost =
           item.page > MAX_FREE_PAGES
             ? PAGE_PRICE * (item.page - MAX_FREE_PAGES)
             : 0;
         const photoCost = item.photo_count * PHOTO_PRICE;
         const totalCost =
-          prices[0].writingPadPrice +
+          writingPadPrice +
           additionalPageCost +
           photoCost +
-          prices[0].stampFee;
+          stampFee;
 
         const contents = await getContentDao(item.id);
         const photos = await getPhotosDao(item.id);
