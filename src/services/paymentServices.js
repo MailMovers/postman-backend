@@ -76,7 +76,7 @@ const paymentSuccessService = async (
   try {
     const userLetters = await confirmLetterDao(letterId);
     let total = await calculateTotal(userLetters, usePoint);
-
+    console.log(`서버에서 계산된 총액: ${total}, 클라이언트에서 받은 금액: ${amount}`);
     const userPoint = await confirmPoint(userId);
     if (usePoint && userPoint < usePoint) {
       throw new Error("사용 가능한 포인트가 부족합니다.");
