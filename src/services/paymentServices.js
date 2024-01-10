@@ -25,17 +25,29 @@ const calculateTotal = async (userLetters) => {
   let total = 0;
   for (let i = 0; i < userLetters.length; i++) {
     console.log("편지 가격 계산 중:", userLetters[i]);
-    console.log("가격 정보 조회 중:", userLetters[i].writing_pad_id, userLetters[i].stamp_id);
-    const priceInfo = await getPricesDao([userLetters[i].writing_pad_id], [userLetters[i].stamp_id]);
+    console.log(
+      "가격 정보 조회 중:",
+      userLetters[i].writing_pad_id,
+      userLetters[i].stamp_id
+    );
+    const priceInfo = await getPricesDao(
+      [userLetters[i].writing_pad_id],
+      [userLetters[i].stamp_id]
+    );
     console.log("가격 정보:", priceInfo);
 
-    const writingPadPrice = priceInfo.writingPadPrices.find(p => p.id === userLetters[i].writing_pad_id).writingPadPrice;
-    const stampFee = priceInfo.stampFees.find(p => p.id === userLetters[i].stamp_id).stampFee;
+    const writingPadPrice = priceInfo.writingPadPrices.find(
+      (p) => p.id === userLetters[i].writing_pad_id
+    ).writingPadPrice;
+    const stampFee = priceInfo.stampFees.find(
+      (p) => p.id === userLetters[i].stamp_id
+    ).stampFee;
     console.log("페이지 가격:", writingPadPrice);
     console.log("우표 가격:", stampFee);
 
     if (userLetters[i].page > MAX_FREE_PAGES) {
-      total += writingPadPrice + PAGE_PRICE * (userLetters[i].page - MAX_FREE_PAGES);
+      total +=
+        writingPadPrice + PAGE_PRICE * (userLetters[i].page - MAX_FREE_PAGES);
     } else {
       total += writingPadPrice;
     }
@@ -72,7 +84,9 @@ const verifyPayment = async (orderId, amount, paymentKey) => {
 const paymentSuccessService = async (
   userId,
   letterId,
-  paymentInfo,
+  orderId,
+  amount,
+  paymentKey,
   usePoint
 ) => {
   try {
@@ -96,7 +110,11 @@ const paymentSuccessService = async (
       }
     }
 
-    const paymentVerification = await verifyPayment(orderId, amount, paymentKey);
+    const paymentVerification = await verifyPayment(
+      orderId,
+      amount,
+      paymentKey
+    );
     if (paymentVerification.status !== "DONE") {
       throw new Error("결제 확인 실패");
     }
