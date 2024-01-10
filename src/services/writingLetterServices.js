@@ -201,16 +201,18 @@ const confirmLetterService = async (letterId) => {
     console.log("prices:", prices);
     const formattedResult = await Promise.all(
       result.map(async (item) => {
+        const writingPadPrice = prices.writingPadPrices[0].writingPadPrice;
+        const stampFee = prices.stampFees[0].stampFee;
         const additionalPageCost =
           item.page > MAX_FREE_PAGES
             ? PAGE_PRICE * (item.page - MAX_FREE_PAGES)
             : 0;
         const photoCost = item.photo_count * PHOTO_PRICE;
         const totalCost =
-          prices[0].writingPadPrice +
+          writingPadPrice +
           additionalPageCost +
           photoCost +
-          prices[0].stampFee;
+          stampFee;
 
         const contents = await getContentDao(item.id);
         const photos = await getPhotosDao(item.id);
