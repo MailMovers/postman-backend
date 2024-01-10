@@ -68,30 +68,37 @@ const getCsDetailDao = async (userId, customerServiceId) => {
 //고객센터 문의 리스트
 const CsListDao = async (startItem, pageSize) => {
   try {
-    const csList = await AppDataSource.query(
-      `
+    const csListQuery = `
       SELECT
-      id,
-      title,
-      user_id,
-      created_at,
-      deleted_at
-  FROM
-      customer_service
-  WHERE
-      customer_service.deleted_at IS NULL
-  ORDER BY
-      created_at ASC
-  LIMIT ? OFFSET ?;
-      `,
-      [pageSize, startItem]
-    );
-    return csList;
+        id,
+        title,
+        user_id,
+        created_at,
+        deleted_at
+      FROM
+        customer_service
+      WHERE
+        customer_service.deleted_at IS NULL
+      ORDER BY
+        created_at DESC
+      LIMIT ? OFFSET ?;
+    `;
+    const totalQuery = `
+      SELECT COUNT(*) AS total FROM customer_service WHERE deleted_at IS NULL
+    `;
+
+    const [csList, totalResult] = await Promise.all([
+      AppDataSource.query(csListQuery, [pageSize, startItem]),
+      AppDataSource.query(totalQuery),
+    ]);
+
+    return { csList, total: totalResult[0]?.total || 0 };
   } catch (err) {
-    console.error("CsListDao에서 생긴 오류", err);
+    console.error("CsListDao에서 발생한 오류", err);
     throw err;
   }
 };
+
 //답변 목록 불러오기
 const getCsAlistDao = async (customerServiceId) => {
   const CsAlist = await AppDataSource.query(
