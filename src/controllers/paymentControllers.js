@@ -20,7 +20,9 @@ const paymentSuccessController = async (req, res) => {
     await paymentSuccessService(
       userId,
       letterId,
-      { orderId, amount, paymentKey },
+      orderId,
+      amount,
+      paymentKey,
       usePoint === "true"
     );
 
