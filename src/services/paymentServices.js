@@ -22,22 +22,33 @@ const MAX_FREE_PAGES = 3;
 const POINT_PERCENTAGE = 0.05;
 
 const calculateTotal = async (userLetters, usePoint = 0) => {
-  const pricePromises = userLetters.map((letter) =>
-    getPricesDao(letter.writing_pad_id, letter.stamp_id)
-  );
-  const prices = await Promise.all(pricePromises);
+  let total = 0;
+  for (let i = 0; i < userLetters.length; i++) {
+    const priceInfo = await getPricesDao(
+      [userLetters[i].writing_pad_id],
+      [userLetters[i].stamp_id]
+    );
 
-  let total = userLetters.reduce((acc, letter, index) => {
-    const { writingPadPrice, stampFee } = prices[index];
-    let letterTotal = writingPadPrice;
-    if (letter.page > MAX_FREE_PAGES) {
-      letterTotal += PAGE_PRICE * (letter.page - MAX_FREE_PAGES);
+    const writingPadPrice = priceInfo.writingPadPrices.find(
+      (p) => p.id === userLetters[i].writing_pad_id
+    ).writingPadPrice;
+    const stampFee = priceInfo.stampFees.find(
+      (p) => p.id === userLetters[i].stamp_id
+    ).stampFee;
+
+    if (userLetters[i].page > MAX_FREE_PAGES) {
+      total +=
+        writingPadPrice + PAGE_PRICE * (userLetters[i].page - MAX_FREE_PAGES);
+    } else {
+      total += writingPadPrice;
     }
-    letterTotal += letter.photo_count * PHOTO_PRICE + stampFee;
-    return acc + letterTotal;
-  }, 0);
 
-  return total - usePoint;
+    const photoCost = userLetters[i].photo_count * PHOTO_PRICE;
+    total += photoCost;
+    total += stampFee;
+    total -= usePoint;
+  }
+  return total;
 };
 
 const verifyPayment = async (orderId, amount, paymentKey) => {
@@ -76,7 +87,6 @@ const paymentSuccessService = async (
   try {
     const userLetters = await confirmLetterDao(letterId);
     let total = await calculateTotal(userLetters, usePoint);
-    console.log(`서버에서 계산된 총액: ${total}, 클라이언트에서 받은 금액: ${amount}`);
     const userPoint = await confirmPoint(userId);
     if (usePoint && userPoint < usePoint) {
       throw new Error("사용 가능한 포인트가 부족합니다.");
