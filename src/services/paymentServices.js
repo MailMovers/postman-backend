@@ -43,6 +43,8 @@ const calculateTotal = async (userLetters) => {
       (p) => p.id === userLetters[i].stamp_id
     ).stampFee;
     console.log("페이지 가격:", writingPadPrice);
+    console.log(`MAX_FREE_PAGES: ${MAX_FREE_PAGES}, PAGE_PRICE: ${PAGE_PRICE}, PHOTO_PRICE: ${PHOTO_PRICE}`);
+    console.log(`Page type: ${typeof userLetters[i].page}, Photo count type: ${typeof userLetters[i].photo_count}`);
     console.log("우표 가격:", stampFee);
 
     if (userLetters[i].page > MAX_FREE_PAGES) {
@@ -51,8 +53,14 @@ const calculateTotal = async (userLetters) => {
     } else {
       total += writingPadPrice;
     }
-    total += userLetters[i].photo_count * PHOTO_PRICE;
+    console.log(`Total after page cost for letter ${i}: ${total}`);
+
+    const photoCost = userLetters[i].photo_count * PHOTO_PRICE;
+    console.log(`Photo cost for letter ${i}: ${photoCost}`);
+    total += photoCost;
+    console.log(`Total after photo cost for letter ${i}: ${total}`);
     total += stampFee;
+    console.log(`Total after stamp fee for letter ${i}: ${total}`);
   }
   return total;
 };
