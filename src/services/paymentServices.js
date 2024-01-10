@@ -1,5 +1,4 @@
 const { v4: uuidv4 } = require("uuid");
-const axios = require("axios");
 
 const { confirmLetterDao } = require("../models/writingLetterDao");
 
@@ -21,21 +20,23 @@ const PHOTO_PRICE = 500;
 const MAX_FREE_PAGES = 3;
 const POINT_PERCENTAGE = 0.05;
 
-const calculateTotal = (userLetters, prices) => {
+const calculateTotal = async (userLetters) => {
   let total = 0;
   for (let i = 0; i < userLetters.length; i++) {
-    const pagePrice = prices[i].writingPadPrice;
+    const prices = await getPricesDao([userLetters[i].writing_pad_id], [userLetters[i].stamp_id]);
+    const pagePrice = prices[0].writingPadPrice;
+    const stampFee = prices[0].stampFee;
+
     if (userLetters[i].page > MAX_FREE_PAGES) {
       total += pagePrice + PAGE_PRICE * (userLetters[i].page - MAX_FREE_PAGES);
     } else {
       total += pagePrice;
     }
-    total += userLetters[i].photo_count * PHOTO_PRICE;
-    total += prices[i].stampFee;
+    total += userLetters[i].photoCount * PHOTO_PRICE;
+    total += stampFee;
   }
   return total;
 };
-
 const verifyPayment = async (orderId, amount, paymentKey) => {
   const secretKey = process.env.TOSSPAYMENTS_SECRET_KEY;
   const encryptedSecretKey = Buffer.from(`${secretKey}:`).toString("base64");
@@ -64,25 +65,16 @@ const verifyPayment = async (orderId, amount, paymentKey) => {
 const paymentSuccessService = async (
   userId,
   letterId,
-  { orderId, amount, paymentKey },
+  paymentInfo,
   usePoint
 ) => {
-  console.log("결제 성공 서비스에서 받은 데이터:", {
-    userId,
-    letterId,
-    orderId,
-    amount,
-    paymentKey,
-    usePoint,
-  });
   try {
     const userLetters = await confirmLetterDao(letterId);
-    const writingPadId = userLetters.map((letter) => letter.writing_pad_id);
-    const stampId = userLetters.map((letter) => letter.stamp_id);
-    const prices = await getPricesDao(writingPadId, stampId);
-    
+    const writingPadId = userLetters[0].writing_pad_id;
+    const stampId = userLetters[0].stamp_id;
+    const prices = await getPricesDao([writingPadId], [stampId]);
 
-    let total = calculateTotal(userLetters, prices);
+    let total = await calculateTotal(userLetters, prices);
 
     if (usePoint) {
       const userPoint = await confirmPoint(userId);
@@ -146,8 +138,8 @@ const getPaymentInfoService = async (letterId, userId) => {
   );
   const stampName = await getStampNameByIdDao(letterInfo.stampId);
   const orderName = `${writingPadName}, ${letterInfo.page}장 사진 ${letterInfo.photoCount}장 외 ${stampName}우표`;
-  const successUrl = "http://localhost:8080/letter/success";
-  const failUrl = "http://localhost:8080/letter/fail";
+  const successUrl = "http://localhost:8080/success";
+  const failUrl = "http://localhost:8080/fail";
 
   return {
     customerId,
