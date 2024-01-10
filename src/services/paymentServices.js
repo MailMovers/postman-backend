@@ -1,4 +1,5 @@
 const { v4: uuidv4 } = require("uuid");
+const axios = require("axios");
 
 const { confirmLetterDao } = require("../models/writingLetterDao");
 
@@ -23,14 +24,19 @@ const POINT_PERCENTAGE = 0.05;
 const calculateTotal = async (userLetters) => {
   let total = 0;
   for (let i = 0; i < userLetters.length; i++) {
+    console.log("편지 가격 계산 중:", userLetters[i]);
+    console.log("가격 정보 조회 중:", userLetters[i].writing_pad_id, userLetters[i].stamp_id);
     const prices = await getPricesDao([userLetters[i].writing_pad_id], [userLetters[i].stamp_id]);
-    const pagePrice = prices[0].writingPadPrice;
+    console.log("가격 정보:", prices);
+    const writingPadPrice = prices[0].writingPadPrice;
+    console.log("페이지 가격:", writingPadPrice);
     const stampFee = prices[0].stampFee;
+    console.log("우표 가격:", stampFee);
 
     if (userLetters[i].page > MAX_FREE_PAGES) {
-      total += pagePrice + PAGE_PRICE * (userLetters[i].page - MAX_FREE_PAGES);
+      total += writingPadPrice + PAGE_PRICE * (userLetters[i].page - MAX_FREE_PAGES);
     } else {
-      total += pagePrice;
+      total += writingPadPrice;
     }
     total += userLetters[i].photoCount * PHOTO_PRICE;
     total += stampFee;
