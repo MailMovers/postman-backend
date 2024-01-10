@@ -21,34 +21,25 @@ const PHOTO_PRICE = 500;
 const MAX_FREE_PAGES = 3;
 const POINT_PERCENTAGE = 0.05;
 
-const calculateTotal = async (userLetters) => {
-  let total = 0;
-  for (let i = 0; i < userLetters.length; i++) {
-    const priceInfo = await getPricesDao(
-      [userLetters[i].writing_pad_id],
-      [userLetters[i].stamp_id]
-    );
+const calculateTotal = async (userLetters, usePoint = 0) => {
+  const pricePromises = userLetters.map((letter) =>
+    getPricesDao(letter.writing_pad_id, letter.stamp_id)
+  );
+  const prices = await Promise.all(pricePromises);
 
-    const writingPadPrice = priceInfo.writingPadPrices.find(
-      (p) => p.id === userLetters[i].writing_pad_id
-    ).writingPadPrice;
-    const stampFee = priceInfo.stampFees.find(
-      (p) => p.id === userLetters[i].stamp_id
-    ).stampFee;
-
-    if (userLetters[i].page > MAX_FREE_PAGES) {
-      total +=
-        writingPadPrice + PAGE_PRICE * (userLetters[i].page - MAX_FREE_PAGES);
-    } else {
-      total += writingPadPrice;
+  let total = userLetters.reduce((acc, letter, index) => {
+    const { writingPadPrice, stampFee } = prices[index];
+    let letterTotal = writingPadPrice;
+    if (letter.page > MAX_FREE_PAGES) {
+      letterTotal += PAGE_PRICE * (letter.page - MAX_FREE_PAGES);
     }
+    letterTotal += letter.photo_count * PHOTO_PRICE + stampFee;
+    return acc + letterTotal;
+  }, 0);
 
-    const photoCost = userLetters[i].photo_count * PHOTO_PRICE;
-    total += photoCost;
-    total += stampFee;
-  }
-  return total;
+  return total - usePoint;
 };
+
 const verifyPayment = async (orderId, amount, paymentKey) => {
   const secretKey = process.env.TOSSPAYMENTS_SECRET_KEY;
   const encryptedSecretKey = Buffer.from(`${secretKey}:`).toString("base64");
@@ -84,23 +75,16 @@ const paymentSuccessService = async (
 ) => {
   try {
     const userLetters = await confirmLetterDao(letterId);
-    const writingPadId = userLetters[0].writing_pad_id;
-    const stampId = userLetters[0].stamp_id;
-    const prices = await getPricesDao([writingPadId], [stampId]);
+    let total = await calculateTotal(userLetters, usePoint);
 
-    let total = await calculateTotal(userLetters, prices);
-
+    const userPoint = await confirmPoint(userId);
+    if (usePoint && userPoint < usePoint) {
+      throw new Error("사용 가능한 포인트가 부족합니다.");
+    }
     if (usePoint) {
-      const userPoint = await confirmPoint(userId);
-      if (userPoint >= total) {
-        await addPointDao(userId, -total);
-        await recordPointTransactionDao(userId, -total, "use", "use point");
-        total = 0;
-      } else {
-        total -= userPoint;
-        await addPointDao(userId, -userPoint);
-        await recordPointTransactionDao(userId, -userPoint, "use", "use point");
-      }
+      await addPointDao(userId, -usePoint);
+      await recordPointTransactionDao(userId, -usePoint, "use", "use point");
+      total -= usePoint;
     }
 
     const paymentVerification = await verifyPayment(
@@ -110,10 +94,6 @@ const paymentSuccessService = async (
     );
     if (paymentVerification.status !== "DONE") {
       throw new Error("결제 확인 실패");
-    }
-    const letterInfo = await confirmLetterService(letterId);
-    if (letterInfo.totalCost !== Number(amount)) {
-      throw new Error("결제 금액이 일치하지 않습니다.");
     }
     if (total !== Number(amount)) {
       throw new Error("계산된 총액이 결제 금액과 일치하지 않습니다.");
