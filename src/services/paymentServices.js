@@ -24,17 +24,10 @@ const POINT_PERCENTAGE = 0.05;
 const calculateTotal = async (userLetters) => {
   let total = 0;
   for (let i = 0; i < userLetters.length; i++) {
-    console.log("편지 가격 계산 중:", userLetters[i]);
-    console.log(
-      "가격 정보 조회 중:",
-      userLetters[i].writing_pad_id,
-      userLetters[i].stamp_id
-    );
     const priceInfo = await getPricesDao(
       [userLetters[i].writing_pad_id],
       [userLetters[i].stamp_id]
     );
-    console.log("가격 정보:", priceInfo);
 
     const writingPadPrice = priceInfo.writingPadPrices.find(
       (p) => p.id === userLetters[i].writing_pad_id
@@ -42,10 +35,6 @@ const calculateTotal = async (userLetters) => {
     const stampFee = priceInfo.stampFees.find(
       (p) => p.id === userLetters[i].stamp_id
     ).stampFee;
-    console.log("페이지 가격:", writingPadPrice);
-    console.log(`MAX_FREE_PAGES: ${MAX_FREE_PAGES}, PAGE_PRICE: ${PAGE_PRICE}, PHOTO_PRICE: ${PHOTO_PRICE}`);
-    console.log(`Page type: ${typeof userLetters[i].page}, Photo count type: ${typeof userLetters[i].photo_count}`);
-    console.log("우표 가격:", stampFee);
 
     if (userLetters[i].page > MAX_FREE_PAGES) {
       total +=
@@ -53,14 +42,10 @@ const calculateTotal = async (userLetters) => {
     } else {
       total += writingPadPrice;
     }
-    console.log(`Total after page cost for letter ${i}: ${total}`);
 
     const photoCost = userLetters[i].photo_count * PHOTO_PRICE;
-    console.log(`Photo cost for letter ${i}: ${photoCost}`);
     total += photoCost;
-    console.log(`Total after photo cost for letter ${i}: ${total}`);
     total += stampFee;
-    console.log(`Total after stamp fee for letter ${i}: ${total}`);
   }
   return total;
 };
@@ -104,8 +89,6 @@ const paymentSuccessService = async (
     const prices = await getPricesDao([writingPadId], [stampId]);
 
     let total = await calculateTotal(userLetters, prices);
-
-    console.log("결제 금액:", total);
 
     if (usePoint) {
       const userPoint = await confirmPoint(userId);
