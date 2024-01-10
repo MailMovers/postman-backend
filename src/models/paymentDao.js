@@ -19,13 +19,7 @@ const getPricesDao = async (writingPadId, stampId) => {
     [stampId]
   );
 
-  const prices = writingPadId.map((id, index) => ({
-    writingPadPrice: writingPadPrices.find((price) => price.id === id)
-      .writingPadPrice,
-    stampFee: stampFees.find((fee) => fee.id === stampId[index]).stampFee,
-  }));
-
-  return prices;
+  return { writingPadPrices, stampFees };
 };
 
 const paymentInsertInfoDao = async (response, userId, letterId) => {

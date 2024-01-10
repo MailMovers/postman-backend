@@ -67,6 +67,14 @@ const paymentSuccessService = async (
   { orderId, amount, paymentKey },
   usePoint
 ) => {
+  console.log("결제 성공 서비스에서 받은 데이터:", {
+    userId,
+    letterId,
+    orderId,
+    amount,
+    paymentKey,
+    usePoint,
+  });
   try {
     const userLetters = await confirmLetterDao(letterId);
     const writingPadId = userLetters.map((letter) => letter.writing_pad_id);
