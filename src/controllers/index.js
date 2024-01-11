@@ -40,6 +40,7 @@ const {
 const {
   paymentSuccessController,
   getPaymentInfoController,
+  getPointTransactions,
 } = require("./paymentControllers.js");
 
 const {
@@ -107,6 +108,7 @@ module.exports = {
   paymentController: {
     paymentSuccessController,
     getPaymentInfoController,
+    getPointTransactions,
   },
   csController: {
     insertCsController,
