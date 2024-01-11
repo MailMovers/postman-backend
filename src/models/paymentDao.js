@@ -162,6 +162,18 @@ const getCostomerId = async (userId) => {
   return result[0].customer_id;
 };
 
+const getPointTransactionsDao = async (userId) => {
+  const result = await AppDataSource.query(
+    `
+    SELECT * FROM point_transactions
+    WHERE user_id = ?
+    ORDER BY transaction_date DESC
+    `,
+    [userId]
+  );
+  return result;
+};
+
 module.exports = {
   paymentInsertInfoDao,
   getPricesDao,
@@ -174,4 +186,5 @@ module.exports = {
   getPaymentInfoDao,
   recordPointTransactionDao,
   confirmPoint,
+  getPointTransactionsDao,
 };

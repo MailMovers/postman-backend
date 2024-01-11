@@ -92,8 +92,13 @@ const paymentSuccessService = async (
       throw new Error("사용 가능한 포인트가 부족합니다.");
     }
     if (usePoint) {
-      await addPointDao(userId, -usePoint);
-      await recordPointTransactionDao(userId, -usePoint, "use", "use point");
+      await addPointDao(-usePoint, userId);
+      await recordPointTransactionDao(
+        userId,
+        -usePoint,
+        "use",
+        `${usePoint}포인트 사용`
+      );
       total -= usePoint;
     }
 
@@ -126,8 +131,13 @@ const paymentSuccessService = async (
     );
 
     const point = total * POINT_PERCENTAGE;
-    await addPointDao(userId, point);
-    await recordPointTransactionDao(userId, point, "save", "save point");
+    await addPointDao(point, userId);
+    await recordPointTransactionDao(
+      userId,
+      point,
+      "save",
+      `${point}포인트 적립`
+    );
 
     return { message: "success" };
   } catch (error) {
@@ -158,4 +168,19 @@ const getPaymentInfoService = async (letterId, userId) => {
     amount: totalAmount,
   };
 };
-module.exports = { paymentSuccessService, getPaymentInfoService };
+
+const getPointTransactionsService = async (userId) => {
+  try {
+    const transactions = await getPointTransactionsDao(userId);
+    return transactions;
+  } catch (error) {
+    console.error("포인트 거래 내역 조회 중 오류 발생:", error);
+    throw error;
+  }
+};
+
+module.exports = {
+  paymentSuccessService,
+  getPaymentInfoService,
+  getPointTransactionsService,
+};
