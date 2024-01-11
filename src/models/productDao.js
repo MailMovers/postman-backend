@@ -208,46 +208,53 @@ const insertReviewDao = async (userId, productId, score, content) => {
   return insertReview;
 };
 
-//상품리뷰 불러오기
 const getReviewDao = async (startItem, pageSize, productId) => {
-  const getReview = await AppDataSource.query(
-    `
-    SELECT
-      id,
-      user_id,
-      content,
-      score,
-      created_at,
-      deleted_at
-    FROM
-      reviews
-    WHERE
-      writing_pad_id = ?
-    ORDER BY
-      created_at DESC
-    LIMIT ? OFFSET ?;
-  `,
-
-    [productId, pageSize, startItem]
-  );
-  return getReview;
-};
-//리뷰 데이터카운트
-const getReviewCountDao = async (productId) => {
   try {
+    const getReviewQuery = `
+      SELECT
+        reviews.id,
+        reviews.user_id,
+        users.name,
+        reviews.content,
+        reviews.score,
+        reviews.created_at,
+        reviews.deleted_at
+      FROM
+        reviews
+      LEFT JOIN
+        users ON reviews.user_id = users.id
+      WHERE
+        reviews.deleted_at IS NULL
+        AND writing_pad_id = ?
+      ORDER BY
+        created_at DESC
+      LIMIT ? OFFSET ?;
+    `;
+
+    const scoreQuery = `
+      SELECT ROUND(AVG(reviews.score), 1) AS average_score
+      FROM reviews
+      WHERE deleted_at IS NULL AND writing_pad_id = ?
+    `;
+
     const getReviewCountQuery = `
       SELECT COUNT(*) AS count FROM reviews WHERE writing_pad_id = ? AND deleted_at IS NULL
     `;
-    const resultCount = await AppDataSource.query(getReviewCountQuery, [
-      productId,
+
+    const [reviewResult, scoreResult, countResult] = await Promise.all([
+      AppDataSource.query(getReviewQuery, [productId, pageSize, startItem]),
+      AppDataSource.query(scoreQuery, [productId]),
+      AppDataSource.query(getReviewCountQuery, [productId]),
     ]);
 
-    const count = resultCount[0]?.count || 0;
-
-    return { count };
-  } catch (error) {
-    console.error("getReviewCountDao에서 발생한 오류", error);
-    throw error;
+    return {
+      reviewResult,
+      score: scoreResult[0]?.average_score || 0,
+      count: countResult[0]?.count || 0,
+    };
+  } catch (err) {
+    console.error("getReviewDao에서 발생한 에러", err);
+    throw err;
   }
 };
 //상품 리뷰 지우기
@@ -403,6 +410,5 @@ module.exports = {
   getCountProductListDao,
   getCategoryListWithCountDao,
   getReviewListDao,
-  getReviewCountDao,
   deleteMyReviewDao,
 };
