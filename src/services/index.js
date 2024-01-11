@@ -25,6 +25,7 @@ const {
 const {
   paymentSuccessService,
   getPaymentInfoService,
+  getPointTransactionsService,
 } = require("./paymentServices");
 
 // user service class
@@ -119,4 +120,5 @@ module.exports = {
   delPhotoService,
   historyLetterService,
   getPaymentInfoService,
+  getPointTransactionsService,
 };

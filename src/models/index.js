@@ -45,7 +45,6 @@ const {
   getCountProductListDao,
   getCategoryListWithCountDao,
   getReviewListDao,
-  getReviewCountDao,
   deleteMyReviewDao,
 } = require("./productDao");
 
@@ -61,6 +60,7 @@ const {
   getWritingPadNameByIdDao,
   getStampNameByIdDao,
   getCostomerId,
+  getPointTransactionsDao,
 } = require("./paymentDao");
 
 const {
@@ -116,7 +116,6 @@ module.exports = {
   getCountProductListDao,
   getCategoryListWithCountDao,
   getReviewListDao,
-  getReviewCountDao,
   deleteMyReviewDao,
   cs: {
     insertCsDao,
@@ -158,5 +157,6 @@ module.exports = {
   getOrderByIdDao,
   getWritingPadNameByIdDao,
   getStampNameByIdDao,
-  getCostomerId
+  getCostomerId,
+  getPointTransactionsDao,
 };

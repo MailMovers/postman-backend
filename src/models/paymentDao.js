@@ -19,13 +19,7 @@ const getPricesDao = async (writingPadId, stampId) => {
     [stampId]
   );
 
-  const prices = writingPadId.map((id, index) => ({
-    writingPadPrice: writingPadPrices.find((price) => price.id === id)
-      .writingPadPrice,
-    stampFee: stampFees.find((fee) => fee.id === stampId[index]).stampFee,
-  }));
-
-  return prices;
+  return { writingPadPrices, stampFees };
 };
 
 const paymentInsertInfoDao = async (response, userId, letterId) => {
@@ -43,9 +37,9 @@ const paymentInsertInfoDao = async (response, userId, letterId) => {
   const result = await AppDataSource.query(
     `
     INSERT INTO orders (
-        order_name, order_id, payment_key, method, total_amount, vat, supplied_amount, approved_at, status, user_id, letter_id
+        order_name, order_id, payment_key, method, total_amount, vat, supplied_amount, approved_at, status, user_id, letter_id, total_price
     ) VALUES (
-        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
     );
     `,
     [
@@ -60,6 +54,7 @@ const paymentInsertInfoDao = async (response, userId, letterId) => {
       status,
       userId,
       letterId,
+      totalAmount,
     ]
   );
   return result;
@@ -164,6 +159,18 @@ const getCostomerId = async (userId) => {
     `,
     [userId]
   );
+  return result[0].customer_id;
+};
+
+const getPointTransactionsDao = async (userId) => {
+  const result = await AppDataSource.query(
+    `
+    SELECT * FROM point_transactions
+    WHERE user_id = ?
+    ORDER BY transaction_date DESC
+    `,
+    [userId]
+  );
   return result;
 };
 
@@ -179,4 +186,5 @@ module.exports = {
   getPaymentInfoDao,
   recordPointTransactionDao,
   confirmPoint,
+  getPointTransactionsDao,
 };
