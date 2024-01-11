@@ -1,6 +1,7 @@
 const {
   paymentSuccessService,
   getPaymentInfoService,
+  getPointTransactionsService,
 } = require("../services/paymentServices");
 
 const paymentSuccessController = async (req, res) => {
@@ -35,5 +36,22 @@ const getPaymentInfoController = async (req, res) => {
   const paymentInfo = await getPaymentInfoService(letterId, userId);
   res.json(paymentInfo);
 };
+const getPointTransactions = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const transactions = await getPointTransactionsService(userId);
+    res.json(transactions);
+  } catch (error) {
+    console.error("포인트 거래 내역 조회 중 오류:", error);
+    res.status(500).json({
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};
 
-module.exports = { paymentSuccessController, getPaymentInfoController };
+module.exports = {
+  paymentSuccessController,
+  getPaymentInfoController,
+  getPointTransactions,
+};
