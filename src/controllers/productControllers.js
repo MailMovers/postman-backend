@@ -14,7 +14,6 @@ const {
   getUserByIdDao,
   getUserByReviewDao,
   getCountProductListDao,
-  getReviewCountDao,
   deleteMyReviewDao,
 } = require("../models/productDao");
 
