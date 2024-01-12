@@ -27,6 +27,7 @@ const {
   getContentDao,
   getPhotosDao,
   historyLetterDao,
+  getPhotoInfoDao
 } = require("./writingLetterDao");
 
 // user dao
@@ -159,4 +160,5 @@ module.exports = {
   getStampNameByIdDao,
   getCostomerId,
   getPointTransactionsDao,
+  getPhotoInfoDao
 };

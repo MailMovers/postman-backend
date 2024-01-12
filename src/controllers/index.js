@@ -18,6 +18,7 @@ const {
   getUploadUrl,
   delPhotoController,
   historyLetterController,
+  getPhotoInfoController
 } = require("./writingLetterControllers");
 
 // user controller class
@@ -90,6 +91,7 @@ module.exports = {
     getUploadUrl,
     delPhotoController,
     historyLetterController,
+    getPhotoInfoController,
   },
 
   productController: {

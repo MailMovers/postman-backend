@@ -130,6 +130,22 @@ const photoDao = async (s3Url, letterId) => {
   }
 };
 
+const getPhotoInfoDao = async (letterId) => {
+  try {
+    const photoInfo = await AppDataSource.query(
+      `
+      SELECT id, img_url FROM photos
+      WHERE letter_id = ?;
+      `,
+      [letterId]
+    );
+    return photoInfo;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 const delPhotoDao = async (photoId) => {
   try {
     await AppDataSource.query(
@@ -369,4 +385,5 @@ module.exports = {
   getContentDao,
   getPhotosDao,
   historyLetterDao,
+  getPhotoInfoDao,
 };

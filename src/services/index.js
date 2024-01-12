@@ -20,6 +20,7 @@ const {
   PhotoService,
   delPhotoService,
   historyLetterService,
+  getPhotoInfoService,
 } = require("./writingLetterServices");
 
 const {
@@ -121,4 +122,5 @@ module.exports = {
   historyLetterService,
   getPaymentInfoService,
   getPointTransactionsService,
+  getPhotoInfoService,
 };

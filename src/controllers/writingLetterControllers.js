@@ -9,7 +9,7 @@ const s3 = new AWS.S3({
 
 const getPreSignedUrl = async (file) => {
   const decodedFileName = decodeURIComponent(file.originalname);
-  const fileExtension = decodedFileName.split('.').pop();
+  const fileExtension = decodedFileName.split(".").pop();
   const timestamp = Date.now();
   const newFileName = `${decodedFileName}_${timestamp}.${fileExtension}`;
   const encodedNewFileName = encodeURIComponent(newFileName);
@@ -120,7 +120,7 @@ const photoController = async (req, res, next) => {
 
     const s3Url = `https://${Bucket}.s3.${region}.amazonaws.com/${originalname}`;
 
-    const photoId = await PhotoService(s3Url, letterId);
+    const photoInfo = await PhotoService(s3Url, letterId);
     await countPhotoService(letterId);
 
     return res.status(201).json({
@@ -133,6 +133,24 @@ const photoController = async (req, res, next) => {
     return res.status(400).json({
       success: false,
       message: "Error in photoController. Please try again later.",
+    });
+  }
+};
+
+const getPhotoInfoController = async (req, res, next) => {
+  try {
+    const { letterId } = req.query.letterId;
+    const result = await getPhotoInfoService(letterId);
+    return res.status(201).json({
+      success: true,
+      message: "getPhotoInfoController pass.",
+      data: result,
+    });
+  } catch (error) {
+    console.error("Error in getPhotoInfoController :", error);
+    return res.status(400).json({
+      success: false,
+      message: "Error in getPhotoInfoController. Please try again later.",
     });
   }
 };
@@ -245,4 +263,5 @@ module.exports = {
   getUploadUrl,
   delPhotoController,
   historyLetterController,
+  getPhotoInfoController,
 };
