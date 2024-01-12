@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 const { UserDao } = require('../models');
 const { ErrorNames, CustomError } = require('../utils/customErrors');
 const smtpTransport = require('../config/email.config');
-const redisCli = require('../config/redis.config');
 const { v4: uuidv4 } = require('uuid');
 
 const SOCIAL_PASSWORD = 'a12345678';
@@ -233,7 +232,7 @@ class UserService {
                 },
                 process.env.JWT_SECRET_KEY,
                 {
-                    expiresIn: '1d',
+                    expiresIn: '10s',
                 }
             );
         } catch (error) {
@@ -245,7 +244,7 @@ class UserService {
     generateRefreshToken = async () => {
         try {
             return jwt.sign({}, process.env.JWT_SECRET_KEY, {
-                expiresIn: '14d',
+                expiresIn: '10s',
             });
         } catch (error) {
             throw error;
@@ -268,16 +267,18 @@ class UserService {
     // Refresh Token 검증
     verifyRefreshToken = async ({ refreshToken, userId }) => {
         try {
-            // Redis에 저장된 Refresh Token 가져오기
-            const redisRefreshToken = await this.getRefreshTokenInRedis({ userId });
+            // DB에 저장된 Refresh Token 가져오기
+            const [token] = await this.userDao.getRefreshToken({ userId });
 
             // 두 Refresh Token이 일치하는지 판별
-            if (refreshToken !== redisRefreshToken) {
+            if (refreshToken !== token.refresh_token) {
                 throw new CustomError(ErrorNames.RefreshTokenNotMatchedError, '잘못된 토큰입니다.');
             }
 
             return jwt.verify(refreshToken, process.env.JWT_SECRET_KEY);
         } catch (error) {
+            // refresh token 에서 오류가 나면 db에서 삭제
+            await this.userDao.deleteRefreshToken({ userId });
             // jwt expired
             if (error.name === 'TokenExpiredError') {
                 return null;
@@ -286,21 +287,19 @@ class UserService {
         }
     };
 
-    // Refresh Token을 Redis에 저장
-    setRefreshTokenInRedis = async ({ userId, refreshToken }) => {
+    // Refresh Token을 DB에 저장
+    setRefreshTokenInDB = async ({ userId, refreshToken }) => {
         try {
-            await redisCli.SET(`refresh-${userId}`, refreshToken, {
-                EX: 60 * 60 * 24,
-            });
-        } catch (error) {
-            throw error;
-        }
-    };
+            // 이미 회원의 Refresh Token 이 존재하는지
+            const [token] = await this.userDao.getRefreshToken({ userId });
 
-    // Refresh Token을 Redis에서 가져오기
-    getRefreshTokenInRedis = async ({ userId }) => {
-        try {
-            return await redisCli.GET(`refresh-${userId}`);
+            if (!token) {
+                // 존재하지 않는다면
+                return await this.userDao.setRefreshToken({ userId, refreshToken });
+            }
+
+            // 존재한다면
+            return await this.userDao.updateRefreshToken({ userId, refreshToken });
         } catch (error) {
             throw error;
         }
