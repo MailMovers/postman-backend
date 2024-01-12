@@ -123,7 +123,7 @@ const photoDao = async (s3Url, letterId) => {
         `,
       [s3Url, letterId]
     );
-    return photo.insertId;
+    return photo;
   } catch (error) {
     console.error(error);
     throw error;
@@ -339,7 +339,8 @@ const historyLetterDao = async (userId) => {
           send_address.send_address,
           send_address.send_address_detail,
           send_address.send_phone,
-          send_address.send_name
+          send_address.send_name,
+          orders.created_at AS orderCreatedAt
       FROM 
           users
       JOIN 
