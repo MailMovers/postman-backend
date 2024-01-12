@@ -9,6 +9,8 @@ const paymentSuccessController = async (req, res) => {
     const userId = req.userId;
     const { orderId, amount, paymentKey } = req.query;
     const { usePoint, letterId } = req.body;
+    console.log(`orderId: ${orderId}, amount: ${amount}, paymentKey: ${paymentKey}`); // 로그 추가
+
 
     await paymentSuccessService(
       userId,
