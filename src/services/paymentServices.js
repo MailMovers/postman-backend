@@ -48,6 +48,7 @@ const calculateTotal = async (userLetters, usePoint = 0) => {
     total += stampFee;
     total -= usePoint;
   }
+  console.log(`calculateTotal: 총액=${total}, 사용 포인트=${usePoint}`); // 로그 추가
   return total;
 };
 
@@ -55,6 +56,9 @@ const verifyPayment = async (orderId, amount, paymentKey) => {
   const secretKey = process.env.TOSSPAYMENTS_SECRET_KEY;
   const encryptedSecretKey = Buffer.from(`${secretKey}:`).toString("base64");
   try {
+    console.log(
+      `verifyPayment 호출: orderId=${orderId}, amount=${amount}, paymentKey=${paymentKey}`
+    ); // 로그 추가
     const response = await axios.post(
       "https://api.tosspayments.com/v1/payments/confirm",
       {
@@ -69,6 +73,7 @@ const verifyPayment = async (orderId, amount, paymentKey) => {
         },
       }
     );
+    console.log(`verifyPayment 응답: ${JSON.stringify(response.data)}`); // 로그 추가
     return response.data;
   } catch (error) {
     console.error("결제 확인 중 오류 발생:", error);
