@@ -97,7 +97,7 @@ class UserController {
             const refreshToken = await this.userService.generateRefreshToken();
 
             // Set RefreshToken in Redis
-            await this.userService.setRefreshTokenInRedis({ userId, refreshToken });
+            await this.userService.setRefreshTokenInDB({ userId, refreshToken });
 
             return res.redirect(
                 url.format({
@@ -136,7 +136,7 @@ class UserController {
             const refreshToken = await this.userService.generateRefreshToken();
 
             // Set RefreshToken in Redis
-            await this.userService.setRefreshTokenInRedis({ userId, refreshToken });
+            await this.userService.setRefreshTokenInDB({ userId, refreshToken });
 
             return res.redirect(
                 url.format({
@@ -175,7 +175,7 @@ class UserController {
             const refreshToken = await this.userService.generateRefreshToken();
 
             // Set RefreshToken in Redis
-            await this.userService.setRefreshTokenInRedis({ userId, refreshToken });
+            await this.userService.setRefreshTokenInDB({ userId, refreshToken });
 
             return res.redirect(
                 url.format({
@@ -214,7 +214,7 @@ class UserController {
             const refreshToken = await this.userService.generateRefreshToken();
 
             // Set RefreshToken in Redis
-            await this.userService.setRefreshTokenInRedis({ userId, refreshToken });
+            await this.userService.setRefreshTokenInDB({ userId, refreshToken });
 
             return res.status(200).json({
                 success: true,

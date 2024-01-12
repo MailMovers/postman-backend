@@ -108,6 +108,50 @@ class UserDao {
             await queryRunner.release();
         }
     };
+
+    // Refresh Token을 DB에 저장
+    setRefreshToken = async ({ userId, refreshToken }) => {
+        try {
+            return AppDataSource.query(`INSERT INTO tokens(user_id, refresh_token) VALUES (?,?)`, [
+                userId,
+                refreshToken,
+            ]);
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    // Refresh Token을 DB에서 가져옴
+    getRefreshToken = async ({ userId }) => {
+        try {
+            return AppDataSource.query(`SELECT refresh_token FROM tokens WHERE user_id = (?)`, [
+                userId,
+            ]);
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    // Refresh Token을 업데이트
+    updateRefreshToken = async ({ userId, refreshToken }) => {
+        try {
+            return AppDataSource.query(
+                `UPDATE tokens SET refresh_token = (?) WHERE user_id = (?)`,
+                [refreshToken, userId]
+            );
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    // Refresh Token 삭제
+    deleteRefreshToken = async ({ userId }) => {
+        try {
+            return AppDataSource.query(`DELETE FROM tokens WHERE user_id = (?)`, [userId]);
+        } catch (error) {
+            throw error;
+        }
+    };
 }
 
 module.exports = UserDao;
