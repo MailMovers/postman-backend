@@ -148,8 +148,8 @@ const checkLetterService = async (userId) => {
 };
 const PhotoService = async (s3Url, letterId) => {
   try {
-    const photoId = await photoDao(s3Url, letterId);
-    return photoId;
+    const photoInfo = await photoDao(s3Url, letterId);
+    return photoInfo;
   } catch (error) {
     console.error(error);
     throw error;

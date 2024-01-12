@@ -126,7 +126,7 @@ const photoController = async (req, res, next) => {
     return res.status(201).json({
       success: true,
       message: "photoController pass.",
-      data: photoId,
+      data: photoInfo,
     });
   } catch (error) {
     console.error("Error in photoController :", error);
