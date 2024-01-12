@@ -123,27 +123,31 @@ const photoDao = async (s3Url, letterId) => {
         `,
       [s3Url, letterId]
     );
-    return photo.insertId;
+    return photo;
   } catch (error) {
     console.error(error);
     throw error;
   }
 };
 
-const delPhotoDao = async (fileName) => {
+const getPhotoInfoDao = async (letterId) => {
   try {
-    const escapedFileName = fileName.replace(/%/g, "\\%");
-    const photo = await AppDataSource.query(
+    const photoInfo = await AppDataSource.query(
       `
-      SELECT id FROM photos
-      WHERE img_url LIKE ?;
+      SELECT id, img_url FROM photos
+      WHERE letter_id = ?;
       `,
-      [`%${escapedFileName}`]
+      [letterId]
     );
-    if (photo.length === 0) {
-      throw new Error("Image not found");
-    }
-    const photoId = photo[0].id;
+    return photoInfo;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+const delPhotoDao = async (photoId) => {
+  try {
     await AppDataSource.query(
       `
       DELETE FROM photos
@@ -151,8 +155,6 @@ const delPhotoDao = async (fileName) => {
       `,
       [photoId]
     );
-
-    return fileName;
   } catch (error) {
     console.error(error);
     throw error;
@@ -330,29 +332,31 @@ const historyLetterDao = async (userId) => {
     const result = await AppDataSource.query(
       `
       SELECT 
-          l.id as letterId,
-          wp.name,
-          da.delivery_address,
-          da.delivery_address_detail,
-          da.delivery_phone,
-          da.delivery_name
+          letters.id AS letterId,
+          writing_pads.name,
+          delivery_address.delivery_address,
+          delivery_address.delivery_address_detail,
+          delivery_address.delivery_phone,
+          delivery_address.delivery_name,
+          send_address.send_address,
+          send_address.send_address_detail,
+          send_address.send_phone,
+          send_address.send_name,
+          orders.created_at AS orderCreatedAt
       FROM 
-          users u
+          users
       JOIN 
-          letters l 
-          ON u.id = l.user_id
+          letters ON users.id = letters.user_id
       JOIN 
-          writing_pads wp 
-          ON l.writing_pad_id = wp.id
+          writing_pads ON letters.writing_pad_id = writing_pads.id
       JOIN 
-          orders o 
-          ON u.id = o.user_id 
-          AND o.status = 'DONE'
+          orders ON users.id = orders.user_id AND orders.status = 'DONE'
       JOIN 
-          delivery_address da 
-          ON u.id = da.user_id
+          delivery_address ON letters.delivery_address_id = delivery_address.id
+      JOIN 
+          send_address ON letters.send_address_id = send_address.id
       WHERE 
-          u.id = ?;
+          users.id = ?;
       `,
       [userId]
     );
@@ -381,4 +385,5 @@ module.exports = {
   getContentDao,
   getPhotosDao,
   historyLetterDao,
+  getPhotoInfoDao,
 };

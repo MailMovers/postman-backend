@@ -148,16 +148,27 @@ const checkLetterService = async (userId) => {
 };
 const PhotoService = async (s3Url, letterId) => {
   try {
-    const photoId = await photoDao(s3Url, letterId);
-    return photoId;
+    const photoInfo = await photoDao(s3Url, letterId);
+    return photoInfo;
   } catch (error) {
     console.error(error);
     throw error;
   }
 };
-const delPhotoService = async (fileName, letterId) => {
+
+const getPhotoInfoService = async (letterId) => {
   try {
-    await delPhotoDao(fileName);
+    const photoInfo = await getPhotoInfoDao(letterId);
+    return photoInfo;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+const delPhotoService = async (photoId, letterId) => {
+  try {
+    await delPhotoDao(photoId);
     const currentPhotoCount = await countPhotoDao(letterId);
     const photoCount = currentPhotoCount[0].photo_count - 1;
     await updateCountPhotoDao(photoCount, letterId);
@@ -209,10 +220,7 @@ const confirmLetterService = async (letterId) => {
             : 0;
         const photoCost = item.photo_count * PHOTO_PRICE;
         const totalCost =
-          writingPadPrice +
-          additionalPageCost +
-          photoCost +
-          stampFee;
+          writingPadPrice + additionalPageCost + photoCost + stampFee;
 
         const contents = await getContentDao(item.id);
         const photos = await getPhotosDao(item.id);
@@ -277,4 +285,5 @@ module.exports = {
   PhotoService,
   delPhotoService,
   historyLetterService,
+  getPhotoInfoService,
 };
