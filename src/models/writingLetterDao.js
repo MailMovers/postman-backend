@@ -130,20 +130,8 @@ const photoDao = async (s3Url, letterId) => {
   }
 };
 
-const delPhotoDao = async (fileName) => {
+const delPhotoDao = async (photoId) => {
   try {
-    const escapedFileName = fileName.replace(/%/g, "\\%");
-    const photo = await AppDataSource.query(
-      `
-      SELECT id FROM photos
-      WHERE img_url LIKE ?;
-      `,
-      [`%${escapedFileName}`]
-    );
-    if (photo.length === 0) {
-      throw new Error("Image not found");
-    }
-    const photoId = photo[0].id;
     await AppDataSource.query(
       `
       DELETE FROM photos
@@ -151,8 +139,6 @@ const delPhotoDao = async (fileName) => {
       `,
       [photoId]
     );
-
-    return fileName;
   } catch (error) {
     console.error(error);
     throw error;

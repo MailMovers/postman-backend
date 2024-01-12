@@ -139,8 +139,8 @@ const photoController = async (req, res, next) => {
 
 const delPhotoController = async (req, res, next) => {
   try {
-    const { fileName, letterId } = req.body;
-    await delPhotoService(fileName, letterId);
+    const { photoId, letterId } = req.body;
+    await delPhotoService(photoId, letterId);
     return res.status(201).json({
       success: true,
       message: "delPhotoController pass.",
