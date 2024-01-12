@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 const { UserDao } = require('../models');
 const { ErrorNames, CustomError } = require('../utils/customErrors');
 const smtpTransport = require('../config/email.config');
-const redisCli = require('../config/redis.config');
 const { v4: uuidv4 } = require('uuid');
 
 const SOCIAL_PASSWORD = 'a12345678';
