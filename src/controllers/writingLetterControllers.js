@@ -140,7 +140,7 @@ const photoController = async (req, res, next) => {
 
 const getPhotoInfoController = async (req, res, next) => {
   try {
-    const { letterId } = req.query.letterId;
+    const { letterId } = req.query;
     const result = await getPhotoInfoService(letterId);
     return res.status(201).json({
       success: true,
