@@ -9,6 +9,7 @@ const ErrorNames = {
     NeedLoginError: 'NeedLoginError',
     PhoneNumberError: 'PhoneNumberError',
     WithdrawUserError: 'WithdrawUserError',
+    AuthNumberExpiredError: 'AuthNumberExpiredError',
 };
 
 class CustomError extends Error {
