@@ -2,7 +2,7 @@
 CREATE TABLE `letters` (
   `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `page` int DEFAULT 1,
-  `status` enum('save','delete') DEFAULT "save",
+  `status` varchar(100) DEFAULT "save",
   `photo_count` int DEFAULT 0,
   `user_id` int NULL,
   `writing_pad_id` int NULL,
