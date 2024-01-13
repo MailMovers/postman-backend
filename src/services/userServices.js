@@ -232,7 +232,7 @@ class UserService {
                 },
                 process.env.JWT_SECRET_KEY,
                 {
-                    expiresIn: '10s',
+                    expiresIn: '1d',
                 }
             );
         } catch (error) {
@@ -244,7 +244,7 @@ class UserService {
     generateRefreshToken = async () => {
         try {
             return jwt.sign({}, process.env.JWT_SECRET_KEY, {
-                expiresIn: '10s',
+                expiresIn: '14d',
             });
         } catch (error) {
             throw error;
