@@ -91,6 +91,22 @@ CREATE TABLE `delivery_address` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `email_auth`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `email_auth` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) NOT NULL,
+  `auth_number` int NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `letters`
 --
 
@@ -412,5 +428,6 @@ INSERT INTO `schema_migrations` (version) VALUES
   ('20231212095859'),
   ('20240101102137'),
   ('20240101124750'),
-  ('20240111113247');
+  ('20240111113247'),
+  ('20240113121732');
 UNLOCK TABLES;
