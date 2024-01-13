@@ -16,6 +16,7 @@ const {
   getContentDao,
   getPhotosDao,
   historyLetterDao,
+  getPhotoInfoDao
 } = require("../models/writingLetterDao");
 
 const { getProductDao } = require("../models/productDao");
