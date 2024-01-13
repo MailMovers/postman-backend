@@ -41,7 +41,7 @@ class UserService {
                 provider: 'local',
             });
 
-            if (!user) {
+            if (user) {
                 throw new CustomError(ErrorNames.EmailExistError, '이미 가입된 이메일입니다.');
             }
 
