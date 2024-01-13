@@ -48,9 +48,10 @@ class UserService {
             // 인증번호 생성
             const authNumber = Math.floor(Math.random() * 888888) + 111111;
 
-            // 인증번호 암호화
-            const hashedAuthNumber = await bcrypt.hashSync(authNumber.toString(), 10);
+            // 인증번호 DB저장
+            await this.userDao.insertAuthNumber({ email, authNumber });
 
+            // 인증번호 전송
             const mailOptions = {
                 from: process.env.NODEMAILER_USER, // 발신자 이메일 주소
                 to: email,
@@ -59,31 +60,45 @@ class UserService {
                 <p>인증번호 ${authNumber}</p>`,
             };
 
-            smtpTransport.sendMail(mailOptions, async (error, response) => {
-                if (error) {
-                    smtpTransport.close();
-                    throw error;
-                } else {
-                    smtpTransport.close();
-                }
-            });
-            return { hashedAuthNumber };
+            await smtpTransport.sendMail(mailOptions);
         } catch (error) {
             throw error;
         }
     };
 
-    verifyAuthNumber = async ({ authNumber, HAN }) => {
+    verifyAuthNumber = async ({ email, authNumber }) => {
         try {
-            // 입력받은 인증번호와 암호화된 인증번호를 비교
-            const isVerified = await bcrypt.compareSync(authNumber, HAN);
+            const [auth] = await this.userDao.getAuthNumber({ email });
 
-            if (!isVerified) {
+            const authNumberDate = new Date(auth.created_at);
+            const now = new Date();
+
+            const timeDifference = now - authNumberDate;
+            const minutesDifferenct = timeDifference / (1000 * 60);
+
+            // 유효시간이 3분이 넘어갔다면 삭제 후 에러
+            if (minutesDifferenct > 3) {
+                await this.userDao.deleteAuthNumber({ email });
+
+                throw new CustomError(
+                    ErrorNames.AuthNumberExpiredError,
+                    '인증번호가 유효하지 않습니다.'
+                );
+            }
+
+            // 유효하다면 비교
+            if (Number(authNumber) !== auth.auth_number) {
+                // 일치하지 않는다면 삭제 후 에러
+                await this.userDao.deleteAuthNumber({ email });
+
                 throw new CustomError(
                     ErrorNames.AuthNumberFailedVerifyError,
                     '인증번호가 일치하지 않습니다.'
                 );
             }
+
+            // 인증 성공, DB에서 삭제
+            return await this.userDao.deleteAuthNumber({ email });
         } catch (error) {
             throw error;
         }

@@ -152,6 +152,65 @@ class UserDao {
             throw error;
         }
     };
+
+    // 이메일 인증번호 가져오기
+    getAuthNumber = async ({ email }) => {
+        try {
+            return AppDataSource.query(`SELECT * FROM email_auth WHERE email = (?)`, [email]);
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    // 이메일 인증번호 DB저장
+    insertAuthNumber = async ({ email, authNumber }) => {
+        const queryRunner = AppDataSource.createQueryRunner();
+
+        // 트랜잭션 사용을 위해 queryRunner 연결.
+        await queryRunner.connect();
+        // 트랜잭션 시작.
+        await queryRunner.startTransaction();
+        try {
+            /* 비즈니스 로직.. */
+
+            // DB에 존재하는지 확인
+            const [auth] = await queryRunner.manager.query(
+                `SELECT * FROM email_auth WHERE email = (?)`,
+                [email]
+            );
+
+            if (auth) {
+                // 존재한다면? 삭제
+                await queryRunner.manager.query(`DELETE FROM email_auth WHERE email = (?)`, [
+                    email,
+                ]);
+            }
+
+            // 존재하지 않는다면? 삽입
+            await queryRunner.manager.query(
+                `INSERT INTO email_auth(email, auth_number) VALUES (?,?)`,
+                [email, authNumber]
+            );
+
+            await queryRunner.commitTransaction();
+        } catch (error) {
+            // 트랜잭션 실패 시 롤백.
+            await queryRunner.rollbackTransaction();
+            throw error;
+        } finally {
+            // 트랜잭션 종료 시 연결 종료.
+            await queryRunner.release();
+        }
+    };
+
+    // 이메일 인증번호 삭제
+    deleteAuthNumber = async ({ email }) => {
+        try {
+            return AppDataSource.query(`DELETE FROM email_auth WHERE email = (?)`, [email]);
+        } catch (error) {
+            throw error;
+        }
+    };
 }
 
 module.exports = UserDao;
