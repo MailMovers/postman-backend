@@ -94,6 +94,7 @@ const paymentSuccessService = async (
   try {
     const userLetters = await confirmLetterDao(letterId);
     const userPoint = await confirmPoint(userId);
+    const total = await calculateTotal(userLetters, usePoint);
     if (usePoint && userPoint < usePoint) {
       throw new Error("사용 가능한 포인트가 부족합니다.");
     }
@@ -107,8 +108,7 @@ const paymentSuccessService = async (
       );
       total -= usePoint;
     }
-    let total = await calculateTotal(userLetters, usePoint);
-    if (total !== amount) {
+    if (amount !== total) {
       throw new Error("클라이언트로 부터 계산된 총액이 결제 금액과 일치하지 않습니다.");
     }
     const paymentVerification = await verifyPayment(
