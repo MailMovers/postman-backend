@@ -18,7 +18,7 @@ const paymentSuccessController = async (req, res) => {
       orderId,
       amount,
       paymentKey,
-      usePoint === "true"
+      usePoint
     );
 
     res.status(201).json({
