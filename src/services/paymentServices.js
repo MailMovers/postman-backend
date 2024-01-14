@@ -107,7 +107,7 @@ const paymentSuccessService = async (
         `${usePoint}포인트 사용`
       );
     }
-    if (amount !== total) {
+    if (Number(amount) !== Number(total)) {
       throw new Error("클라이언트로 부터 계산된 총액이 결제 금액과 일치하지 않습니다.");
     }
     const paymentVerification = await verifyPayment(
