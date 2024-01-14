@@ -114,7 +114,7 @@ CREATE TABLE `email_auth` (
 CREATE TABLE `letters` (
   `id` int NOT NULL AUTO_INCREMENT,
   `page` int DEFAULT '1',
-  `status` varchar(100) DEFAULT 'save',
+  `status` varchar(255) DEFAULT 'save',
   `photo_count` int DEFAULT '0',
   `user_id` int DEFAULT NULL,
   `writing_pad_id` int DEFAULT NULL,
@@ -265,9 +265,9 @@ CREATE TABLE `roles` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `schema_migrations` (
-  `version` varchar(128) NOT NULL,
+  `version` varchar(255) COLLATE latin1_bin NOT NULL,
   PRIMARY KEY (`version`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
