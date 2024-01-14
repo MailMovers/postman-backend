@@ -372,7 +372,7 @@ const updateLetterStatusDao = async (letterId) => {
     const result = await AppDataSource.query(
       `
       UPDATE letters
-      SET status = 'ready to delivery'
+      SET status = '배송 준비중'
       WHERE id = ?
       `,
       [letterId]
