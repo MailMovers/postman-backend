@@ -106,7 +106,6 @@ const paymentSuccessService = async (
         "use",
         `${usePoint}포인트 사용`
       );
-      total -= usePoint;
     }
     if (amount !== total) {
       throw new Error("클라이언트로 부터 계산된 총액이 결제 금액과 일치하지 않습니다.");
