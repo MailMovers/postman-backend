@@ -52,6 +52,8 @@ const calculateTotal = async (userLetters, usePoint = 0) => {
   return total;
 };
 
+ 
+
 const verifyPayment = async (orderId, amount, paymentKey) => {
   const secretKey = process.env.TOSSPAYMENTS_SECRET_KEY;
   const encryptedSecretKey = Buffer.from(`${secretKey}:`).toString("base64");
@@ -91,7 +93,6 @@ const paymentSuccessService = async (
 ) => {
   try {
     const userLetters = await confirmLetterDao(letterId);
-    let total = await calculateTotal(userLetters, usePoint);
     const userPoint = await confirmPoint(userId);
     if (usePoint && userPoint < usePoint) {
       throw new Error("사용 가능한 포인트가 부족합니다.");
@@ -106,16 +107,21 @@ const paymentSuccessService = async (
       );
       total -= usePoint;
     }
-
+    let total = await calculateTotal(userLetters, usePoint);
+    if (total !== amount) {
+      throw new Error("클라이언트로 부터 계산된 총액이 결제 금액과 일치하지 않습니다.");
+    }
     const paymentVerification = await verifyPayment(
       orderId,
-      amount,
+      total,
       paymentKey
     );
+
     if (paymentVerification.status !== "DONE") {
       throw new Error("결제 확인 실패");
     }
-    if (total !== Number(amount)) {
+
+    if (total !== paymentVerification.totalAmount) {
       throw new Error("계산된 총액이 결제 금액과 일치하지 않습니다.");
     }
     const approvedAt = new Date().toISOString().replace("T", " ").slice(0, 19);
