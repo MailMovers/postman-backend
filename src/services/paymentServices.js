@@ -1,7 +1,10 @@
 const { v4: uuidv4 } = require("uuid");
 const axios = require("axios");
 
-const { confirmLetterDao } = require("../models/writingLetterDao");
+const {
+  confirmLetterDao,
+  updateLetterStatusDao,
+} = require("../models/writingLetterDao");
 
 const { confirmLetterService } = require("./writingLetterServices");
 
@@ -51,8 +54,6 @@ const calculateTotal = async (userLetters, usePoint = 0) => {
   console.log(`calculateTotal: 총액=${total}, 사용 포인트=${usePoint}`); // 로그 추가
   return total;
 };
-
- 
 
 const verifyPayment = async (orderId, amount, paymentKey) => {
   const secretKey = process.env.TOSSPAYMENTS_SECRET_KEY;
@@ -108,13 +109,11 @@ const paymentSuccessService = async (
       );
     }
     if (Number(amount) !== Number(total)) {
-      throw new Error("클라이언트로 부터 계산된 총액이 결제 금액과 일치하지 않습니다.");
+      throw new Error(
+        "클라이언트로 부터 계산된 총액이 결제 금액과 일치하지 않습니다."
+      );
     }
-    const paymentVerification = await verifyPayment(
-      orderId,
-      total,
-      paymentKey
-    );
+    const paymentVerification = await verifyPayment(orderId, total, paymentKey);
 
     if (paymentVerification.status !== "DONE") {
       throw new Error("결제 확인 실패");
@@ -148,6 +147,8 @@ const paymentSuccessService = async (
       "save",
       `${point}포인트 적립`
     );
+
+    await updateLetterStatusDao(letterId);
 
     return { message: "success" };
   } catch (error) {
