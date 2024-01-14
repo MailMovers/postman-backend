@@ -367,6 +367,23 @@ const historyLetterDao = async (userId) => {
   }
 };
 
+const updateLetterStatusDao = async (letterId) => {
+  try {
+    const result = await AppDataSource.query(
+      `
+      UPDATE letters
+      SET status = '배송 준비중'
+      WHERE id = ?
+      `,
+      [letterId]
+    );
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 module.exports = {
   letterDao,
   photoDao,
@@ -386,4 +403,5 @@ module.exports = {
   getPhotosDao,
   historyLetterDao,
   getPhotoInfoDao,
+  updateLetterStatusDao,
 };
