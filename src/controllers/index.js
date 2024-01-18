@@ -18,7 +18,7 @@ const {
   getUploadUrl,
   delPhotoController,
   historyLetterController,
-  getPhotoInfoController
+  getPhotoInfoController,
 } = require("./writingLetterControllers");
 
 // user controller class
@@ -42,6 +42,7 @@ const {
   paymentSuccessController,
   getPaymentInfoController,
   getPointTransactions,
+  usePointsForPaymentController,
 } = require("./paymentControllers.js");
 
 const {
@@ -111,6 +112,7 @@ module.exports = {
     paymentSuccessController,
     getPaymentInfoController,
     getPointTransactions,
+    usePointsForPaymentController,
   },
   csController: {
     insertCsController,
