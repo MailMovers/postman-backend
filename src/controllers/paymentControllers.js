@@ -2,6 +2,7 @@ const {
   paymentSuccessService,
   getPaymentInfoService,
   getPointTransactionsService,
+  usePointsForPaymentService,
 } = require("../services/paymentServices");
 
 const paymentSuccessController = async (req, res) => {
@@ -38,6 +39,7 @@ const usePointsForPaymentController = async (req, res) => {
   try {
     const userId = req.userId; // 사용자 인증을 통해 얻은 userId
     const { usePoint, letterId, orderId } = req.body; // 클라이언트로부터 받은 포인트 사용 요청 정보
+    console.log("포인트 사용 요청 정보:", usePoint, letterId, orderId);
 
     // 포인트 결제 서비스 호출
     const result = await usePointsForPaymentService(

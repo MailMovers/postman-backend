@@ -187,6 +187,7 @@ const usePointsForPaymentService = async (
   orderId,
   usePoint
 ) => {
+  console.log(`usePointsForPaymentService 호출: userId=${userId}, letterId=${letterId}, orderId=${orderId}, usePoint=${usePoint}`); // 로그 추가
   try {
     // 사용자의 현재 포인트 잔액을 확인
     const userPoints = await confirmPoint(userId);
@@ -195,14 +196,14 @@ const usePointsForPaymentService = async (
     }
 
     // 포인트 차감
-    await addPointDao(-pointsToUse, userId);
+    await addPointDao(-usePoint, userId);
 
     // 포인트 거래 내역 기록
     await recordPointTransactionDao(
       userId,
-      -pointsToUse,
+      -usePoint,
       "use",
-      `${pointsToUse}포인트 사용`
+      `${usePoint}포인트 사용`
     );
 
     // 주문 정보에 포인트 결제 정보 추가
@@ -212,15 +213,15 @@ const usePointsForPaymentService = async (
         orderId: orderId,
         paymentKey: null, // 포인트 결제는 paymentKey가 없음
         method: "point",
-        totalAmount: pointsToUse,
+        totalAmount: usePoint,
         vat: 0,
-        suppliedAmount: pointsToUse,
+        suppliedAmount: usePoint,
         approvedAt: new Date().toISOString().replace("T", " ").slice(0, 19),
         status: "DONE",
       },
       userId,
       letterId
-    ); // letterId는 포인트 결제에는 필요 없을 수 있음
+    );
 
     return { message: "success" };
   } catch (error) {
