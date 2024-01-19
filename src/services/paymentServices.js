@@ -211,7 +211,7 @@ const usePointsForPaymentService = async (
       {
         orderName: "포인트 결제",
         orderId: orderId,
-        paymentKey: null, // 포인트 결제는 paymentKey가 없음
+        paymentKey: "payByPoint", // 포인트 결제는 paymentKey가 없음
         method: "point",
         totalAmount: usePoint,
         vat: 0,
