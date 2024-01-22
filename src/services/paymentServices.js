@@ -17,6 +17,7 @@ const {
   getWritingPadNameByIdDao,
   getStampNameByIdDao,
   getCostomerId,
+  getPointTransactionsDao
 } = require("../models/paymentDao");
 
 const PAGE_PRICE = 500;
@@ -180,6 +181,55 @@ const getPaymentInfoService = async (letterId, userId) => {
   };
 };
 
+const usePointsForPaymentService = async (
+  userId,
+  letterId,
+  orderId,
+  usePoint
+) => {
+  console.log(`usePointsForPaymentService 호출: userId=${userId}, letterId=${letterId}, orderId=${orderId}, usePoint=${usePoint}`); // 로그 추가
+  try {
+    // 사용자의 현재 포인트 잔액을 확인
+    const userPoints = await confirmPoint(userId);
+    if (userPoints < usePoint) {
+      throw new Error("사용 가능한 포인트가 부족합니다.");
+    }
+
+    // 포인트 차감
+    await addPointDao(-usePoint, userId);
+
+    // 포인트 거래 내역 기록
+    await recordPointTransactionDao(
+      userId,
+      -usePoint,
+      "use",
+      `${usePoint}포인트 사용`
+    );
+
+    // 주문 정보에 포인트 결제 정보 추가
+    await paymentInsertInfoDao(
+      {
+        orderName: "포인트 결제",
+        orderId: orderId,
+        paymentKey: "payByPoint", // 포인트 결제는 paymentKey가 없음
+        method: "point",
+        totalAmount: usePoint,
+        vat: 0,
+        suppliedAmount: usePoint,
+        approvedAt: new Date().toISOString().replace("T", " ").slice(0, 19),
+        status: "DONE",
+      },
+      userId,
+      letterId
+    );
+
+    return { message: "success" };
+  } catch (error) {
+    console.error("포인트 결제 서비스에서 오류 :", error);
+    throw error;
+  }
+};
+
 const getPointTransactionsService = async (userId) => {
   try {
     const transactions = await getPointTransactionsDao(userId);
@@ -193,5 +243,6 @@ const getPointTransactionsService = async (userId) => {
 module.exports = {
   paymentSuccessService,
   getPaymentInfoService,
+  usePointsForPaymentService,
   getPointTransactionsService,
 };
