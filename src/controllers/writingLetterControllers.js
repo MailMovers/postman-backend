@@ -119,7 +119,7 @@ const photoController = async (req, res, next) => {
     const region = process.env.AWS_REGION;
     const { letterId, originalname } = req.body;
 
-    const s3Url = `https://${Bucket}.s3.${region}.amazonaws.com/letter/${originalname}`;
+    const s3Url = `https://${Bucket}.s3.${region}.amazonaws.com/${originalname}`;
 
     const photoInfo = await PhotoService(s3Url, letterId);
     await countPhotoService(letterId);
