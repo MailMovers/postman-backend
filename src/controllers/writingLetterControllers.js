@@ -12,7 +12,9 @@ const getPreSignedUrl = async (file) => {
   const fileExtension = decodedFileName.split(".").pop();
   const timestamp = Date.now();
   const newFileName = `letter/${decodedFileName}_${timestamp}.${fileExtension}`;
+  const filename = `${decodedFileName}_${timestamp}.${fileExtension}`
   const encodedNewFileName = encodeURIComponent(newFileName);
+  const insertName = encodeURIComponent(filename)
 
   const params = {
     Bucket: process.env.AWS_BUCKET_NAME,
@@ -24,6 +26,7 @@ const getPreSignedUrl = async (file) => {
   return {
     preSignedUrl,
     encodedNewFileName,
+    insertName
   };
 };
 
@@ -117,9 +120,9 @@ const photoController = async (req, res, next) => {
   try {
     const Bucket = process.env.AWS_BUCKET_NAME;
     const region = process.env.AWS_REGION;
-    const { letterId, originalname } = req.body;
+    const { letterId, insertName } = req.body;
 
-    const s3Url = `https://${Bucket}.s3.${region}.amazonaws.com/${originalname}`;
+    const s3Url = `https://${Bucket}.s3.${region}.amazonaws.com/letter/${insertName}`;
 
     const photoInfo = await PhotoService(s3Url, letterId);
     await countPhotoService(letterId);
