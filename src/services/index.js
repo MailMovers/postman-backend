@@ -9,6 +9,8 @@ const {
   getDeliveryAddressService,
 } = require("./addressServices");
 
+const { PreSignedUrl, insertS3Url } = require("./s3");
+
 const {
   letterService,
   countPhotoService,
@@ -125,4 +127,5 @@ module.exports = {
   getPointTransactionsService,
   getPhotoInfoService,
   usePointsForPaymentService,
+  s3: { PreSignedUrl, insertS3Url },
 };

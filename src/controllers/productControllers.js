@@ -1,3 +1,5 @@
+const { PreSignedUrl, insertS3Url } = require("../services/s3");
+
 const {
   insertProductService,
   deleteProductService,
@@ -10,6 +12,7 @@ const {
   getProductCategoriService,
   getReviewListService,
 } = require("../services/productServices");
+
 const {
   getUserByIdDao,
   getUserByReviewDao,
@@ -17,33 +20,89 @@ const {
   deleteMyReviewDao,
 } = require("../models/productDao");
 
+const getPreSignedUrlController = async (req, res, next) => {
+  try {
+    const {
+      imgUrl1,
+      imgUrl2,
+      imgUrl3,
+      imgUrl4,
+      imgUrl5,
+      descriptionImgUrl,
+      padImgUrl,
+    } = req.body;
+
+    const folderName = "products";
+    const preSignedUrls = await Promise.all(
+      [
+        imgUrl1,
+        imgUrl2,
+        imgUrl3,
+        imgUrl4,
+        imgUrl5,
+        descriptionImgUrl,
+        padImgUrl,
+      ].map((file) => PreSignedUrl(file, folderName))
+    );
+
+    return res.status(200).json({
+      message: "사전 서명된 URL 생성 완료",
+      preSignedUrls,
+    });
+  } catch (err) {
+    console.error("getPreSignedUrlController에서 생긴 오류", err);
+    next(err);
+  }
+};
+
 //어드민 계정일 경우에만 상품을 등록할수있습니다.
 const insertProductController = async (req, res, next) => {
   try {
     const userId = req.userId;
     const {
       name,
-      imgUrl1,
-      imgUrl2,
-      imgUrl3,
-      imgUrl4,
-      imgUrl5,
-      descriptionImgUrl,
-      padImgUrl,
+      uploadedImgName1, // 클라이언트가 업로드한 파일의 이름
+      uploadedImgName2,
+      uploadedImgName3,
+      uploadedImgName4,
+      uploadedImgName5,
+      uploadedDescriptionImgName,
+      uploadedPadImgName,
       price,
       addPrice,
       description,
       category,
     } = req.body;
+
+    const folderName = "products";
+    const [
+      { s3Url: uploadedImgUrl1 },
+      { s3Url: uploadedImgUrl2 },
+      { s3Url: uploadedImgUrl3 },
+      { s3Url: uploadedImgUrl4 },
+      { s3Url: uploadedImgUrl5 },
+      { s3Url: uploadedDescriptionImgUrl },
+      { s3Url: uploadedPadImgUrl },
+    ] = await Promise.all(
+      [
+        uploadedImgName1,
+        uploadedImgName2,
+        uploadedImgName3,
+        uploadedImgName4,
+        uploadedImgName5,
+        uploadedDescriptionImgName,
+        uploadedPadImgName,
+      ].map((fileName) => insertS3Url(fileName, folderName))
+    );
     await insertProductService(
       name,
-      imgUrl1,
-      imgUrl2,
-      imgUrl3,
-      imgUrl4,
-      imgUrl5,
-      descriptionImgUrl,
-      padImgUrl,
+      uploadedImgUrl1,
+      uploadedImgUrl2,
+      uploadedImgUrl3,
+      uploadedImgUrl4,
+      uploadedImgUrl5,
+      uploadedDescriptionImgUrl,
+      uploadedPadImgUrl,
       price,
       addPrice,
       description,
@@ -313,4 +372,5 @@ module.exports = {
   getProductCategoriController,
   getReviewListController,
   deleteMyreviewController,
+  getPreSignedUrlController,
 };

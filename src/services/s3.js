@@ -30,29 +30,14 @@ const PreSignedUrl = async (file, folderName) => {
   };
 };
 
-const insertS3Url = async (req, res, next) => {
-    try {
+const insertS3Url = async (insertName, folderName) => {
+
       const Bucket = process.env.AWS_BUCKET_NAME;
       const region = process.env.AWS_REGION;
-      const { letterId, insertName, folderName } = req.body;
-  
       const s3Url = `https://${Bucket}.s3.${region}.amazonaws.com/${folderName}/${insertName}`;
-  
-      const photoInfo = await PhotoService(s3Url, letterId);
-      await countPhotoService(letterId);
-  
-      return res.status(201).json({
-        success: true,
-        message: "photoController pass.",
-        data: photoInfo,
-      });
-    } catch (error) {
-      console.error("Error in photoController :", error);
-      return res.status(400).json({
-        success: false,
-        message: "Error in photoController. Please try again later.",
-      });
+      return {
+        s3Url
+      }
     }
-  };
 
 module.exports = { PreSignedUrl, insertS3Url};
