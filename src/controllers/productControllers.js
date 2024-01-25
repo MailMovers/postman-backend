@@ -94,7 +94,7 @@ const insertProductController = async (req, res, next) => {
         uploadedPadImgName,
       ].map((fileName) => insertS3Url(fileName, folderName))
     );
-    await insertProductService(
+    const productInsertionResult = await insertProductService(
       name,
       uploadedImgUrl1,
       uploadedImgUrl2,
@@ -120,10 +120,10 @@ const insertProductController = async (req, res, next) => {
     if (!name) {
       return res.status(400).json({ message: "상품이름을 작성해주세요" });
     }
-    if (!imgUrl1) {
+    if (!uploadedImgUrl1) {
       return res.status(400).json({ message: "상품이미지를 넣어주세요" });
     }
-    if (!padImgUrl) {
+    if (!uploadedPadImgUrl) {
       return res.status(400).json({ message: "편지지 이미지가 없습니다" });
     }
     if (!price) {
@@ -133,11 +133,13 @@ const insertProductController = async (req, res, next) => {
       return res.status(400).json({ message: "상품설명을 작성해주세요" });
     }
     if (!category) {
-      return res.statrs(400).json({ message: "카테고리를 작성해주세요" });
+      return res.status(400).json({ message: "카테고리를 작성해주세요" });
     }
-    return res.status(200).json({
-      message: "SUCCESS",
-    });
+    if (productInsertionResult) {
+      return res.status(200).json({ message: "상품 등록 성공" });
+    } else {
+      return res.status(500).json({ message: "상품 등록 실패" });
+    }
   } catch (err) {
     console.error("insertProductController에서 생긴 오류", err);
     next(err);
