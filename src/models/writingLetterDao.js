@@ -352,15 +352,17 @@ const historyLetterDao = async (userId) => {
       JOIN 
           writing_pads ON letters.writing_pad_id = writing_pads.id
       JOIN 
-          orders ON users.id = orders.user_id AND orders.status = 'DONE'
-      JOIN 
+          orders ON users.id = orders.user_id AND orders.status = 'DONE' AND letters.id = orders.letter_id
+      LEFT JOIN 
           delivery_address ON letters.delivery_address_id = delivery_address.id
-      JOIN 
+      LEFT JOIN 
           send_address ON letters.send_address_id = send_address.id
       LEFT JOIN
           reviews ON letters.id = reviews.letter_id
       WHERE 
-          users.id = ?;
+          users.id = 1
+      GROUP BY 
+          letters.id, letters.status, writing_pads.name;
       `,
       [userId]
     );
