@@ -360,7 +360,7 @@ const historyLetterDao = async (userId) => {
       LEFT JOIN
           reviews ON letters.id = reviews.letter_id
       WHERE 
-          users.id = 1
+          users.id = ?
       GROUP BY 
           letters.id, letters.status, writing_pads.name;
       `,
