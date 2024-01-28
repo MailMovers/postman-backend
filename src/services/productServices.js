@@ -107,10 +107,22 @@ const getReviewListService = async (userId) => {
 };
 
 const newProductService = async () => {
-  return await newProductDao();
+  const products = await newProductDao();
+  return products.map((product) => ({
+    id: product.id,
+    imgUrl: product.img_url_1,
+    name: product.name,
+    description: product.description,
+  }));
 };
 const popularProductService = async () => {
-  return await popularProductDao();
+  const products = await popularProductDao();
+  return products.map((product) => ({
+    id: product.id,
+    imgUrl: product.img_url_1,
+    name: product.name,
+    description: product.description,
+  }));
 };
 
 module.exports = {
