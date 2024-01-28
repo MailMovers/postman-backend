@@ -40,7 +40,7 @@ adminRoute.post("/deleteProduct", auth, deleteProductController);
 // //상품 리뷰삭제
 // adminRoute.post("/deleteProductReview", auth, adminDeleteReviewController);
 // //상품 리뷰 불러오기
-// adminRoute.get("/getProductReviewLst", auth, getProductReviewlistController);
+adminRoute.get("/getProductReviewList", auth, getProductReviewlistController);
 //편지 주소 불러오기
 adminRoute.get("/letterAddress", auth, getAllAddressController);
 //공지사항 입력

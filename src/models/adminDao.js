@@ -210,13 +210,13 @@ const getProductReviewListDao = async (productId) => {
     const getProductReviewList = await AppDataSource.query(
       `
   SELECT
-  writing_pads.id,
-  writing_pads.name,
-  writing_pads.deleted_at,
-  reviews.writing_pad_id,
-  reviews.id,
+  writing_pads.id AS writing_pad_id,
+  writing_pads.name AS wp_name,
+  writing_pads.deleted_at AS wp_deleted_at,
+  reviews.id AS reviewId,
   reviews.content,
-  reviews.deleted_at
+  reviews.created_at AS r_created_at,
+  reviews.deleted_at AS r_deleted_at
 FROM writing_pads
 LEFT JOIN reviews ON reviews.writing_pad_id = writing_pads.id
 WHERE reviews.deleted_at IS NULL AND writing_pads.deleted_at IS NULL AND writing_pads.id = ?
