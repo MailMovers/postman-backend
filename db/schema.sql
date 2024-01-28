@@ -233,14 +233,18 @@ CREATE TABLE `reviews` (
   `user_id` int NOT NULL,
   `writing_pad_id` int NOT NULL,
   `score` int NOT NULL,
+  `status` varchar(255) NOT NULL,
+  `letter_id` int NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `writing_pad_id` (`writing_pad_id`),
+  KEY `letter_id` (`letter_id`),
   CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`writing_pad_id`) REFERENCES `writing_pads` (`id`)
+  CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`writing_pad_id`) REFERENCES `writing_pads` (`id`),
+  CONSTRAINT `reviews_ibfk_3` FOREIGN KEY (`letter_id`) REFERENCES `letters` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

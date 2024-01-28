@@ -11,6 +11,8 @@ const {
   getWritingPadService,
   getProductCategoriService,
   getReviewListService,
+  newProductService,
+  popularProductService,
 } = require("../services/productServices");
 
 const {
@@ -362,6 +364,31 @@ const getReviewListController = async (req, res, next) => {
   }
 };
 
+const newProductController = async (req, res, next) => {
+  try {
+    const result = await newProductService();
+    return res.status(200).json({
+      message: "SUCCESS",
+      data: result,
+    });
+  } catch (err) {
+    console.error("newProductController에서 발생한 오류", err);
+    next(err);
+  }
+};
+const popularProductContoller = async (req, res, next) => {
+  try {
+    const result = await popularProductService();
+    return res.status(200).json({
+      message: "SUCCESS",
+      data: result,
+    });
+  } catch (err) {
+    console.error("popularProductContoller에서 발생한 오류", err);
+    next(err);
+  }
+};
+
 module.exports = {
   insertProductController,
   deleteProductController,
@@ -373,6 +400,8 @@ module.exports = {
   getWritingPadController,
   getProductCategoriController,
   getReviewListController,
+  newProductController,
+  popularProductContoller,
   deleteMyreviewController,
   getPreSignedUrlController,
 };
