@@ -343,7 +343,8 @@ const historyLetterDao = async (userId) => {
           send_address.send_address_detail,
           send_address.send_phone,
           send_address.send_name,
-          orders.created_at AS orderCreatedAt
+          orders.created_at AS orderCreatedAt,
+          reviews.status AS reviewStatus
       FROM 
           users
       JOIN 
@@ -356,6 +357,8 @@ const historyLetterDao = async (userId) => {
           delivery_address ON letters.delivery_address_id = delivery_address.id
       JOIN 
           send_address ON letters.send_address_id = send_address.id
+      LEFT JOIN
+          reviews ON letters.id = reviews.letter_id
       WHERE 
           users.id = ?;
       `,
