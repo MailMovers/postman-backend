@@ -171,26 +171,26 @@ const getProductListDao = async (startItem, pageSize) => {
   }
 };
 //리뷰 작성가능한 유저확인
-const getUserByReviewDao = async (userId) => {
+const getUserByReviewDao = async (letterId) => {
   const resultUser = await AppDataSource.query(
     `
     SELECT
-    u.id AS userId,
-    o.status AS orderStatus,
-    wp.id AS writing_pad_id
-   FROM users u
-   LEFT JOIN orders o ON o.user_id = u.id
-   LEFT JOIN letters l ON l.id = o.letter_id
-   LEFT JOIN writing_pads wp ON wp.id = l.writing_pad_id 
-   WHERE o.status = "done" AND u.id = ?
+    user.id AS userId,
+    order.status AS orderStatus,
+    writing_pad.id AS writing_pad_id
+   FROM users user
+   LEFT JOIN orders order ON order.user_id = user.id
+   LEFT JOIN letters letter ON letter.id = order.letter_id
+   LEFT JOIN writing_pads writing_pad ON writing_pad.id = letter.writing_pad_id 
+   WHERE order.status = "done" AND letter.id = ?
   `,
-    [userId]
+    [letterId]
   );
   const user = resultUser[0];
   return user;
 };
 //리뷰작성
-const insertReviewDao = async (userId, productId, score, content) => {
+const insertReviewDao = async (userId, productId, score, content, letterId) => {
   const insertReview = await AppDataSource.query(
     `
     INSERT INTO reviews
@@ -198,12 +198,14 @@ const insertReviewDao = async (userId, productId, score, content) => {
     user_id,
     writing_pad_id,
     score,
-    content
+    content,
+    letter_id,
+    status
     )
     VALUES
-    (?,?,?,?)
+    (?,?,?,?,?,?)
     `,
-    [userId, productId, score, content]
+    [userId, productId, score, content, letterId, "done"]
   );
   return insertReview;
 };

@@ -44,8 +44,8 @@ const getProductListService = async (startItem, pageSize) => {
   }
 };
 //상품 리뷰작성
-const insertReviewService = async (userId, productId, score, content) => {
-  await insertReviewDao(userId, productId, score, content);
+const insertReviewService = async (userId, productId, score, content, letterId) => {
+  await insertReviewDao(userId, productId, score, content, letterId);
 };
 //상품 리뷰 불러오기
 const getReviewService = async (productId, pageSize, startItem) => {
