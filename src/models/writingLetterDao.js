@@ -333,6 +333,7 @@ const historyLetterDao = async (userId) => {
       `
       SELECT 
           letters.id AS letterId,
+          letters.status,
           writing_pads.name,
           delivery_address.delivery_address,
           delivery_address.delivery_address_detail,
