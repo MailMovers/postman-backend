@@ -10,6 +10,8 @@ const {
   getWritingPadDao,
   getReviewListDao,
   getCategoryListWithCountDao,
+  newProductDao,
+  popularProductDao,
 } = require("../models/productDao");
 
 const insertProductService = async (
@@ -81,8 +83,27 @@ const getProductCategoriService = async (startItem, pageSize, category) => {
   }
 };
 
-const getReviewListService = async (startItem, pageSize, userId) => {
-  return await getReviewListDao(startItem, pageSize, userId);
+const getReviewListService = async (userId) => {
+  return await getReviewListDao(userId);
+};
+
+const newProductService = async () => {
+  const products = await newProductDao();
+  return products.map((product) => ({
+    id: product.id,
+    imgUrl: product.img_url_1,
+    name: product.name,
+    description: product.description,
+  }));
+};
+const popularProductService = async () => {
+  const products = await popularProductDao();
+  return products.map((product) => ({
+    id: product.id,
+    imgUrl: product.img_url_1,
+    name: product.name,
+    description: product.description,
+  }));
 };
 
 module.exports = {
@@ -96,4 +117,6 @@ module.exports = {
   getWritingPadService,
   getProductCategoriService,
   getReviewListService,
+  newProductService,
+  popularProductService,
 };
