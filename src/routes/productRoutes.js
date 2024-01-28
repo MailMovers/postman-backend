@@ -1,6 +1,7 @@
 const express = require("express");
 const { productController } = require("../controllers");
 const auth = require("../middlewares/auth.middleware");
+const { populate } = require("dotenv");
 
 const {
   getProductController,
@@ -11,6 +12,8 @@ const {
   getWritingPadController,
   getProductCategoriController,
   getReviewListController,
+  newProductController,
+  popularProductContoller,
 } = productController;
 const productRoute = express.Router();
 
@@ -30,4 +33,10 @@ productRoute.post("/:productId", auth, insertReviewController);
 productRoute.get("/:productId/review", getReviewController);
 //리뷰 삭제
 productRoute.post("/:productId/review/delete", auth, deleteReviewController);
+//편지지 신상 Created_at
+productRoute.get("/new", newProductController);
+//편지지 인기 Scroe
+productRoute.get("/popular", popularProductContoller);
+//편지지 추천 Price
+
 module.exports = { productRoute };

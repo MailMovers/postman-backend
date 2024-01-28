@@ -38,6 +38,8 @@ const {
   getWritingPadService,
   getProductCategoriService,
   getReviewListService,
+  newProductService,
+  popularProductService,
 } = require("./productServices");
 
 const {
@@ -111,4 +113,6 @@ module.exports = {
   PhotoService,
   delPhotoService,
   historyLetterService,
+  newProductService,
+  popularProductService,
 };

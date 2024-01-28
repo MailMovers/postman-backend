@@ -1,3 +1,4 @@
+const { assert } = require("console");
 const { AppDataSource } = require("./dataSource");
 //상품 등록
 const insertProductDao = async (
@@ -347,6 +348,40 @@ const getReviewListDao = async (userId) => {
   }
 };
 
+const newProductDao = async () => {
+  try {
+    const result = await AppDataSource.query(`
+      SELECT id, img_url_1, name, description
+      FROM writing_pads
+      ORDER BY created_at DESC
+      LIMIT 3
+  `);
+    return result;
+  } catch (err) {
+    console.error("newProductDao에서 오류:", err);
+    throw err;
+  }
+};
+const popularProductDao = async () => {
+  try {
+    const result = await AppDataSource.query(`
+    SELECT wp.id, wp.img_url_1, wp.name, wp.description
+      FROM writing_pads wp
+      INNER JOIN (
+        SELECT writing_pad_id, COUNT(*) as review_count
+        FROM reviews
+        GROUP BY writing_pad_id
+      ) as r ON wp.id = r.writing_pad_id
+      ORDER BY r.review_count DESC
+      LIMIT 3
+    `);
+    return result;
+  } catch (err) {
+    console.error("popularProductDao에서 오류:", err);
+    throw err;
+  }
+};
+
 module.exports = {
   insertProductDao,
   getUserByIdDao,
@@ -361,4 +396,6 @@ module.exports = {
   getCountProductListDao,
   getCategoryListWithCountDao,
   getReviewListDao,
+  newProductDao,
+  popularProductDao,
 };

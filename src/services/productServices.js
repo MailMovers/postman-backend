@@ -10,6 +10,8 @@ const {
   getWritingPadDao,
   getCategoryListWithCountDao,
   getReviewListDao,
+  newProductDao,
+  popularProductDao,
 } = require("../models/productDao");
 
 const insertProductService = async (
@@ -104,6 +106,13 @@ const getReviewListService = async (userId) => {
   return await getReviewListDao(userId);
 };
 
+const newProductService = async () => {
+  return await newProductDao();
+};
+const popularProductService = async () => {
+  return await popularProductDao();
+};
+
 module.exports = {
   insertProductService,
   deleteProductService,
@@ -115,4 +124,6 @@ module.exports = {
   getWritingPadService,
   getProductCategoriService,
   getReviewListService,
+  newProductService,
+  popularProductService,
 };

@@ -45,6 +45,8 @@ const {
   getCountProductListDao,
   getCategoryListWithCountDao,
   getReviewListDao,
+  newProductDao,
+  popularProductDao,
 } = require("./productDao");
 
 const {
@@ -137,4 +139,6 @@ module.exports = {
   getPhotosDao,
   historyLetterDao,
   getRecipe,
+  newProductDao,
+  popularProductDao,
 };
