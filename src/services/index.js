@@ -9,6 +9,8 @@ const {
   getDeliveryAddressService,
 } = require("./addressServices");
 
+const { PreSignedUrl, insertS3Url } = require("./s3");
+
 const {
   letterService,
   countPhotoService,
@@ -20,9 +22,15 @@ const {
   PhotoService,
   delPhotoService,
   historyLetterService,
+  getPhotoInfoService,
 } = require("./writingLetterServices");
 
-const { paymentSuccessService } = require("./paymentServices");
+const {
+  paymentSuccessService,
+  getPaymentInfoService,
+  getPointTransactionsService,
+  usePointsForPaymentService,
+} = require("./paymentServices");
 
 // user service class
 const UserService = require("./userServices");
@@ -61,6 +69,8 @@ const {
   getNoticeDetailService,
   getNoticeListService,
   deleteNoticeService,
+  adminDeleteReviewService,
+  getProductReviewService,
 } = require("./adminService");
 
 module.exports = {
@@ -105,6 +115,8 @@ module.exports = {
     getNoticeDetailService,
     getNoticeListService,
     deleteNoticeService,
+    adminDeleteReviewService,
+    getProductReviewService,
   },
   checkLetterService,
   checkAndInsertAddressService,
@@ -115,4 +127,9 @@ module.exports = {
   historyLetterService,
   newProductService,
   popularProductService,
+  getPaymentInfoService,
+  getPointTransactionsService,
+  getPhotoInfoService,
+  usePointsForPaymentService,
+  s3: { PreSignedUrl, insertS3Url },
 };

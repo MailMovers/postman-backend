@@ -35,7 +35,8 @@ const insertCsController = async (req, res, next) => {
 const insertCsAnswerController = async (req, res, next) => {
   try {
     const userId = req.userId;
-    const { content, customerServiceId } = req.body;
+    const customerServiceId = req.query.customerServiceId;
+    const content = req.body;
     if (!userId) {
       return res.status(400).json({ message: "KEY_ERROR" });
     }
@@ -63,7 +64,7 @@ const insertCsAnswerController = async (req, res, next) => {
 const getCsDetailController = async (req, res, next) => {
   try {
     const userId = req.userId;
-    const customerServiceId = req.body.customerServiceId;
+    const customerServiceId = req.query.customerServiceId;
     if (!userId) {
       return res.status(400).json({ message: "게시글 열람 권한이 없습니다" });
     }
@@ -92,8 +93,8 @@ const getCsDetailController = async (req, res, next) => {
 //게시글 리스트 보여주기
 const getCslistController = async (req, res, next) => {
   try {
-    const page = parseInt(req.query.page, 10);
-    const pageSize = 20;
+    const page = req.query.page || 1;
+    const pageSize = 10;
     if (isNaN(page) || page <= 0) {
       return res.status(400).json({ message: "유효하지 않은 페이지 번호" });
     }
@@ -115,7 +116,7 @@ const getCslistController = async (req, res, next) => {
 const deleteCsController = async (req, res, next) => {
   try {
     const userId = req.userId;
-    const customerServiceId = req.body.customerServiceId;
+    const customerServiceId = req.query.customerServiceId;
     await deleteCsService(userId, customerServiceId);
 
     if (!userId) {
@@ -136,7 +137,7 @@ const deleteCsController = async (req, res, next) => {
 //어드민 게시글 삭제하기
 const adminCsDeleteController = async (req, res, next) => {
   try {
-    const customerServiceId = req.body.customerServiceId;
+    const customerServiceId = req.query.customerServiceId;
     await adminDeleteCsService(customerServiceId);
 
     if (!customerServiceId || customerServiceId.length === 0) {
@@ -155,7 +156,8 @@ const adminCsDeleteController = async (req, res, next) => {
 const adminDeleteCsAnswerController = async (req, res, next) => {
   try {
     const userId = req.userId;
-    const { csAnswerId, customerServiceId } = req.body;
+    const csAnswerId = req.body;
+    const customerServiceId = req.query.customerServiceId;
 
     // 사용자 정보가 없거나 권한이 없는 경우
     const user = await getUserByIdDao(userId);
@@ -180,7 +182,7 @@ const adminDeleteCsAnswerController = async (req, res, next) => {
 //답변 목록 가져오기
 const getCsAnswerListController = async (req, res, next) => {
   try {
-    const customerServiceId = req.body.customerServiceId;
+    const customerServiceId = req.query.customerServiceId;
     if (!customerServiceId) {
       return res.status(400).json({ message: "게시글이 없습니다" });
     }

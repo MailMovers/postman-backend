@@ -64,6 +64,11 @@ const authNumberSchema = Joi.object({
         'any.required': '인증번호를 입력해주세요.',
         'string.length': '인증번호는 6자리입니다.',
     }),
+    email: Joi.string().email().required().messages({
+        'string.base': '이메일은 문자열이어야 합니다.',
+        'any.required': '이메일을 입력해주세요.',
+        'string.email': '이메일이 유효하지 않습니다.',
+    }),
 });
 
 // 일반 로그인 유효성검사
@@ -123,6 +128,18 @@ const updatePhoneSchema = Joi.object({
     }),
 });
 
+// 회원탈퇴 유효성검사
+const withdrawalSchema = Joi.object({
+    password: Joi.string().required().messages({
+        'string.base': '비밀번호는 문자열이어야 합니다.',
+        'any.required': '비밀번호를 입력해주세요.',
+    }),
+    reason: Joi.string().max(500).allow('', null).optional().messages({
+        'string.base': '탈퇴사유는 문자열이어야 합니다.',
+        'string.max': '탈퇴사유는 최대 500자입니다.',
+    }),
+});
+
 const customMessages = {
     'any.required': '{{#label}} is required.',
     'string.base': '{{#label}} must be a string.',
@@ -138,4 +155,5 @@ module.exports = {
     signInSchema,
     updatePasswordSchema,
     updatePhoneSchema,
+    withdrawalSchema,
 };

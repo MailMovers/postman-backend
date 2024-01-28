@@ -187,6 +187,48 @@ const deleteNoticeDao = async (postId) => {
     throw err;
   }
 };
+//리뷰삭제
+const adminDeleteReview = async (reviewId) => {
+  try {
+    const reviewDelete = await AppDataSource.query(
+      `
+    UPDATE reviews SET deleted_at = NOW()
+    WHERE id = ?
+    `,
+      [reviewId]
+    );
+    return reviewDelete;
+  } catch (err) {
+    console.error("adminDeleteReview에서 발생한 에러", err);
+    throw err;
+  }
+};
+
+//상품 리뷰 불러오기
+const getProductReviewListDao = async (productId) => {
+  try {
+    const getProductReviewList = await AppDataSource.query(
+      `
+  SELECT
+  writing_pads.id AS writing_pad_id,
+  writing_pads.name AS wp_name,
+  writing_pads.deleted_at AS wp_deleted_at,
+  reviews.id AS reviewId,
+  reviews.content,
+  reviews.created_at AS r_created_at,
+  reviews.deleted_at AS r_deleted_at
+FROM writing_pads
+LEFT JOIN reviews ON reviews.writing_pad_id = writing_pads.id
+WHERE reviews.deleted_at IS NULL AND writing_pads.deleted_at IS NULL AND writing_pads.id = ?
+  `,
+      [productId]
+    );
+    return getProductReviewList;
+  } catch (err) {
+    console.error("getProductReviewListDao에서 발생한 오류", err);
+    throw err;
+  }
+};
 
 module.exports = {
   upDateProductDao,
@@ -196,4 +238,6 @@ module.exports = {
   getNoticeDetailDao,
   getNoticeListDao,
   deleteNoticeDao,
+  adminDeleteReview,
+  getProductReviewListDao,
 };

@@ -14,6 +14,7 @@ const {
   getUploadUrl,
   delPhotoController,
   historyLetterController,
+  getPhotoInfoController,
 } = writingLetterController;
 
 const writingLetterRoute = express.Router();
@@ -23,8 +24,9 @@ writingLetterRoute.post("/upload", auth, upload.single("file"), getUploadUrl);
 writingLetterRoute.get("/check", auth, checkLetterController);
 writingLetterRoute.post("/photo", auth, photoController);
 writingLetterRoute.post("/delPhoto", auth, delPhotoController);
+writingLetterRoute.get("/getPhoto", auth, getPhotoInfoController);
 writingLetterRoute.post("/stamp", auth, stampController);
 writingLetterRoute.get("/confirm", auth, confirmLetterController);
-writingLetterRoute.get("/history",  historyLetterController);
+writingLetterRoute.get("/history", auth, historyLetterController);
 
 module.exports = { writingLetterRoute };

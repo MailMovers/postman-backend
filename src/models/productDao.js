@@ -172,26 +172,26 @@ const getProductListDao = async (startItem, pageSize) => {
   }
 };
 //리뷰 작성가능한 유저확인
-const getUserByReviewDao = async (userId) => {
+const getUserByReviewDao = async (letterId) => {
   const resultUser = await AppDataSource.query(
     `
     SELECT
-    u.id AS userId,
-    o.status AS orderStatus,
-    wp.id AS writing_pad_id
-   FROM users u
-   LEFT JOIN orders o ON o.user_id = u.id
-   LEFT JOIN letters l ON l.id = o.letter_id
-   LEFT JOIN writing_pads wp ON wp.id = l.writing_pad_id 
-   WHERE o.status = "done" AND u.id = ?
+    user.id AS userId,
+    order.status AS orderStatus,
+    writing_pad.id AS writing_pad_id
+   FROM users user
+   LEFT JOIN orders order ON order.user_id = user.id
+   LEFT JOIN letters letter ON letter.id = order.letter_id
+   LEFT JOIN writing_pads writing_pad ON writing_pad.id = letter.writing_pad_id 
+   WHERE order.status = "done" AND letter.id = ?
   `,
-    [userId]
+    [letterId]
   );
   const user = resultUser[0];
   return user;
 };
 //리뷰작성
-const insertReviewDao = async (userId, productId, score, content) => {
+const insertReviewDao = async (userId, productId, score, content, letterId) => {
   const insertReview = await AppDataSource.query(
     `
     INSERT INTO reviews
@@ -199,40 +199,79 @@ const insertReviewDao = async (userId, productId, score, content) => {
     user_id,
     writing_pad_id,
     score,
-    content
+    content,
+    letter_id,
+    status
     )
     VALUES
-    (?,?,?,?)
+    (?,?,?,?,?,?)
     `,
-    [userId, productId, score, content]
+    [userId, productId, score, content, letterId, "done"]
   );
   return insertReview;
 };
 
-//상품리뷰 불러오기
 const getReviewDao = async (startItem, pageSize, productId) => {
-  const getReview = await AppDataSource.query(
-    `
-    SELECT
-      id,
-      user_id,
-      content,
-      score,
-      created_at,
-      deleted_at
-    FROM
-      reviews
-    WHERE
-      writing_pad_id = ?
-    ORDER BY
-      created_at DESC
-    LIMIT ? OFFSET ?;
-  `,
-    [productId, pageSize, startItem]
-  );
-  return getReview;
-};
+  try {
+    const getReviewQuery = `
+      SELECT
+        reviews.id,
+        reviews.user_id,
+        users.name,
+        reviews.content,
+        reviews.score,
+        reviews.created_at,
+        reviews.deleted_at
+      FROM
+        reviews
+      LEFT JOIN
+        users ON reviews.user_id = users.id
+      WHERE
+        reviews.deleted_at IS NULL
+        AND writing_pad_id = ?
+      ORDER BY
+        created_at DESC
+      LIMIT ? OFFSET ?;
+    `;
 
+    const scoreQuery = `
+      SELECT ROUND(AVG(reviews.score), 1) AS average_score
+      FROM reviews
+      WHERE deleted_at IS NULL AND writing_pad_id = ?
+    `;
+
+    const getReviewCountQuery = `
+      SELECT COUNT(*) AS count FROM reviews WHERE writing_pad_id = ? AND deleted_at IS NULL
+    `;
+
+    const [reviewResult, scoreResult, countResult] = await Promise.all([
+      AppDataSource.query(getReviewQuery, [productId, pageSize, startItem]),
+      AppDataSource.query(scoreQuery, [productId]),
+      AppDataSource.query(getReviewCountQuery, [productId]),
+    ]);
+
+    return {
+      reviewResult,
+      score: scoreResult[0]?.average_score || 0,
+      count: countResult[0]?.count || 0,
+    };
+  } catch (err) {
+    console.error("getReviewDao에서 발생한 에러", err);
+    throw err;
+  }
+};
+//상품 리뷰 지우기
+const deleteMyReviewDao = async (userId, reviewId, productId) => {
+  const deleteReview = await AppDataSource.query(
+    `
+    UPDATE reviews
+    SET reviews.deleted_at = NOW()
+    WHERE reviews.user_id = ? AND reviews.id = ? AND writing_pad_Id = ?
+    `,
+    [userId, reviewId, productId]
+  );
+  return deleteReview;
+};
 //상품 리뷰 지우기
 const deleteReviewDao = async (userId, reviewId) => {
   const deleteReview = await AppDataSource.query(
@@ -317,31 +356,43 @@ const getCategoryListWithCountDao = async (startItem, pageSize, category) => {
     throw error;
   }
 };
-const getReviewListDao = async (userId) => {
+const getReviewListDao = async (startItem, pageSize, userId) => {
   try {
+    const myReviewCountQuery = `
+      SELECT COUNT(*) AS count FROM reviews WHERE writing_pad_id = ? AND deleted_at IS NULL
+    `;
     const getReviewListQuery = `
       SELECT
-      reviews.writing_pad_id,
-        writing_pads.name,
+        reviews.writing_pad_id,
+        writing_pads.name AS writingPadName,
         writing_pads.img_url_1,
-        reviews.id,
-        reviews.content,
+        reviews.id AS reviewId,
         reviews.user_id,
-        writing_pads.deleted_at AS writing_pads_deleted_at,
         reviews.score,
+        reviews.content,
         reviews.created_at AS review_created_at,
+        writing_pads.deleted_at AS writing_pads_deleted_at,
         reviews.deleted_at AS review_deleted_at
       FROM reviews
       LEFT JOIN writing_pads ON reviews.writing_pad_id = writing_pads.id
       WHERE 
         reviews.deleted_at IS NULL AND 
         writing_pads.deleted_at IS NULL AND
-        reviews.user_id = ?;
+        reviews.user_id = ?
+      ORDER BY
+        reviews.created_at DESC
+      LIMIT ? OFFSET ?;
     `;
 
-    const result = await AppDataSource.query(getReviewListQuery, [userId]);
+    const [countResult, getReviewListResult] = await Promise.all([
+      AppDataSource.query(myReviewCountQuery, [userId]),
+      AppDataSource.query(getReviewListQuery, [userId, pageSize, startItem]),
+    ]);
 
-    return result;
+    return {
+      count: countResult[0]?.count || 0,
+      getReviewList: getReviewListResult,
+    };
   } catch (err) {
     console.error("getReviewListDao에서 오류:", err);
     throw err;
@@ -398,4 +449,5 @@ module.exports = {
   getReviewListDao,
   newProductDao,
   popularProductDao,
+  deleteMyReviewDao,
 };

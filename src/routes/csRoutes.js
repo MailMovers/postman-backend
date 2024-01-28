@@ -20,7 +20,7 @@ csRoute.post("/answer", auth, insertCsAnswerController);
 //문의 내역 상세보기
 csRoute.get("/detail", auth, getCsDetailController);
 //문의 내역 리스트 보기
-csRoute.get("/", auth, getCslistController);
+csRoute.get("/", getCslistController);
 //게시글 삭제하기
 csRoute.post("/delete", auth, deleteCsController);
 //어드민 게시글 삭제하기

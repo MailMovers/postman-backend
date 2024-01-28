@@ -1,3 +1,5 @@
+const { PreSignedUrl, insertS3Url } = require("../services/s3");
+
 const {
   insertProductService,
   deleteProductService,
@@ -12,11 +14,48 @@ const {
   newProductService,
   popularProductService,
 } = require("../services/productServices");
+
 const {
   getUserByIdDao,
   getUserByReviewDao,
   getCountProductListDao,
+  deleteMyReviewDao,
 } = require("../models/productDao");
+
+const getPreSignedUrlController = async (req, res, next) => {
+  try {
+    const {
+      imgUrl1,
+      imgUrl2,
+      imgUrl3,
+      imgUrl4,
+      imgUrl5,
+      descriptionImgUrl,
+      padImgUrl,
+    } = req.body;
+
+    const folderName = "products";
+    const preSignedUrls = await Promise.all(
+      [
+        imgUrl1,
+        imgUrl2,
+        imgUrl3,
+        imgUrl4,
+        imgUrl5,
+        descriptionImgUrl,
+        padImgUrl,
+      ].map((file) => PreSignedUrl(file, folderName))
+    );
+
+    return res.status(200).json({
+      message: "사전 서명된 URL 생성 완료",
+      preSignedUrls,
+    });
+  } catch (err) {
+    console.error("getPreSignedUrlController에서 생긴 오류", err);
+    next(err);
+  }
+};
 
 //어드민 계정일 경우에만 상품을 등록할수있습니다.
 const insertProductController = async (req, res, next) => {
@@ -24,27 +63,48 @@ const insertProductController = async (req, res, next) => {
     const userId = req.userId;
     const {
       name,
-      imgUrl1,
-      imgUrl2,
-      imgUrl3,
-      imgUrl4,
-      imgUrl5,
-      descriptionImgUrl,
-      padImgUrl,
+      uploadedImgName1, // 클라이언트가 업로드한 파일의 이름
+      uploadedImgName2,
+      uploadedImgName3,
+      uploadedImgName4,
+      uploadedImgName5,
+      uploadedDescriptionImgName,
+      uploadedPadImgName,
       price,
       addPrice,
       description,
       category,
     } = req.body;
-    await insertProductService(
+
+    const folderName = "products";
+    const [
+      { s3Url: uploadedImgUrl1 },
+      { s3Url: uploadedImgUrl2 },
+      { s3Url: uploadedImgUrl3 },
+      { s3Url: uploadedImgUrl4 },
+      { s3Url: uploadedImgUrl5 },
+      { s3Url: uploadedDescriptionImgUrl },
+      { s3Url: uploadedPadImgUrl },
+    ] = await Promise.all(
+      [
+        uploadedImgName1,
+        uploadedImgName2,
+        uploadedImgName3,
+        uploadedImgName4,
+        uploadedImgName5,
+        uploadedDescriptionImgName,
+        uploadedPadImgName,
+      ].map((fileName) => insertS3Url(fileName, folderName))
+    );
+    const productInsertionResult = await insertProductService(
       name,
-      imgUrl1,
-      imgUrl2,
-      imgUrl3,
-      imgUrl4,
-      imgUrl5,
-      descriptionImgUrl,
-      padImgUrl,
+      uploadedImgUrl1,
+      uploadedImgUrl2,
+      uploadedImgUrl3,
+      uploadedImgUrl4,
+      uploadedImgUrl5,
+      uploadedDescriptionImgUrl,
+      uploadedPadImgUrl,
       price,
       addPrice,
       description,
@@ -62,10 +122,10 @@ const insertProductController = async (req, res, next) => {
     if (!name) {
       return res.status(400).json({ message: "상품이름을 작성해주세요" });
     }
-    if (!imgUrl1) {
+    if (!uploadedImgUrl1) {
       return res.status(400).json({ message: "상품이미지를 넣어주세요" });
     }
-    if (!padImgUrl) {
+    if (!uploadedPadImgUrl) {
       return res.status(400).json({ message: "편지지 이미지가 없습니다" });
     }
     if (!price) {
@@ -75,11 +135,13 @@ const insertProductController = async (req, res, next) => {
       return res.status(400).json({ message: "상품설명을 작성해주세요" });
     }
     if (!category) {
-      return res.statrs(400).json({ message: "카테고리를 작성해주세요" });
+      return res.status(400).json({ message: "카테고리를 작성해주세요" });
     }
-    return res.status(200).json({
-      message: "SUCCESS",
-    });
+    if (productInsertionResult) {
+      return res.status(200).json({ message: "상품 등록 성공" });
+    } else {
+      return res.status(500).json({ message: "상품 등록 실패" });
+    }
   } catch (err) {
     console.error("insertProductController에서 생긴 오류", err);
     next(err);
@@ -128,7 +190,7 @@ const getProductController = async (req, res, next) => {
     next(err);
   }
 };
-//상품의 목록을 페이지 기준 20개씩 보내줍니다.
+//상품의 목록을 페이지 기준 8개씩 보내줍니다.
 const getProductListController = async (req, res, next) => {
   try {
     const page = req.query.page || 1;
@@ -156,10 +218,10 @@ const insertReviewController = async (req, res, next) => {
   try {
     const userId = req.userId;
     const productId = req.params.productId;
-    const { score, content } = req.body;
+    const { score, content, letterId } = req.body;
 
-    await insertReviewService(userId, productId, score, content);
-    const user = await getUserByReviewDao(userId);
+    await insertReviewService(userId, productId, score, content, letterId);
+    const user = await getUserByReviewDao(letterId);
     if (user.orderStatus !== "done") {
       console.log("리뷰 권한이 없습니다. 주문 상태:", user.oderStatus);
       return res.status(400).json({ message: "리뷰 권한이 없습니다" });
@@ -179,11 +241,11 @@ const insertReviewController = async (req, res, next) => {
     next(err);
   }
 };
-//상품 리뷰를 한 페이지당 20개의 댓글을 보여줍니다.
+//상품 리뷰를 한 페이지당 10개의 댓글을 보여줍니다.
 const getReviewController = async (req, res, next) => {
   try {
     const page = req.query.page || 1;
-    const pageSize = 20;
+    const pageSize = 10;
     const startItem = (page - 1) * pageSize;
 
     // 여기서 postId 가져오는 부분 확인
@@ -222,6 +284,24 @@ const deleteReviewController = async (req, res, next) => {
     next(err);
   }
 };
+
+//내가 작성한 리뷰 삭제하기
+const deleteMyreviewController = async (req, res, next) => {
+  try {
+    const userId = req.userId;
+    const { reviewId, productId } = req.body;
+    await deleteMyReviewDao(userId, reviewId, productId);
+    if (!reviewId || reviewId.length === 0) {
+      return res.status(400).json({ message: "삭제할 리뷰를 선택해주세요" });
+    } else if (!productId || productId.length === 0) {
+      return res.status(400).json({ message: "상품 아이디가 없습니다" });
+    }
+    return res.status(200).json({ message: "SUCCESS" });
+  } catch (err) {
+    console.error("deleteMtreviewController에서 발생한 오류", err);
+    next(err);
+  }
+};
 // getWritingPadController
 const getWritingPadController = async (req, res, next) => {
   try {
@@ -236,6 +316,7 @@ const getWritingPadController = async (req, res, next) => {
     next(err);
   }
 };
+//카테고리 불러오기
 const getProductCategoriController = async (req, res, next) => {
   try {
     const page = req.query.page || 1;
@@ -261,13 +342,14 @@ const getProductCategoriController = async (req, res, next) => {
     next(err);
   }
 };
-
+//내가 작성한 리뷰 불러오기
 const getReviewListController = async (req, res, next) => {
   try {
     const userId = req.userId;
-    if (!userId || userId.length === 0)
-      return res.status(400).json({ message: "KEY_ERROR" });
-    const myReviews = await getReviewListService(userId);
+    const page = req.query.page || 1;
+    const pageSize = 6;
+    const startItem = (page - 1) * pageSize;
+    const myReviews = await getReviewListService(startItem, pageSize, userId);
 
     if (!myReviews || myReviews.length === 0) {
       return res.status(400).json({ message: "NO_DATA" });
@@ -320,4 +402,6 @@ module.exports = {
   getReviewListController,
   newProductController,
   popularProductContoller,
+  deleteMyreviewController,
+  getPreSignedUrlController,
 };

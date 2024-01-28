@@ -16,6 +16,7 @@ const {
   getContentDao,
   getPhotosDao,
   historyLetterDao,
+  getPhotoInfoDao
 } = require("../models/writingLetterDao");
 
 const { getProductDao } = require("../models/productDao");
@@ -148,13 +149,24 @@ const checkLetterService = async (userId) => {
 };
 const PhotoService = async (s3Url, letterId) => {
   try {
-    const photoId = await photoDao(s3Url, letterId);
-    return photoId.id;
+    const photoInfo = await photoDao(s3Url, letterId);
+    return photoInfo;
   } catch (error) {
     console.error(error);
     throw error;
   }
 };
+
+const getPhotoInfoService = async (letterId) => {
+  try {
+    const photoInfo = await getPhotoInfoDao(letterId);
+    return photoInfo;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 const delPhotoService = async (photoId, letterId) => {
   try {
     await delPhotoDao(photoId);
@@ -194,31 +206,31 @@ const confirmLetterService = async (letterId) => {
     const MAX_FREE_PAGES = 3;
 
     const result = await confirmLetterDao(letterId);
-    console.log("result",result)
+    console.log("result", result);
     const writingPadId = result[0].writing_pad_id;
     const stampId = result[0].stamp_id;
     const prices = await getPricesDao([writingPadId], [stampId]);
     console.log("prices:", prices);
     const formattedResult = await Promise.all(
       result.map(async (item) => {
+        const writingPadPrice = prices.writingPadPrices[0].writingPadPrice;
+        const stampFee = prices.stampFees[0].stampFee;
         const additionalPageCost =
           item.page > MAX_FREE_PAGES
             ? PAGE_PRICE * (item.page - MAX_FREE_PAGES)
             : 0;
         const photoCost = item.photo_count * PHOTO_PRICE;
         const totalCost =
-          prices[0].writingPadPrice +
-          additionalPageCost +
-          photoCost +
-          prices[0].stampFee;
-        
+          writingPadPrice + additionalPageCost + photoCost + stampFee;
+
         const contents = await getContentDao(item.id);
         const photos = await getPhotosDao(item.id);
-        console.log("additionalPageCost : ",additionalPageCost)
+        console.log("additionalPageCost : ", additionalPageCost);
         return {
           letterId: item.id,
           writingPadId: item.writing_pad_id,
           writingPadImgUrl: item.writing_pad_img_url,
+          page: item.page,
           contents: contents.map((content) => ({
             pageNum: content.pageNum, // pageNum을 직접 사용
             content: content.content,
@@ -228,6 +240,7 @@ const confirmLetterService = async (letterId) => {
             photoUrl: photo.img_url,
           })),
           stampId: item.stamp_id,
+          point: item.point,
           deliveryAddress: item.delivery_address,
           deliveryAddressDetail: item.delivery_address_detail,
           deliveryPhone: item.delivery_phone,
@@ -251,8 +264,8 @@ const historyLetterService = async (userId, letterId) => {
   try {
     if (letterId) {
       const letterInformation = await confirmLetterDao(letterId);
-      const price = await getRecipe(letterId);
-      return [letterInformation, price];
+      const recipe = await getRecipe(letterId);
+      return { letterInformation, recipe };
     }
     const result = await historyLetterDao(userId);
     return result;
@@ -273,4 +286,5 @@ module.exports = {
   PhotoService,
   delPhotoService,
   historyLetterService,
+  getPhotoInfoService,
 };

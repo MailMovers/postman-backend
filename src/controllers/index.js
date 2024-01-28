@@ -18,6 +18,7 @@ const {
   getUploadUrl,
   delPhotoController,
   historyLetterController,
+  getPhotoInfoController,
 } = require("./writingLetterControllers");
 
 // user controller class
@@ -36,9 +37,15 @@ const {
   getReviewListController,
   newProductController,
   popularProductContoller,
+  deleteMyreviewController,
 } = require("./productControllers");
 
-const { paymentSuccessController } = require("./paymentControllers.js");
+const {
+  paymentSuccessController,
+  getPaymentInfoController,
+  getPointTransactions,
+  usePointsForPaymentController,
+} = require("./paymentControllers.js");
 
 const {
   insertCsController,
@@ -59,6 +66,11 @@ const {
   getNoticeDetailController,
   getNoticeListController,
   deleteNoticeController,
+  getLetterController,
+  getPhotoController,
+  getAddressController,
+  adminDeleteReviewController,
+  getProductReviewlistController,
 } = require("./adminController");
 
 module.exports = {
@@ -82,6 +94,7 @@ module.exports = {
     getUploadUrl,
     delPhotoController,
     historyLetterController,
+    getPhotoInfoController,
   },
 
   productController: {
@@ -97,9 +110,13 @@ module.exports = {
     getReviewListController,
     newProductController,
     popularProductContoller,
+    deleteMyreviewController,
   },
   paymentController: {
     paymentSuccessController,
+    getPaymentInfoController,
+    getPointTransactions,
+    usePointsForPaymentController,
   },
   csController: {
     insertCsController,
@@ -119,5 +136,10 @@ module.exports = {
     getNoticeDetailController,
     getNoticeListController,
     deleteNoticeController,
+    getLetterController,
+    getPhotoController,
+    getAddressController,
+    adminDeleteReviewController,
+    getProductReviewlistController,
   },
 };

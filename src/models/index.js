@@ -27,6 +27,8 @@ const {
   getContentDao,
   getPhotosDao,
   historyLetterDao,
+  getPhotoInfoDao,
+  updateLetterStatusDao,
 } = require("./writingLetterDao");
 
 // user dao
@@ -47,6 +49,7 @@ const {
   getReviewListDao,
   newProductDao,
   popularProductDao,
+  deleteMyReviewDao,
 } = require("./productDao");
 
 const {
@@ -54,6 +57,14 @@ const {
   getPricesDao,
   addPointDao,
   getRecipe,
+  recordPointTransactionDao,
+  confirmPoint,
+  getPaymentInfoDao,
+  getOrderByIdDao,
+  getWritingPadNameByIdDao,
+  getStampNameByIdDao,
+  getCostomerId,
+  getPointTransactionsDao,
 } = require("./paymentDao");
 
 const {
@@ -75,6 +86,8 @@ const {
   getNoticeDetailDao,
   getNoticeListDao,
   deleteNoticeDao,
+  adminDeleteReview,
+  getProductReviewListDao,
 } = require("./adminDao");
 
 module.exports = {
@@ -107,6 +120,7 @@ module.exports = {
   getCountProductListDao,
   getCategoryListWithCountDao,
   getReviewListDao,
+  deleteMyReviewDao,
   cs: {
     insertCsDao,
     insertCsAnswerDao,
@@ -125,6 +139,8 @@ module.exports = {
     getNoticeDetailDao,
     getNoticeListDao,
     deleteNoticeDao,
+    adminDeleteReview,
+    getProductReviewListDao,
   },
   contentDao,
   checkLetterDao,
@@ -141,4 +157,14 @@ module.exports = {
   getRecipe,
   newProductDao,
   popularProductDao,
+  recordPointTransactionDao,
+  confirmPoint,
+  getPaymentInfoDao,
+  getOrderByIdDao,
+  getWritingPadNameByIdDao,
+  getStampNameByIdDao,
+  getCostomerId,
+  getPointTransactionsDao,
+  getPhotoInfoDao,
+  updateLetterStatusDao,
 };

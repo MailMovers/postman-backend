@@ -8,14 +8,26 @@ const s3 = new AWS.S3({
 });
 
 const getPreSignedUrl = async (file) => {
+  const decodedFileName = decodeURIComponent(file.originalname);
+  const fileExtension = decodedFileName.split(".").pop();
+  const timestamp = Date.now();
+  const newFileName = `letter/${decodedFileName}_${timestamp}.${fileExtension}`;
+  const filename = `${decodedFileName}_${timestamp}.${fileExtension}`
+  const encodedNewFileName = encodeURIComponent(newFileName);
+  const insertName = encodeURIComponent(filename)
+
   const params = {
-    Bucket: process.env.AWS_BUCKET_NAME, // S3 버킷 이름
-    Key: file.originalname, // 파일 이름
-    Expires: 3000, // url이 만료되는 시간(초)
-    ContentType: file.mimetype, // 파일의 MIME 타입
+    Bucket: process.env.AWS_BUCKET_NAME,
+    Key: newFileName,
+    Expires: 3000,
+    ContentType: file.mimetype,
   };
-  const preSignedUrl = await s3.getSignedUrlPromise("putObject", params); // 업로드된 파일의 URL 반환
-  return preSignedUrl;
+  const preSignedUrl = await s3.getSignedUrlPromise("putObject", params);
+  return {
+    preSignedUrl,
+    encodedNewFileName,
+    insertName
+  };
 };
 
 const {
@@ -29,6 +41,7 @@ const {
   PhotoService,
   delPhotoService,
   historyLetterService,
+  getPhotoInfoService,
 } = require("../services/writingLetterServices");
 
 const letterController = async (req, res, next) => {
@@ -87,8 +100,8 @@ const checkLetterController = async (req, res, next) => {
 const getUploadUrl = async (req, res, next) => {
   try {
     const { originalname } = req.file;
-    const result = await getPreSignedUrl({ originalname });
-    console.log("uploadUrl",result)
+    const result = await getPreSignedUrl({ originalname: originalname });
+    console.log("uploadUrl", result);
     return res.status(201).json({
       success: true,
       message: "getUploadUrl pass.",
@@ -107,14 +120,17 @@ const photoController = async (req, res, next) => {
   try {
     const Bucket = process.env.AWS_BUCKET_NAME;
     const region = process.env.AWS_REGION;
-    const { letterId, originalname } = req.body;
-    const s3Url = `https://${Bucket}.s3.${region}.amazonaws.com/${originalname}`;
-    const photoId = await PhotoService(s3Url, letterId);
+    const { letterId, insertName } = req.body;
+
+    const s3Url = `https://${Bucket}.s3.${region}.amazonaws.com/letter/${insertName}`;
+
+    const photoInfo = await PhotoService(s3Url, letterId);
     await countPhotoService(letterId);
+
     return res.status(201).json({
       success: true,
       message: "photoController pass.",
-      data: photoId,
+      data: photoInfo,
     });
   } catch (error) {
     console.error("Error in photoController :", error);
@@ -125,10 +141,32 @@ const photoController = async (req, res, next) => {
   }
 };
 
+const getPhotoInfoController = async (req, res, next) => {
+  try {
+    const { letterId } = req.query;
+    const result = await getPhotoInfoService(letterId);
+    return res.status(201).json({
+      success: true,
+      message: "getPhotoInfoController pass.",
+      data: result,
+    });
+  } catch (error) {
+    console.error("Error in getPhotoInfoController :", error);
+    return res.status(400).json({
+      success: false,
+      message: "Error in getPhotoInfoController. Please try again later.",
+    });
+  }
+};
+
 const delPhotoController = async (req, res, next) => {
   try {
     const { photoId, letterId } = req.body;
     await delPhotoService(photoId, letterId);
+    return res.status(201).json({
+      success: true,
+      message: "delPhotoController pass.",
+    });
   } catch (error) {
     console.error("Error in delPhotoController :", error);
     return res.status(400).json({
@@ -202,7 +240,7 @@ const confirmLetterController = async (req, res, next) => {
 const historyLetterController = async (req, res, next) => {
   try {
     // const userId = req.userId;
-    const userId = req.body.userId;
+    const userId = req.userId;
     const letterId = req.body.letterId;
     const result = await historyLetterService(userId, letterId);
     return res.status(201).json({
@@ -229,4 +267,5 @@ module.exports = {
   getUploadUrl,
   delPhotoController,
   historyLetterController,
+  getPhotoInfoController,
 };

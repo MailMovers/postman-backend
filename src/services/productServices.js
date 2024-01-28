@@ -8,40 +8,21 @@ const {
   getReviewDao,
   deleteReviewDao,
   getWritingPadDao,
-  getCategoryListWithCountDao,
   getReviewListDao,
+  getCategoryListWithCountDao,
   newProductDao,
   popularProductDao,
 } = require("../models/productDao");
 
 const insertProductService = async (
   name,
-  imgUrl1,
-  imgUrl2,
-  imgUrl3,
-  imgUrl4,
-  imgUrl5,
-  descriptionImgUrl,
+  imgUrl,
   padImgUrl,
   price,
   addPrice,
-  description,
-  category
+  discription
 ) => {
-  await insertProductDao(
-    name,
-    imgUrl1,
-    imgUrl2,
-    imgUrl3,
-    imgUrl4,
-    imgUrl5,
-    descriptionImgUrl,
-    padImgUrl,
-    price,
-    addPrice,
-    description,
-    category
-  );
+  await insertProductDao(name, imgUrl, padImgUrl, price, addPrice, discription);
 };
 //상품삭제
 const deleteProductService = async (productId) => {
@@ -65,18 +46,18 @@ const getProductListService = async (startItem, pageSize) => {
   }
 };
 //상품 리뷰작성
-const insertReviewService = async (userId, productId, score, content) => {
-  await insertReviewDao(userId, productId, score, content);
+const insertReviewService = async (userId, productId, score, content, letterId) => {
+  await insertReviewDao(userId, productId, score, content, letterId);
 };
 //상품 리뷰 불러오기
 const getReviewService = async (productId, pageSize, startItem) => {
-  // getReviewDao 함수의 반환값을 reviewList 변수에 할당
-  const reviewList = await getReviewDao(startItem, pageSize, productId);
-  // 여기서부터는 reviewList 변수를 사용할 수 있음
-  const filterReviewList = reviewList.filter(
-    (reviews) => reviews.deleted_at === null
-  );
-  return filterReviewList;
+  try {
+    const reviewData = await getReviewDao(startItem, pageSize, productId);
+    return reviewData;
+  } catch (err) {
+    console.error("getReviewService에서 발생한 에러", err);
+    throw err;
+  }
 };
 
 //상품 리뷰 삭제
@@ -87,7 +68,7 @@ const deleteReviewService = async (userId, reviewId) => {
 const getWritingPadService = async (productId) => {
   return await getWritingPadDao(productId);
 };
-
+//카테고리 별로 상품 불러오기
 const getProductCategoriService = async (startItem, pageSize, category) => {
   try {
     const productList = await getCategoryListWithCountDao(
