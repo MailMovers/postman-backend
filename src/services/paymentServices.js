@@ -17,7 +17,7 @@ const {
   getWritingPadNameByIdDao,
   getStampNameByIdDao,
   getCostomerId,
-  getPointTransactionsDao
+  getPointTransactionsDao,
 } = require("../models/paymentDao");
 
 const PAGE_PRICE = 500;
@@ -187,7 +187,9 @@ const usePointsForPaymentService = async (
   orderId,
   usePoint
 ) => {
-  console.log(`usePointsForPaymentService 호출: userId=${userId}, letterId=${letterId}, orderId=${orderId}, usePoint=${usePoint}`); // 로그 추가
+  console.log(
+    `usePointsForPaymentService 호출: userId=${userId}, letterId=${letterId}, orderId=${orderId}, usePoint=${usePoint}`
+  ); // 로그 추가
   try {
     // 사용자의 현재 포인트 잔액을 확인
     const userPoints = await confirmPoint(userId);
@@ -222,6 +224,8 @@ const usePointsForPaymentService = async (
       userId,
       letterId
     );
+
+    await updateLetterStatusDao(letterId);
 
     return { message: "success" };
   } catch (error) {
