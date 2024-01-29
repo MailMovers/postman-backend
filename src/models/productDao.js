@@ -405,7 +405,7 @@ const newProductDao = async () => {
       SELECT id, img_url_1, name, description
       FROM writing_pads
       ORDER BY created_at DESC
-      LIMIT 3
+      LIMIT 4
   `);
     return result;
   } catch (err) {
@@ -424,7 +424,7 @@ const popularProductDao = async () => {
         GROUP BY writing_pad_id
       ) as r ON wp.id = r.writing_pad_id
       ORDER BY r.review_count DESC
-      LIMIT 3
+      LIMIT 4
     `);
     return result;
   } catch (err) {
