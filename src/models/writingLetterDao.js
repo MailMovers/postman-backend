@@ -362,7 +362,9 @@ const historyLetterDao = async (userId) => {
       WHERE 
           users.id = ?
       GROUP BY 
-          letters.id, letters.status, writing_pads.name;
+          letters.id, letters.status, writing_pads.name
+      ORDER BY 
+          orders.created_at DESC;
       `,
       [userId]
     );
