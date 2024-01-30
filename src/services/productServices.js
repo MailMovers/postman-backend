@@ -100,8 +100,8 @@ const getProductCategoriService = async (startItem, pageSize, category) => {
   }
 };
 
-const getReviewListService = async (userId) => {
-  return await getReviewListDao(userId);
+const getReviewListService = async (startItem, pageSize, userId) => {
+  return await getReviewListDao(startItem, pageSize, userId);
 };
 
 const newProductService = async () => {
