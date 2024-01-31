@@ -174,6 +174,17 @@ const getPointTransactionsDao = async (userId) => {
   return result;
 };
 
+const getTotalPoint = async (userId) => {
+  const result = await AppDataSource.query(
+    `
+    SELECT point FROM users
+    WHERE id =?
+    `,
+    [userId]
+  );
+  return result;
+};
+
 module.exports = {
   paymentInsertInfoDao,
   getPricesDao,
@@ -187,4 +198,5 @@ module.exports = {
   recordPointTransactionDao,
   confirmPoint,
   getPointTransactionsDao,
+  getTotalPoint,
 };
