@@ -13,7 +13,6 @@ CREATE TABLE `users` (
 );
 ALTER TABLE `users` ADD FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`);
 ALTER TABLE `users` ADD `password` varchar(255) NOT NULL;
-ALTER TABLE `users` ADD UNIQUE (`email`); -- email field is now unique
 ALTER TABLE `users` ADD `provider` varchar(255) NOT NULL;
 -- migrate:down
 DROP TABLE `users`;
