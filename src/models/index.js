@@ -65,6 +65,7 @@ const {
   getStampNameByIdDao,
   getCostomerId,
   getPointTransactionsDao,
+  getTotalPoint,
 } = require("./paymentDao");
 
 const {
@@ -167,4 +168,5 @@ module.exports = {
   getPointTransactionsDao,
   getPhotoInfoDao,
   updateLetterStatusDao,
+  getTotalPoint,
 };
