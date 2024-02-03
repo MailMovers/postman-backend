@@ -102,8 +102,8 @@ const checkLetterController = async (req, res, next) => {
 
 const getUploadUrl = async (req, res, next) => {
   try {
-    const { originalname } = req.file;
-    const result = await getPreSignedUrl({ originalname: originalname });
+    const files = req.files
+    const result = await getPreSignedUrl(files);
     console.log("uploadUrl", result);
     return res.status(201).json({
       success: true,
