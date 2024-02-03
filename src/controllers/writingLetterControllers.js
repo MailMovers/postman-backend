@@ -7,27 +7,30 @@ const s3 = new AWS.S3({
   region: process.env.AWS_REGION,
 });
 
-const getPreSignedUrl = async (file) => {
-  const decodedFileName = decodeURIComponent(file.originalname);
-  const fileExtension = decodedFileName.split(".").pop();
-  const timestamp = Date.now();
-  const newFileName = `letter/${decodedFileName}_${timestamp}.${fileExtension}`;
-  const filename = `${decodedFileName}_${timestamp}.${fileExtension}`
-  const encodedNewFileName = encodeURIComponent(newFileName);
-  const insertName = encodeURIComponent(filename)
+const getPreSignedUrl = async (files) => {
+  const urls = await Promise.all(files.map(async (file) => {
+    const decodedFileName = decodeURIComponent(file.originalname);
+    const fileExtension = decodedFileName.split(".").pop();
+    const timestamp = Date.now();
+    const newFileName = `letter/${decodedFileName}_${timestamp}.${fileExtension}`;
+    const filename = `${decodedFileName}_${timestamp}.${fileExtension}`;
+    const encodedNewFileName = encodeURIComponent(newFileName);
+    const insertName = encodeURIComponent(filename);
 
-  const params = {
-    Bucket: process.env.AWS_BUCKET_NAME,
-    Key: newFileName,
-    Expires: 3000,
-    ContentType: file.mimetype,
-  };
-  const preSignedUrl = await s3.getSignedUrlPromise("putObject", params);
-  return {
-    preSignedUrl,
-    encodedNewFileName,
-    insertName
-  };
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: newFileName,
+      Expires: 3000,
+      ContentType: file.mimetype,
+    };
+    const preSignedUrl = await s3.getSignedUrlPromise("putObject", params);
+    return {
+      preSignedUrl,
+      encodedNewFileName,
+      insertName,
+    };
+  }));
+  return urls;
 };
 
 const {
