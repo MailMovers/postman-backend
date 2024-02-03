@@ -20,7 +20,7 @@ const {
 const writingLetterRoute = express.Router();
 
 writingLetterRoute.post("/write", auth, letterController);
-writingLetterRoute.post("/upload", auth, upload.single("file"), getUploadUrl);
+writingLetterRoute.post("/upload", auth, upload.array("files", 30), getUploadUrl);
 writingLetterRoute.get("/check", auth, checkLetterController);
 writingLetterRoute.post("/photo", auth, photoController);
 writingLetterRoute.post("/delPhoto", auth, delPhotoController);
