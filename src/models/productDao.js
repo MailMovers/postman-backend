@@ -13,7 +13,8 @@ const insertProductDao = async (
   price,
   addPrice,
   description,
-  category
+  category,
+  descriptionId
 ) => {
   const insertProduct = await AppDataSource.query(
     `
@@ -29,10 +30,11 @@ const insertProductDao = async (
           pad_img_url,
           price,add_price,
           description,
-          category
+          category,
+          letter_detail_id
           )
         VALUES
-        (?,?,?,?,?,?,?,?,?,?,?)
+        (?,?,?,?,?,?,?,?,?,?,?,?)
         `,
     [
       name,
@@ -47,6 +49,7 @@ const insertProductDao = async (
       addPrice,
       description,
       category,
+      descriptionId,
     ]
   );
   return insertProduct;

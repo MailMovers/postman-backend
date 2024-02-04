@@ -20,9 +20,18 @@ const insertProductService = async (
   padImgUrl,
   price,
   addPrice,
-  discription
+  discription,
+  descriptionId
 ) => {
-  await insertProductDao(name, imgUrl, padImgUrl, price, addPrice, discription);
+  await insertProductDao(
+    name,
+    imgUrl,
+    padImgUrl,
+    price,
+    addPrice,
+    discription,
+    descriptionId
+  );
 };
 //상품삭제
 const deleteProductService = async (productId) => {
@@ -46,7 +55,13 @@ const getProductListService = async (startItem, pageSize) => {
   }
 };
 //상품 리뷰작성
-const insertReviewService = async (userId, productId, score, content, letterId) => {
+const insertReviewService = async (
+  userId,
+  productId,
+  score,
+  content,
+  letterId
+) => {
   await insertReviewDao(userId, productId, score, content, letterId);
 };
 //상품 리뷰 불러오기
