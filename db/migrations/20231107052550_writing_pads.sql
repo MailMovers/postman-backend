@@ -12,11 +12,15 @@ CREATE TABLE `writing_pads` (
   `category` varchar(500) NOT NULL,
   `price` SMALLINT NOT NULL,
   `add_price` SMALLINT NOT NULL,
+  `letter_detail_id` INT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 ALTER TABLE `writing_pads` ADD `description` VARCHAR(200) NULL;
 ALTER TABLE `writing_pads` ADD `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
-ALTER TABLE `writing_pads` ADD `deleted_at` TIMESTAMP NULL; 
+ALTER TABLE `writing_pads` ADD `deleted_at` TIMESTAMP NULL;
+ALTER TABLE `writing_pads` ADD FOREIGN KEY (`letter_detail_id`) REFERENCES `letter_detail` (`id`);
+
+
 
 -- migrate:down
 DROP TABLE `writing_pads`
