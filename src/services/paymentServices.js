@@ -18,6 +18,7 @@ const {
   getStampNameByIdDao,
   getCostomerId,
   getPointTransactionsDao,
+  getTotalPoint,
 } = require("../models/paymentDao");
 
 const PAGE_PRICE = 500;
@@ -236,8 +237,9 @@ const usePointsForPaymentService = async (
 
 const getPointTransactionsService = async (userId) => {
   try {
+    const totalPoint = await getTotalPoint(userId);
     const transactions = await getPointTransactionsDao(userId);
-    return transactions;
+    return { transactions, totalPoint };
   } catch (error) {
     console.error("포인트 거래 내역 조회 중 오류 발생:", error);
     throw error;

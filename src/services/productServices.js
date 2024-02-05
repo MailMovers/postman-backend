@@ -14,6 +14,8 @@ const {
   popularProductDao,
 } = require("../models/productDao");
 
+const { recordPointTransactionDao } = require("../models/paymentDao");
+
 const insertProductService = async (
   name,
   imgUrl,
@@ -62,7 +64,16 @@ const insertReviewService = async (
   content,
   letterId
 ) => {
+  const reviewPoint = 100;
+
   await insertReviewDao(userId, productId, score, content, letterId);
+  if ((reviewPoint = !0)) await addPointDao(reviewPoint, userId);
+  await recordPointTransactionDao(
+    userId,
+    reviewPoint,
+    "event",
+    `${reviewPoint}적립`
+  );
 };
 //상품 리뷰 불러오기
 const getReviewService = async (productId, pageSize, startItem) => {
