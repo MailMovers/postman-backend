@@ -134,10 +134,11 @@ const getNoticeDetailDao = async (postId) => {
             id,
             title,
             content,
-            created_at
+            created_at,
+            deleted_at
             FROM 
             notice
-            WHERE id = ?
+            WHERE id = ? AND deleted_at IS NULL
             `,
       [postId]
     );
@@ -150,8 +151,7 @@ const getNoticeDetailDao = async (postId) => {
 //공지사항 목록 불러오기
 const getNoticeListDao = async (startItem, pageSize) => {
   try {
-    const noticeList = await AppDataSource.query(
-      `
+    const noticeListQuery = `
             SELECT
             id,
             title,
@@ -159,11 +159,26 @@ const getNoticeListDao = async (startItem, pageSize) => {
             deleted_at
             FROM
             notice
+            WHERE deleted_at IS NULL
             LIMIT ? OFFSET ?;
-            `,
-      [pageSize, startItem]
-    );
-    return noticeList;
+            `;
+
+    const countQuery = `
+    SELECT COUNT(*) AS count FROM notice WHERE deleted_at IS NULL
+    `;
+
+    const [listResult, countResult] = await Promise.all([
+      AppDataSource.query(noticeListQuery, [pageSize, startItem]),
+      AppDataSource.query(countQuery),
+    ]);
+
+    // 데이터 구조에 따라 count 값을 올바르게 추출하기 위한 수정
+    const totalCount = countResult[0]["count"] || 0; // 이 부분을 수정
+
+    return {
+      count: totalCount,
+      list: listResult,
+    };
   } catch (err) {
     console.error("getNoticeListDao에서 발생한 오류", err);
     throw err;
