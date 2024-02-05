@@ -74,6 +74,7 @@ const insertProductController = async (req, res, next) => {
       addPrice,
       description,
       category,
+      descriptionId,
     } = req.body;
 
     const folderName = "products";
@@ -108,7 +109,8 @@ const insertProductController = async (req, res, next) => {
       price,
       addPrice,
       description,
-      category
+      category,
+      descriptionId
     );
     if (!userId) {
       return res.status(400).json({ message: "KEY_ERROR" });

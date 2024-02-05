@@ -22,9 +22,18 @@ const insertProductService = async (
   padImgUrl,
   price,
   addPrice,
-  discription
+  discription,
+  descriptionId
 ) => {
-  await insertProductDao(name, imgUrl, padImgUrl, price, addPrice, discription);
+  await insertProductDao(
+    name,
+    imgUrl,
+    padImgUrl,
+    price,
+    addPrice,
+    discription,
+    descriptionId
+  );
 };
 //상품삭제
 const deleteProductService = async (productId) => {
