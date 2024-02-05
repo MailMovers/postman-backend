@@ -52,8 +52,8 @@ const insertNoticeService = async (title, content, userId) => {
 };
 
 //공지사항 수정
-const updateNoticeService = async (title, content, userId) => {
-  return await updateNoticeDao(title, content, userId);
+const updateNoticeService = async (title, content, postId) => {
+  return await updateNoticeDao(title, content, postId);
 };
 //공지사항 상세 불러오기
 const getNoticeDetailService = async (postId) => {

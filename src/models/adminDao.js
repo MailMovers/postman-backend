@@ -108,7 +108,7 @@ const insertNoticeDao = async (title, content, userId) => {
 };
 
 //공지사항 수정
-const updateNoticeDao = async (title, content, userId) => {
+const updateNoticeDao = async (title, content, postId) => {
   try {
     const updateNotice = await AppDataSource.query(
       `
@@ -116,7 +116,7 @@ const updateNoticeDao = async (title, content, userId) => {
         SET title = ?, content = ?
         WHERE id = ?
         `,
-      [title, content, userId]
+      [title, content, postId]
     );
     return updateNotice;
   } catch (err) {
