@@ -46,7 +46,7 @@ adminRoute.get("/letterAddress", auth, getAllAddressController);
 //공지사항 입력
 adminRoute.post("/notice", auth, insertNoticeController);
 //공지사항 수정
-adminRoute.post("/updateNotice", auth, updateNoticeController);
+adminRoute.post("/updateNotice", updateNoticeController);
 //공지사항 글 상세 불러오기
 adminRoute.post("/noticeDetail", auth, getNoticeDetailController);
 //공지사항 글 목록 불러오기

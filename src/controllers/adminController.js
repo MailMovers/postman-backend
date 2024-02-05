@@ -125,19 +125,20 @@ const insertNoticeController = async (req, res, next) => {
 //공지사항 수정
 const updateNoticeController = async (req, res, next) => {
   try {
-    const userId = req.userId;
+    const postId = req.body.postId;
     const { title, content } = req.body;
-    const user = await getUserByIdDao(userId);
-    if (!user || user.user_role_id !== 3) {
-      return res.status(400).json({ message: "게시글 수정 권한이 없습니다" });
+
+    if (postId.length === 0) {
+      return res.status(400).json({ message: "게시글 아이디를 입력해주세요" });
     }
+
     if (title.length === 0) {
       return res.status(400).json({ message: "게시글 제목이 없습니다" });
     }
     if (content.length === 0) {
       return res.status(400).json({ message: "글 내용이 없습니다" });
     }
-    await updateNoticeService(title, content, userId);
+    await updateNoticeService(title, content, postId);
     return res.status(200).json({ message: "SUCCESS" });
   } catch (err) {
     console.error("updateNoticeController에서 발생한 오류", err);
@@ -183,7 +184,7 @@ const getNoticeListController = async (req, res, next) => {
 const deleteNoticeController = async (req, res, next) => {
   try {
     const postId = req.body.postId;
-    const userId = 1;
+    const userId = req.userId;
     const user = await getUserByIdDao(userId);
     if (!user || user.user_role_id !== 3) {
       return res.status(400).json({ message: "게시글 삭제 권한이 없습니다" });
