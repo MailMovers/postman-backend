@@ -61,16 +61,7 @@ const getNoticeDetailService = async (postId) => {
 };
 //공지사항 목록 불러오기
 const getNoticeListService = async (startItem, pageSize) => {
-  try {
-    const noticeList = await getNoticeListDao(startItem, pageSize);
-    const filterNoticeList = noticeList.filter(
-      (notice) => notice.deleted_at === null
-    );
-    return filterNoticeList;
-  } catch (err) {
-    console.error("getNoticeListService에서 발생한 오류", err);
-    throw err;
-  }
+  return await getNoticeListDao(startItem, pageSize);
 };
 //공지사항 게시글 삭제하기
 const deleteNoticeService = async (postId) => {
