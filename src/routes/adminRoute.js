@@ -9,12 +9,13 @@ const {
   getNoticeDetailController,
   getNoticeListController,
   deleteNoticeController,
-  adminGetCsDetailController,
+  getCsaListController,
   getLetterController,
   getPhotoController,
   getAddressController,
   adminDeleteReviewController,
   getProductReviewlistController,
+  adminCsDetailController,
 } = require("../controllers/adminController");
 
 const {
@@ -26,7 +27,6 @@ const {
   adminCsDeleteController,
   insertCsAnswerController,
   getCslistController,
-  getCsDetailController,
 } = require("../controllers/csControllers");
 
 const adminRoute = express.Router();
@@ -60,18 +60,16 @@ adminRoute.post("/insertCustomerServiceAnwser", auth, insertCsAnswerController);
 //고객센터 게시글 목록 불러오기
 adminRoute.get("/getCustomerServiceList", auth, getCslistController);
 //고객센터 게시글 상세 불러오기
-adminRoute.get("/getCustomerService", auth, getCsDetailController);
+adminRoute.get("/getCustomerService", auth, adminCsDetailController);
 //고객센터 답변목록 불러오기
-adminRoute.get("/getCsAnswerList", auth, adminGetCsDetailController);
+adminRoute.get("/getCsAnswerList", auth, getCsaListController);
 
 // -- 작성 편지 정보 불러오기 --
 // TODO : 편지에 첨부된 사진 불러오기, 고객이 작성한 편지 내용 불러오기, 발신지와 수신지 주소 불러오기 및 우표 정보 불러오기
 
 // 편지 내용 불러오기
-adminRoute.get("/letter", auth, getLetterController);
-// 사진 내용 불러오기
-adminRoute.get("/photo", auth, getPhotoController);
-// 주소 내용 불러오기
-adminRoute.get("/address", auth, getAddressController);
+// adminRoute.get("/letter", auth, getLetterController);
+// // 사진 내용 불러오기
+// adminRoute.get("/photo", auth, getPhotoController);
 
 module.exports = adminRoute;

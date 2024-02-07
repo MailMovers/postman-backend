@@ -8,8 +8,9 @@ const {
   deleteNoticeService,
   adminDeleteReviewService,
   getProductReviewService,
+  adminCsDetailService,
+  getCsaListService,
 } = require("../services/adminService");
-const { getCsDetailService } = require("../services/csServices");
 const { getUserByIdDao } = require("../models/productDao");
 //어드민 상품 수정
 const updataProductController = async (req, res, next) => {
@@ -200,36 +201,21 @@ const deleteNoticeController = async (req, res, next) => {
   }
 };
 
-//어드민 본인이 작성한 게시글 열람
-const adminGetCsDetailController = async (req, res, next) => {
+//고객센터 게시글 답변 리스트 불러오기
+const getCsaListController = async (req, res, next) => {
   try {
-    const userId = req.userId;
     const customerServiceId = req.body.customerServiceId;
-    const user = await getUserByIdDao(userId);
-    if (!user || user.user_role_id !== 3) {
-      return res.status(400).json({ message: "게시글 삭제 권한이 없습니다" });
+    if (!customerServiceId || customerServiceId.length === 0) {
+      return res.status(400).json({ message: "게시글 아이디를 입력해주세요" });
     }
-    if (!customerServiceId) {
-      return res.status(400).json({ message: "게시글이 삭제 되었습니다" });
-    }
-    const csDetail = await getCsDetailService(userId, customerServiceId);
-
-    return res.status(200).json({
-      message: "SUCCESS",
-      data: csDetail,
-    });
+    const data = await getCsaListService(customerServiceId);
+    return res.status(200).json({ message: "SUCCESS", data });
   } catch (err) {
-    console.error("getCsDetailController에서 발생한 에러", err);
+    console.error("getCsaListController에서 발생한 오류", err);
     next(err);
-    if (err.message === "게시글을 찾을 수 없습니다") {
-      return res.status(404).json({ message: "게시글을 찾을 수 없습니다" });
-    } else if (err.message === "게시글 열람 권한이 없습니다") {
-      return res.status(403).json({ message: "게시글 열람 권한이 없습니다" });
-    } else {
-      return res.status(500).json({ message: "서버 오류" });
-    }
   }
 };
+
 const getLetterController = async (req, res, next) => {
   try {
     await getLetterService();
@@ -258,8 +244,9 @@ const getAddressController = async (req, res, next) => {
 const adminDeleteReviewController = async (req, res, next) => {
   try {
     const reviewId = req.body.reviewId;
+    const productId = req.body.productId;
 
-    await adminDeleteReviewService(reviewId);
+    await adminDeleteReviewService(reviewId, productId);
     if (!reviewId || reviewId.length === 0) {
       return res.status(400).json({ message: "삭제할 리뷰를 선택해주세요" });
     }
@@ -287,6 +274,23 @@ const getProductReviewlistController = async (req, res, next) => {
   }
 };
 
+const adminCsDetailController = async (req, res, next) => {
+  try {
+    const customerServiceId = req.body.customerServiceId;
+    if (!customerServiceId || customerServiceId.length === 0) {
+      return res.status(400).json({ message: "게시글 아이디를 입력해주세요" });
+    }
+    const data = await adminCsDetailService(customerServiceId);
+    return res.status(200).json({
+      message: "SUCCESS",
+      data: data,
+    });
+  } catch (err) {
+    console.error("adminCsDetailController에서 발생한 오류", err);
+    next(err);
+  }
+};
+
 module.exports = {
   updataProductController,
   getAllAddressController,
@@ -295,10 +299,11 @@ module.exports = {
   getNoticeDetailController,
   getNoticeListController,
   deleteNoticeController,
-  adminGetCsDetailController,
   getLetterController,
   getPhotoController,
   getAddressController,
   adminDeleteReviewController,
   getProductReviewlistController,
+  adminCsDetailController,
+  getCsaListController,
 };
