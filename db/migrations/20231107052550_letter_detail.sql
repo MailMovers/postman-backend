@@ -6,7 +6,7 @@ CREATE TABLE `letter_detail` (
     `extra` VARCHAR(255) NOT NULL,
     `envelope` VARCHAR(255) NOT NULL,
     `writing_pad_info` VARCHAR(255) NOT NULL,
-    `picture` VARCHAR(255) NOT NULL,
+    `picture` VARCHAR(255) NOT NULL
 );
 INSERT INTO `letter_detail` (`name`,`common`,`extra`,`envelope`,`writing_pad_info`,`picture`) VALUES ('letter','기본값','기본값','기본값','기본값','기본값')
 
