@@ -203,14 +203,14 @@ const deleteNoticeDao = async (postId) => {
   }
 };
 //리뷰삭제
-const adminDeleteReview = async (reviewId) => {
+const adminDeleteReview = async (reviewId, productId) => {
   try {
     const reviewDelete = await AppDataSource.query(
       `
     UPDATE reviews SET deleted_at = NOW()
-    WHERE id = ?
+    WHERE id = ? AND writing_pad_id = ?
     `,
-      [reviewId]
+      [reviewId, productId]
     );
     return reviewDelete;
   } catch (err) {
@@ -245,6 +245,52 @@ WHERE reviews.deleted_at IS NULL AND writing_pads.deleted_at IS NULL AND writing
   }
 };
 
+//고객센터 게시글 내용 열람
+const adminCsDetailDao = async (customerServiceId) => {
+  try {
+    const csDetail = await AppDataSource.query(
+      `
+      SELECT
+      customer_service.id,
+      customer_service.title,
+      customer_service.content,
+      customer_service.user_id,
+      customer_service.created_at
+  FROM customer_service
+  WHERE customer_service.id = ? AND customer_service.deleted_at IS NULL;
+      `,
+      [customerServiceId]
+    );
+
+    if (!csDetail || csDetail.length === 0) {
+      throw new Error("게시글을 찾을 수 없습니다");
+    }
+    return csDetail[0];
+  } catch (err) {
+    console.error("getCsDetailDao에서 발생한 에러", err);
+    throw err;
+  }
+};
+
+//고객센터 게시글 답변 불러오기
+const getCsaListDao = async (customerServiceId) => {
+  const csaList = await AppDataSource.query(
+    `
+    SELECT
+    customer_service.id AS customer_service_id,
+    cs_answer.id AS csa_id,
+    cs_answer.content AS csa_content,
+    cs_answer.user_id AS csa_user_id,
+    cs_answer.created_at AS csa_created_at
+    FROM cs_answer
+    LEFT JOIN customer_service ON customer_service.id = cs_answer.customer_service_id
+    WHERE customer_service.id = ? AND customer_service.deleted_at IS NULL
+  `,
+    [customerServiceId]
+  );
+  return csaList;
+};
+
 module.exports = {
   upDateProductDao,
   getLetterAddressDao,
@@ -255,4 +301,6 @@ module.exports = {
   deleteNoticeDao,
   adminDeleteReview,
   getProductReviewListDao,
+  adminCsDetailDao,
+  getCsaListDao,
 };

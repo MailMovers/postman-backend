@@ -71,6 +71,8 @@ const {
   getAddressController,
   adminDeleteReviewController,
   getProductReviewlistController,
+  adminCsDetailController,
+  getCsaListController,
 } = require("./adminController");
 
 module.exports = {
@@ -141,5 +143,7 @@ module.exports = {
     getAddressController,
     adminDeleteReviewController,
     getProductReviewlistController,
+    adminCsDetailController,
+    getCsaListController,
   },
 };

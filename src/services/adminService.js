@@ -8,6 +8,8 @@ const {
   deleteNoticeDao,
   adminDeleteReview,
   getProductReviewListDao,
+  adminCsDetailDao,
+  getCsaListDao,
 } = require("../models/adminDao");
 //어드민 상품 수정
 const updateProductService = async (
@@ -68,13 +70,22 @@ const deleteNoticeService = async (postId) => {
   return await deleteNoticeDao(postId);
 };
 
-const adminDeleteReviewService = async (reviewId) => {
-  return await adminDeleteReview(reviewId);
+const adminDeleteReviewService = async (reviewId, productId) => {
+  return await adminDeleteReview(reviewId, productId);
 };
 
 const getProductReviewService = async (productId) => {
   return await getProductReviewListDao(productId);
 };
+
+const adminCsDetailService = async (customrServiceId) => {
+  return await adminCsDetailDao(customrServiceId);
+};
+
+const getCsaListService = async (customerServiceId) => {
+  return await getCsaListDao(customerServiceId);
+};
+
 module.exports = {
   updateProductService,
   getAllAddressService,
@@ -85,4 +96,6 @@ module.exports = {
   deleteNoticeService,
   adminDeleteReviewService,
   getProductReviewService,
+  adminCsDetailService,
+  getCsaListService,
 };

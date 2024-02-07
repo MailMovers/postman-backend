@@ -119,7 +119,7 @@ const insertProductController = async (req, res, next) => {
     console.log("controller", user);
     console.log(user.user_role_id);
     if (!user || user.user_role_id !== 3) {
-      return res.status(400).json({ message: "게시글 작성 권한이 없습니다" });
+      return res.status(400).json({ message: "권한이 없습니다" });
     }
     if (!name) {
       return res.status(400).json({ message: "상품이름을 작성해주세요" });
