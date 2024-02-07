@@ -49,7 +49,7 @@ const insertCsAnswerController = async (req, res, next) => {
       return res.status(400).json({ message: "답변 글을 작성해주세요" });
     }
     if (!customerServiceId) {
-      return res.status(400).json({ message: "게시물이 없습니다" });
+      return res.status(400).json({ message: "게시물 아이디가 없습니다" });
     }
     return res.status(200).json({
       message: "SUCCESS",
@@ -141,7 +141,9 @@ const adminCsDeleteController = async (req, res, next) => {
     await adminDeleteCsService(customerServiceId);
 
     if (!customerServiceId || customerServiceId.length === 0) {
-      return res.status(400).json({ message: "삭제할 게시물이 없습니다" });
+      return res
+        .status(400)
+        .json({ message: "삭제할 게시물 아이디가 없습니다" });
     }
     return res.status(200).json({
       message: "SUCCESS",

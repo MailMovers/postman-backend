@@ -17,6 +17,7 @@ const updataProductController = async (req, res, next) => {
   try {
     const userId = req.userId;
     const {
+      productId,
       name,
       imgUrl1,
       imgUrl2,
@@ -88,7 +89,8 @@ const updataProductController = async (req, res, next) => {
 const getAllAddressController = async (req, res, next) => {
   try {
     const letterId = req.body.letterId;
-
+    // 편지주소 모두 불러오기 로직에서 예외처리 추가
+    // 컨트롤러에서 오더에 스테이터스가 done이 아닌경우 에러메세지
     if (!letterId || letterId === 0) {
       return res.status(422).json({ message: "Invalid or missing letterId" });
     }
