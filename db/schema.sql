@@ -106,6 +106,24 @@ CREATE TABLE `email_auth` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `letter_detail`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `letter_detail` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `common` varchar(255) NOT NULL,
+  `extra` varchar(255) NOT NULL,
+  `envelope` varchar(255) NOT NULL,
+  `writing_pad_info` varchar(255) NOT NULL,
+  `picture` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `letters`
 --
 
@@ -385,11 +403,14 @@ CREATE TABLE `writing_pads` (
   `category` varchar(500) NOT NULL,
   `price` smallint NOT NULL,
   `add_price` smallint NOT NULL,
+  `letter_detail_id` int DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `description` varchar(200) DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `letter_detail_id` (`letter_detail_id`),
+  CONSTRAINT `writing_pads_ibfk_1` FOREIGN KEY (`letter_detail_id`) REFERENCES `letter_detail` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -416,6 +437,7 @@ LOCK TABLES `schema_migrations` WRITE;
 INSERT INTO `schema_migrations` (version) VALUES
   ('20231107052528'),
   ('20231107052550'),
+  ('20231107052551'),
   ('20231107052612'),
   ('20231107052635'),
   ('20231107052636'),
