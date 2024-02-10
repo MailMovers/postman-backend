@@ -87,6 +87,7 @@ const getSendListAddressDao = async (userId) => {
   const sendAddressList = await AppDataSource.query(
     `
     SELECT
+    send_address.id,
     send_address_detail,
     send_address,
     send_phone,
@@ -106,6 +107,7 @@ const getDeliveryListAddressDao = async (userId) => {
   const deliveryAddressList = await AppDataSource.query(
     `
     SELECT
+    delivery_address.id,
     delivery_address_detail,
     delivery_address,
     delivery_phone,

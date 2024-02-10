@@ -1,3 +1,5 @@
+const { PreSignedUrl, insertS3Url } = require("../services/s3");
+
 const {
   insertProductService,
   deleteProductService,
@@ -7,15 +9,109 @@ const {
   getReviewService,
   deleteReviewService,
   getWritingPadService,
+  getProductCategoriService,
+  getReviewListService,
+  newProductService,
+  popularProductService,
 } = require("../services/productServices");
-const { getUserByIdDao, getUserByReviewDao } = require("../models/productDao");
+
+const {
+  getUserByIdDao,
+  getUserByReviewDao,
+  getCountProductListDao,
+  deleteMyReviewDao,
+} = require("../models/productDao");
+
+const getPreSignedUrlController = async (req, res, next) => {
+  try {
+    const {
+      imgUrl1,
+      imgUrl2,
+      imgUrl3,
+      imgUrl4,
+      imgUrl5,
+      descriptionImgUrl,
+      padImgUrl,
+    } = req.body;
+
+    const folderName = "products";
+    const preSignedUrls = await Promise.all(
+      [
+        imgUrl1,
+        imgUrl2,
+        imgUrl3,
+        imgUrl4,
+        imgUrl5,
+        descriptionImgUrl,
+        padImgUrl,
+      ].map((file) => PreSignedUrl(file, folderName))
+    );
+
+    return res.status(200).json({
+      message: "사전 서명된 URL 생성 완료",
+      preSignedUrls,
+    });
+  } catch (err) {
+    console.error("getPreSignedUrlController에서 생긴 오류", err);
+    next(err);
+  }
+};
 
 //어드민 계정일 경우에만 상품을 등록할수있습니다.
-const insertProductController = async (req, res) => {
+const insertProductController = async (req, res, next) => {
   try {
     const userId = req.userId;
-    const { name, imgUrl, padImgUrl, price, addPrice, discription } = req.body;
-    await insertProductService(userId, name, imgUrl, addPrice, discription);
+    const {
+      name,
+      uploadedImgName1, // 클라이언트가 업로드한 파일의 이름
+      uploadedImgName2,
+      uploadedImgName3,
+      uploadedImgName4,
+      uploadedImgName5,
+      uploadedDescriptionImgName,
+      uploadedPadImgName,
+      price,
+      addPrice,
+      description,
+      category,
+      descriptionId,
+    } = req.body;
+
+    const folderName = "products";
+    const [
+      { s3Url: uploadedImgUrl1 },
+      { s3Url: uploadedImgUrl2 },
+      { s3Url: uploadedImgUrl3 },
+      { s3Url: uploadedImgUrl4 },
+      { s3Url: uploadedImgUrl5 },
+      { s3Url: uploadedDescriptionImgUrl },
+      { s3Url: uploadedPadImgUrl },
+    ] = await Promise.all(
+      [
+        uploadedImgName1,
+        uploadedImgName2,
+        uploadedImgName3,
+        uploadedImgName4,
+        uploadedImgName5,
+        uploadedDescriptionImgName,
+        uploadedPadImgName,
+      ].map((fileName) => insertS3Url(fileName, folderName))
+    );
+    const productInsertionResult = await insertProductService(
+      name,
+      uploadedImgUrl1,
+      uploadedImgUrl2,
+      uploadedImgUrl3,
+      uploadedImgUrl4,
+      uploadedImgUrl5,
+      uploadedDescriptionImgUrl,
+      uploadedPadImgUrl,
+      price,
+      addPrice,
+      description,
+      category,
+      descriptionId
+    );
     if (!userId) {
       return res.status(400).json({ message: "KEY_ERROR" });
     }
@@ -23,31 +119,39 @@ const insertProductController = async (req, res) => {
     console.log("controller", user);
     console.log(user.user_role_id);
     if (!user || user.user_role_id !== 3) {
-      return res.status(400).json({ message: "게시글 작성 권한이 없습니다" });
+      return res.status(400).json({ message: "권한이 없습니다" });
     }
     if (!name) {
       return res.status(400).json({ message: "상품이름을 작성해주세요" });
     }
-    if (!imgUrl) {
+    if (!uploadedImgUrl1) {
       return res.status(400).json({ message: "상품이미지를 넣어주세요" });
+    }
+    if (!uploadedPadImgUrl) {
+      return res.status(400).json({ message: "편지지 이미지가 없습니다" });
     }
     if (!price) {
       return res.status(400).json({ message: "가격을 작성해주세요" });
     }
-    if (!discription) {
+    if (!description) {
       return res.status(400).json({ message: "상품설명을 작성해주세요" });
     }
-    return res.status(200).json({
-      message: "상품이 등록되었습니다",
-    });
+    if (!category) {
+      return res.status(400).json({ message: "카테고리를 작성해주세요" });
+    }
+    if (productInsertionResult) {
+      return res.status(200).json({ message: "상품 등록 성공" });
+    } else {
+      return res.status(500).json({ message: "상품 등록 실패" });
+    }
   } catch (err) {
     console.error("insertProductController에서 생긴 오류", err);
-    throw err;
+    next(err);
   }
 };
 
 //어드민 계정일 경우에만 상품을 삭제 할수있습니다.
-const deleteProductController = async (req, res) => {
+const deleteProductController = async (req, res, next) => {
   try {
     const userId = req.userId;
     const productId = req.body.productId;
@@ -63,15 +167,15 @@ const deleteProductController = async (req, res) => {
       return res.status(400).json({ message: "삭제할 상품을 선택해주세요" });
     }
     return res.status(200).json({
-      message: "상품 삭제가 완료되었습니다",
+      message: "SUCCESS",
     });
   } catch (err) {
     console.error("deleteProductController에서 생긴 오류", err);
-    throw err;
+    next(err);
   }
 };
 //상품의 상세정보를 가져옵니다.
-const getProductController = async (req, res) => {
+const getProductController = async (req, res, next) => {
   try {
     const productId = req.params.productId;
     if (!productId || productId.length === 0) {
@@ -80,45 +184,46 @@ const getProductController = async (req, res) => {
         .json({ message: "게시글 정보가 등록되지 않았습니다" });
     }
     return res.status(200).json({
-      message: "GET_PRODUCT",
+      message: "SUCCESS",
       data: await getProductService(productId),
     });
   } catch (err) {
     console.error("getProductController에서 생긴 오류", err);
-    throw err;
+    next(err);
   }
 };
-//상품의 목록을 페이지 기준 20개씩 보내줍니다.
-const getProductListController = async (req, res) => {
+//상품의 목록을 페이지 기준 8개씩 보내줍니다.
+const getProductListController = async (req, res, next) => {
   try {
     const page = req.query.page || 1;
-    const pageSize = 20;
+    const pageSize = 8;
     const startItem = (page - 1) * pageSize;
     const productList = await getProductListService(startItem, pageSize);
-
+    const count = await getCountProductListDao();
     if (!productList || productList.length === 0) {
       return res.status(400).json({
         message: "상품 목록을 불러올 수 없습니다",
       });
     }
     return res.status(200).json({
-      message: "상품 목록을 불러왔습니다",
+      message: "SUCCESS",
+      count: count,
       data: productList,
     });
   } catch (err) {
     console.error("getProductListController에서 오류:", err);
-    throw err; // 에러를 다음 미들웨어로 전달
+    next(err); // 에러를 다음 미들웨어로 전달
   }
 };
 //상품이 배송완료가 되었을때 리뷰를 작성할수 있습니다.
-const insertReviewController = async (req, res) => {
+const insertReviewController = async (req, res, next) => {
   try {
     const userId = req.userId;
     const productId = req.params.productId;
-    const { score, content } = req.body;
+    const { score, content, letterId } = req.body;
 
-    await insertReviewService(userId, productId, score, content);
-    const user = await getUserByReviewDao(userId);
+    await insertReviewService(userId, productId, score, content, letterId);
+    const user = await getUserByReviewDao(letterId);
     if (user.orderStatus !== "done") {
       console.log("리뷰 권한이 없습니다. 주문 상태:", user.oderStatus);
       return res.status(400).json({ message: "리뷰 권한이 없습니다" });
@@ -131,18 +236,18 @@ const insertReviewController = async (req, res) => {
       return res.status(400).json({ message: "글을 작성해주십시요" });
 
     return res.status(200).json({
-      message: "리뷰가 작성되었습니다",
+      message: "SUCCESS",
     });
   } catch (err) {
     console.error("insertReviewController에서 생긴 에러", err);
-    throw err;
+    next(err);
   }
 };
-//상품 리뷰를 한 페이지당 20개의 댓글을 보여줍니다.
-const getReviewController = async (req, res) => {
+//상품 리뷰를 한 페이지당 10개의 댓글을 보여줍니다.
+const getReviewController = async (req, res, next) => {
   try {
     const page = req.query.page || 1;
-    const pageSize = 20;
+    const pageSize = 10;
     const startItem = (page - 1) * pageSize;
 
     // 여기서 postId 가져오는 부분 확인
@@ -154,16 +259,16 @@ const getReviewController = async (req, res) => {
       return res.status(400).json({ message: "리뷰를 불러올 수 없습니다" });
 
     return res.status(200).json({
-      message: "GET_REVIEW",
+      message: "SUCCESS",
       data: reviewList,
     });
   } catch (err) {
     console.error("getReviewController에서 생긴 에러");
-    throw err;
+    next(err);
   }
 };
 //유저가 작성한 리뷰를 삭제합니다.
-const deleteReviewController = async (req, res) => {
+const deleteReviewController = async (req, res, next) => {
   try {
     const userId = req.userId;
     const reviewId = req.body.reviewId;
@@ -174,15 +279,33 @@ const deleteReviewController = async (req, res) => {
     if (!reviewId || reviewId.length === 0)
       return res.status(400).json({ message: "삭제할 리뷰를 선택해주세요" });
     return res.status(200).json({
-      message: "리뷰가 삭제되었습니다.",
+      message: "SUCCESS",
     });
   } catch (err) {
     console.error("deleteReviewController에서 생긴 에러", err);
-    throw err;
+    next(err);
+  }
+};
+
+//내가 작성한 리뷰 삭제하기
+const deleteMyreviewController = async (req, res, next) => {
+  try {
+    const userId = req.userId;
+    const { reviewId, productId } = req.body;
+    await deleteMyReviewDao(userId, reviewId, productId);
+    if (!reviewId || reviewId.length === 0) {
+      return res.status(400).json({ message: "삭제할 리뷰를 선택해주세요" });
+    } else if (!productId || productId.length === 0) {
+      return res.status(400).json({ message: "상품 아이디가 없습니다" });
+    }
+    return res.status(200).json({ message: "SUCCESS" });
+  } catch (err) {
+    console.error("deleteMtreviewController에서 발생한 오류", err);
+    next(err);
   }
 };
 // getWritingPadController
-const getWritingPadController = async (req, res) => {
+const getWritingPadController = async (req, res, next) => {
   try {
     const productId = req.params.productId; // 수정된 부분
     if (!productId) return res.status(400).json({ message: "KEY_ERROR" });
@@ -191,8 +314,80 @@ const getWritingPadController = async (req, res) => {
       data: await getWritingPadService(productId),
     });
   } catch (err) {
-    console.error("getWritingPadControlleㄴr에서 발생한 오류", err);
-    throw err;
+    console.error("getWritingPadController에서 발생한 오류", err);
+    next(err);
+  }
+};
+//카테고리 불러오기
+const getProductCategoriController = async (req, res, next) => {
+  try {
+    const page = req.query.page || 1;
+    const pageSize = 8;
+    const startItem = (page - 1) * pageSize;
+    const category = req.query.category; // req.params.category 대신 req.query.category 사용
+    const productList = await getProductCategoriService(
+      startItem,
+      pageSize,
+      category
+    );
+    if (!productList || productList.length === 0) {
+      return res.status(400).json({
+        message: "상품 목록을 불러올 수 없습니다",
+      });
+    }
+    return res.status(200).json({
+      message: "SUCCESS",
+      data: productList,
+    });
+  } catch (err) {
+    console.error("getProductCategoriController에서 오류:", err);
+    next(err);
+  }
+};
+//내가 작성한 리뷰 불러오기
+const getReviewListController = async (req, res, next) => {
+  try {
+    const userId = req.userId;
+    const page = req.query.page || 1;
+    const pageSize = 6;
+    const startItem = (page - 1) * pageSize;
+    const myReviews = await getReviewListService(startItem, pageSize, userId);
+
+    if (!myReviews || myReviews.length === 0) {
+      return res.status(400).json({ message: "NO_DATA" });
+    }
+    return res.status(200).json({
+      message: "SUCCESS",
+      data: myReviews,
+    });
+  } catch (err) {
+    console.error("getReviewListController에서 발생한 오류", err);
+    next(err);
+  }
+};
+
+const newProductController = async (req, res, next) => {
+  try {
+    const result = await newProductService();
+    return res.status(200).json({
+      message: "SUCCESS",
+      data: result,
+    });
+  } catch (err) {
+    console.error("newProductController에서 발생한 오류", err);
+    next(err);
+  }
+};
+const popularProductContoller = async (req, res, next) => {
+  try {
+    const result = await popularProductService();
+    return res.status(200).json({
+      message: "SUCCESS",
+      data: result,
+    });
+  } catch (err) {
+    console.error("popularProductContoller에서 발생한 오류", err);
+    next(err);
   }
 };
 
@@ -205,4 +400,10 @@ module.exports = {
   getReviewController,
   deleteReviewController,
   getWritingPadController,
+  getProductCategoriController,
+  getReviewListController,
+  newProductController,
+  popularProductContoller,
+  deleteMyreviewController,
+  getPreSignedUrlController,
 };

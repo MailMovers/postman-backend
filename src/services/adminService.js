@@ -6,25 +6,41 @@ const {
   getNoticeDetailDao,
   getNoticeListDao,
   deleteNoticeDao,
+  adminDeleteReview,
+  getProductReviewListDao,
+  adminCsDetailDao,
+  getCsaListDao,
 } = require("../models/adminDao");
 //어드민 상품 수정
 const updateProductService = async (
   productId,
   name,
-  imgUrl,
+  imgUrl1,
+  imgUrl2,
+  imgUrl3,
+  imgUrl4,
+  imgUrl5,
+  descriptionImgUrl,
   padImgUrl,
   price,
   addPrice,
-  discription
+  description,
+  category
 ) => {
   return await upDateProductDao(
     productId,
     name,
-    imgUrl,
+    imgUrl1,
+    imgUrl2,
+    imgUrl3,
+    imgUrl4,
+    imgUrl5,
+    descriptionImgUrl,
     padImgUrl,
     price,
     addPrice,
-    discription
+    description,
+    category
   );
 };
 //편지안에 주소 모두 불러오기
@@ -38,8 +54,8 @@ const insertNoticeService = async (title, content, userId) => {
 };
 
 //공지사항 수정
-const updateNoticeService = async (title, content, userId) => {
-  return await updateNoticeDao(title, content, userId);
+const updateNoticeService = async (title, content, postId) => {
+  return await updateNoticeDao(title, content, postId);
 };
 //공지사항 상세 불러오기
 const getNoticeDetailService = async (postId) => {
@@ -47,20 +63,27 @@ const getNoticeDetailService = async (postId) => {
 };
 //공지사항 목록 불러오기
 const getNoticeListService = async (startItem, pageSize) => {
-  try {
-    const noticeList = await getNoticeListDao(startItem, pageSize);
-    const filterNoticeList = noticeList.filter(
-      (notice) => notice.deleted_at === null
-    );
-    return filterNoticeList;
-  } catch (err) {
-    console.error("getNoticeListService에서 발생한 오류", err);
-    throw err;
-  }
+  return await getNoticeListDao(startItem, pageSize);
 };
 //공지사항 게시글 삭제하기
 const deleteNoticeService = async (postId) => {
   return await deleteNoticeDao(postId);
+};
+
+const adminDeleteReviewService = async (reviewId, productId) => {
+  return await adminDeleteReview(reviewId, productId);
+};
+
+const getProductReviewService = async (productId) => {
+  return await getProductReviewListDao(productId);
+};
+
+const adminCsDetailService = async (customrServiceId) => {
+  return await adminCsDetailDao(customrServiceId);
+};
+
+const getCsaListService = async (customerServiceId) => {
+  return await getCsaListDao(customerServiceId);
 };
 
 module.exports = {
@@ -71,4 +94,8 @@ module.exports = {
   getNoticeDetailService,
   getNoticeListService,
   deleteNoticeService,
+  adminDeleteReviewService,
+  getProductReviewService,
+  adminCsDetailService,
+  getCsaListService,
 };

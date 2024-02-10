@@ -3,20 +3,51 @@ const { AppDataSource } = require("./dataSource");
 const upDateProductDao = async (
   productId,
   name,
-  imgUrl,
+  imgUrl1,
+  imgUrl2,
+  imgUrl3,
+  imgUrl4,
+  imgUrl5,
+  descriptionImgUrl,
   padImgUrl,
   price,
   addPrice,
-  discription
+  description,
+  category
 ) => {
   try {
     const updateProduct = await AppDataSource.query(
       `
           UPDATE writing_pads 
-          SET name = ?, img_url = ?, pad_img_url = ?, price = ?, add_price = ?, discription = ? 
+          SET name = ?,
+          img_url_1 = ?,
+          img_url_2 = ?, 
+          img_url_3 = ?, 
+          img_url_4 = ?, 
+          img_url_5, 
+          description_img_url =?, 
+          pad_img_url = ?, 
+          price = ?, 
+          add_price = ?, 
+          description = ?, 
+          category = ?
           WHERE id = ?
         `,
-      [name, imgUrl, padImgUrl, price, addPrice, discription, productId]
+      [
+        name,
+        imgUrl1,
+        imgUrl2,
+        imgUrl3,
+        imgUrl4,
+        imgUrl5,
+        descriptionImgUrl,
+        padImgUrl,
+        price,
+        addPrice,
+        description,
+        category,
+        productId,
+      ]
     );
     return updateProduct;
   } catch (error) {
@@ -77,7 +108,7 @@ const insertNoticeDao = async (title, content, userId) => {
 };
 
 //공지사항 수정
-const updateNoticeDao = async (title, content, userId) => {
+const updateNoticeDao = async (title, content, postId) => {
   try {
     const updateNotice = await AppDataSource.query(
       `
@@ -85,7 +116,7 @@ const updateNoticeDao = async (title, content, userId) => {
         SET title = ?, content = ?
         WHERE id = ?
         `,
-      [title, content, userId]
+      [title, content, postId]
     );
     return updateNotice;
   } catch (err) {
@@ -103,10 +134,11 @@ const getNoticeDetailDao = async (postId) => {
             id,
             title,
             content,
-            created_at
+            created_at,
+            deleted_at
             FROM 
             notice
-            WHERE id = ?
+            WHERE id = ? AND deleted_at IS NULL
             `,
       [postId]
     );
@@ -119,8 +151,7 @@ const getNoticeDetailDao = async (postId) => {
 //공지사항 목록 불러오기
 const getNoticeListDao = async (startItem, pageSize) => {
   try {
-    const noticeList = await AppDataSource.query(
-      `
+    const noticeListQuery = `
             SELECT
             id,
             title,
@@ -128,11 +159,26 @@ const getNoticeListDao = async (startItem, pageSize) => {
             deleted_at
             FROM
             notice
+            WHERE deleted_at IS NULL
             LIMIT ? OFFSET ?;
-            `,
-      [pageSize, startItem]
-    );
-    return noticeList;
+            `;
+
+    const countQuery = `
+    SELECT COUNT(*) AS count FROM notice WHERE deleted_at IS NULL
+    `;
+
+    const [listResult, countResult] = await Promise.all([
+      AppDataSource.query(noticeListQuery, [pageSize, startItem]),
+      AppDataSource.query(countQuery),
+    ]);
+
+    // 데이터 구조에 따라 count 값을 올바르게 추출하기 위한 수정
+    const totalCount = countResult[0]["count"] || 0; // 이 부분을 수정
+
+    return {
+      count: totalCount,
+      list: listResult,
+    };
   } catch (err) {
     console.error("getNoticeListDao에서 발생한 오류", err);
     throw err;
@@ -156,6 +202,94 @@ const deleteNoticeDao = async (postId) => {
     throw err;
   }
 };
+//리뷰삭제
+const adminDeleteReview = async (reviewId, productId) => {
+  try {
+    const reviewDelete = await AppDataSource.query(
+      `
+    UPDATE reviews SET deleted_at = NOW()
+    WHERE id = ? AND writing_pad_id = ?
+    `,
+      [reviewId, productId]
+    );
+    return reviewDelete;
+  } catch (err) {
+    console.error("adminDeleteReview에서 발생한 에러", err);
+    throw err;
+  }
+};
+
+//상품 리뷰 불러오기
+const getProductReviewListDao = async (productId) => {
+  try {
+    const getProductReviewList = await AppDataSource.query(
+      `
+  SELECT
+  writing_pads.id AS writing_pad_id,
+  writing_pads.name AS wp_name,
+  writing_pads.deleted_at AS wp_deleted_at,
+  reviews.id AS reviewId,
+  reviews.content,
+  reviews.created_at AS r_created_at,
+  reviews.deleted_at AS r_deleted_at
+FROM writing_pads
+LEFT JOIN reviews ON reviews.writing_pad_id = writing_pads.id
+WHERE reviews.deleted_at IS NULL AND writing_pads.deleted_at IS NULL AND writing_pads.id = ?
+  `,
+      [productId]
+    );
+    return getProductReviewList;
+  } catch (err) {
+    console.error("getProductReviewListDao에서 발생한 오류", err);
+    throw err;
+  }
+};
+
+//고객센터 게시글 내용 열람
+const adminCsDetailDao = async (customerServiceId) => {
+  try {
+    const csDetail = await AppDataSource.query(
+      `
+      SELECT
+      customer_service.id,
+      customer_service.title,
+      customer_service.content,
+      customer_service.user_id,
+      customer_service.created_at
+  FROM customer_service
+  WHERE customer_service.id = ? AND customer_service.deleted_at IS NULL;
+      `,
+      [customerServiceId]
+    );
+
+    if (!csDetail || csDetail.length === 0) {
+      throw new Error("게시글을 찾을 수 없습니다");
+    }
+    return csDetail[0];
+  } catch (err) {
+    console.error("getCsDetailDao에서 발생한 에러", err);
+    throw err;
+  }
+};
+
+//고객센터 게시글 답변 불러오기
+const getCsaListDao = async (customerServiceId) => {
+  const csaList = await AppDataSource.query(
+    `
+    SELECT
+    customer_service.id AS customer_service_id,
+    cs_answer.id AS csa_id,
+    cs_answer.content AS csa_content,
+    cs_answer.user_id AS csa_user_id,
+    cs_answer.created_at AS csa_created_at
+    FROM cs_answer
+    LEFT JOIN customer_service ON customer_service.id = cs_answer.customer_service_id
+    WHERE customer_service.id = ? AND customer_service.deleted_at IS NULL
+  `,
+    [customerServiceId]
+  );
+  return csaList;
+};
 
 module.exports = {
   upDateProductDao,
@@ -165,4 +299,8 @@ module.exports = {
   getNoticeDetailDao,
   getNoticeListDao,
   deleteNoticeDao,
+  adminDeleteReview,
+  getProductReviewListDao,
+  adminCsDetailDao,
+  getCsaListDao,
 };

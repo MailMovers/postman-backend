@@ -8,7 +8,13 @@ const {
   getReviewDao,
   deleteReviewDao,
   getWritingPadDao,
+  getReviewListDao,
+  getCategoryListWithCountDao,
+  newProductDao,
+  popularProductDao,
 } = require("../models/productDao");
+
+const { recordPointTransactionDao } = require("../models/paymentDao");
 
 const insertProductService = async (
   name,
@@ -16,9 +22,18 @@ const insertProductService = async (
   padImgUrl,
   price,
   addPrice,
-  discription
+  discription,
+  descriptionId
 ) => {
-  await insertProductDao(name, imgUrl, padImgUrl, price, addPrice, discription);
+  await insertProductDao(
+    name,
+    imgUrl,
+    padImgUrl,
+    price,
+    addPrice,
+    discription,
+    descriptionId
+  );
 };
 //상품삭제
 const deleteProductService = async (productId) => {
@@ -42,18 +57,33 @@ const getProductListService = async (startItem, pageSize) => {
   }
 };
 //상품 리뷰작성
-const insertReviewService = async (userId, productId, score, content) => {
-  await insertReviewDao(userId, productId, score, content);
+const insertReviewService = async (
+  userId,
+  productId,
+  score,
+  content,
+  letterId
+) => {
+  const reviewPoint = 100;
+
+  await insertReviewDao(userId, productId, score, content, letterId);
+  if ((reviewPoint = !0)) await addPointDao(reviewPoint, userId);
+  await recordPointTransactionDao(
+    userId,
+    reviewPoint,
+    "event",
+    `${reviewPoint}적립`
+  );
 };
 //상품 리뷰 불러오기
 const getReviewService = async (productId, pageSize, startItem) => {
-  // getReviewDao 함수의 반환값을 reviewList 변수에 할당
-  const reviewList = await getReviewDao(startItem, pageSize, productId);
-  // 여기서부터는 reviewList 변수를 사용할 수 있음
-  const filterReviewList = reviewList.filter(
-    (reviews) => reviews.deleted_at === null
-  );
-  return filterReviewList;
+  try {
+    const reviewData = await getReviewDao(startItem, pageSize, productId);
+    return reviewData;
+  } catch (err) {
+    console.error("getReviewService에서 발생한 에러", err);
+    throw err;
+  }
 };
 
 //상품 리뷰 삭제
@@ -63,6 +93,43 @@ const deleteReviewService = async (userId, reviewId) => {
 //편지지 이미지 가져오기
 const getWritingPadService = async (productId) => {
   return await getWritingPadDao(productId);
+};
+//카테고리 별로 상품 불러오기
+const getProductCategoriService = async (startItem, pageSize, category) => {
+  try {
+    const productList = await getCategoryListWithCountDao(
+      startItem,
+      pageSize,
+      category
+    );
+    return productList;
+  } catch (error) {
+    console.error("getProductCategoriService에서 오류:", error);
+    throw error;
+  }
+};
+
+const getReviewListService = async (startItem, pageSize, userId) => {
+  return await getReviewListDao(startItem, pageSize, userId);
+};
+
+const newProductService = async () => {
+  const products = await newProductDao();
+  return products.map((product) => ({
+    id: product.id,
+    imgUrl: product.img_url_1,
+    name: product.name,
+    description: product.description,
+  }));
+};
+const popularProductService = async () => {
+  const products = await popularProductDao();
+  return products.map((product) => ({
+    id: product.id,
+    imgUrl: product.img_url_1,
+    name: product.name,
+    description: product.description,
+  }));
 };
 
 module.exports = {
@@ -74,4 +141,8 @@ module.exports = {
   getReviewService,
   deleteReviewService,
   getWritingPadService,
+  getProductCategoriService,
+  getReviewListService,
+  newProductService,
+  popularProductService,
 };

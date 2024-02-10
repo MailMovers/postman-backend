@@ -20,19 +20,23 @@ module.exports = async (req, res, next) => {
     } catch (error) {
         // 토큰이 존재하지 않을 때
         if (error.name === 'AccessTokenNotFoundError') {
-            return res.status(401).json({ success: false, message: error.message });
+            return res.status(401).json({ success: false, message: error.message, error });
         }
         // 토큰 만료
         if (error.name === 'TokenExpiredError') {
-            return res.status(401).json({ success: false, message: '토큰이 만료되었습니다.' });
+            return res
+                .status(401)
+                .json({ success: false, message: '토큰이 만료되었습니다.', error });
         }
         // 토큰 변조
         if (error.name === 'JsonWebTokenError') {
-            return res.status(401).json({ success: false, message: '토큰이 변조되었습니다.' });
+            return res
+                .status(401)
+                .json({ success: false, message: '토큰이 변조되었습니다.', error });
         }
 
         return res
             .status(401)
-            .json({ success: false, message: error.message ?? '비정상적인 요청입니다.' });
+            .json({ success: false, message: error.message ?? '비정상적인 요청입니다.', error });
     }
 };

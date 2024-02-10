@@ -9,15 +9,28 @@ const {
   getDeliveryAddressService,
 } = require("./addressServices");
 
+const { PreSignedUrl, insertS3Url } = require("./s3");
+
 const {
   letterService,
-  PhotoService,
+  countPhotoService,
   stampService,
   confirmLetterService,
   checkLetterService,
+  checkAndInsertAddressService,
+  updateLetterService,
+  PhotoService,
+  delPhotoService,
+  historyLetterService,
+  getPhotoInfoService,
 } = require("./writingLetterServices");
 
-const { paymentSuccessService } = require("./paymentServices");
+const {
+  paymentSuccessService,
+  getPaymentInfoService,
+  getPointTransactionsService,
+  usePointsForPaymentService,
+} = require("./paymentServices");
 
 // user service class
 const UserService = require("./userServices");
@@ -31,6 +44,10 @@ const {
   getReviewService,
   deleteReviewService,
   getWritingPadService,
+  getProductCategoriService,
+  getReviewListService,
+  newProductService,
+  popularProductService,
 } = require("./productServices");
 
 const {
@@ -52,6 +69,10 @@ const {
   getNoticeDetailService,
   getNoticeListService,
   deleteNoticeService,
+  adminDeleteReviewService,
+  getProductReviewService,
+  adminCsDetailService,
+  getCsaListService,
 } = require("./adminService");
 
 module.exports = {
@@ -64,7 +85,6 @@ module.exports = {
   getSendAddressService,
   getDeliveryAddressService,
   letterService,
-  PhotoService,
   stampService,
   confirmLetterService,
   UserService,
@@ -77,6 +97,8 @@ module.exports = {
   deleteReviewService,
   paymentSuccessService,
   getWritingPadService,
+  getProductCategoriService,
+  getReviewListService,
   cs: {
     insertCsService,
     insertCsAnswerService,
@@ -95,6 +117,23 @@ module.exports = {
     getNoticeDetailService,
     getNoticeListService,
     deleteNoticeService,
+    adminDeleteReviewService,
+    getProductReviewService,
+    adminCsDetailService,
+    getCsaListService,
   },
   checkLetterService,
+  checkAndInsertAddressService,
+  updateLetterService,
+  countPhotoService,
+  PhotoService,
+  delPhotoService,
+  historyLetterService,
+  newProductService,
+  popularProductService,
+  getPaymentInfoService,
+  getPointTransactionsService,
+  getPhotoInfoService,
+  usePointsForPaymentService,
+  s3: { PreSignedUrl, insertS3Url },
 };

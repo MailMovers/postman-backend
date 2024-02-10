@@ -8,8 +8,11 @@ const passportConfig = require('./src/passport');
 const { errorHandler } = require('./src/utils/errorHandler');
 const router = require('./src/routes');
 
+// cron scheduling
+const cron = require('./src/cron');
+
 // cors whitelist
-const whitelist = ['http://localhost:3000'];
+const whitelist = ['http://localhost:3000', 'https://postman-frontend-beige.vercel.app'];
 
 const createApp = () => {
     const app = express();

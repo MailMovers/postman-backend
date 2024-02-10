@@ -10,11 +10,15 @@ const {
 } = require("./addressControllers");
 
 const {
-  letterContoller,
+  letterController,
   photoController,
-  confirmLetterContoller,
+  confirmLetterController,
   stampController,
   checkLetterController,
+  getUploadUrl,
+  delPhotoController,
+  historyLetterController,
+  getPhotoInfoController,
 } = require("./writingLetterControllers");
 
 // user controller class
@@ -29,9 +33,19 @@ const {
   getReviewController,
   deleteReviewController,
   getWritingPadController,
+  getProductCategoriController,
+  getReviewListController,
+  newProductController,
+  popularProductContoller,
+  deleteMyreviewController,
 } = require("./productControllers");
 
-const { paymentSuccessController } = require("./paymentControllers.js");
+const {
+  paymentSuccessController,
+  getPaymentInfoController,
+  getPointTransactions,
+  usePointsForPaymentController,
+} = require("./paymentControllers.js");
 
 const {
   insertCsController,
@@ -52,6 +66,13 @@ const {
   getNoticeDetailController,
   getNoticeListController,
   deleteNoticeController,
+  getLetterController,
+  getPhotoController,
+  getAddressController,
+  adminDeleteReviewController,
+  getProductReviewlistController,
+  adminCsDetailController,
+  getCsaListController,
 } = require("./adminController");
 
 module.exports = {
@@ -67,11 +88,15 @@ module.exports = {
     getDeliveryAddressController,
   },
   writingLetterController: {
-    letterContoller,
+    letterController,
     photoController,
     stampController,
-    confirmLetterContoller,
+    confirmLetterController,
     checkLetterController,
+    getUploadUrl,
+    delPhotoController,
+    historyLetterController,
+    getPhotoInfoController,
   },
 
   productController: {
@@ -83,9 +108,17 @@ module.exports = {
     getReviewController,
     deleteReviewController,
     getWritingPadController,
+    getProductCategoriController,
+    getReviewListController,
+    newProductController,
+    popularProductContoller,
+    deleteMyreviewController,
   },
   paymentController: {
     paymentSuccessController,
+    getPaymentInfoController,
+    getPointTransactions,
+    usePointsForPaymentController,
   },
   csController: {
     insertCsController,
@@ -105,5 +138,12 @@ module.exports = {
     getNoticeDetailController,
     getNoticeListController,
     deleteNoticeController,
+    getLetterController,
+    getPhotoController,
+    getAddressController,
+    adminDeleteReviewController,
+    getProductReviewlistController,
+    adminCsDetailController,
+    getCsaListController,
   },
 };
