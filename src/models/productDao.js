@@ -94,18 +94,26 @@ const deleteProductDao = async (productId) => {
 const getProductDao = async (productId) => {
   try {
     const getProductQuery = `
-      SELECT
-        id,
-        name,
-        description_img_url,
-        price,
-        add_price,
-        description,
-        category
-      FROM
-        writing_pads
-      WHERE
-        writing_pads.id = ?;
+    SELECT
+    writing_pads.id,
+    writing_pads.name,
+    writing_pads.description_img_url,
+    writing_pads.price,
+    writing_pads.add_price,
+    writing_pads.description,
+    writing_pads.category,
+    letter_detail.id AS writing_pad_detail_id,
+    letter_detail.name AS writing_pad_detail_name,
+    letter_detail.common AS writing_pad_detail_common,
+    letter_detail.extra AS writing_pad_detail_extra, 
+    letter_detail.envelope AS writing_pad_detail_envelope,
+    letter_detail.writing_pad_info AS writing_pad_detail_info,
+    letter_detail.picture AS writing_pad_detail_picture
+  FROM
+    writing_pads
+  LEFT JOIN letter_detail ON writing_pads.letter_detail_id = letter_detail.id
+  WHERE
+    writing_pads.id = ?;
     `;
 
     const imgUrlQuery = `
