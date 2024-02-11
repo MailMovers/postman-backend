@@ -48,7 +48,7 @@ adminRoute.post("/notice", auth, insertNoticeController);
 //공지사항 수정
 adminRoute.post("/updateNotice", auth, updateNoticeController);
 //공지사항 글 상세 불러오기
-adminRoute.post("/noticeDetail", auth, getNoticeDetailController);
+adminRoute.get("/noticeDetail", auth, getNoticeDetailController);
 //공지사항 글 목록 불러오기
 adminRoute.get("/noticeList", auth, getNoticeListController);
 //공지사항 게시글 삭제하기
@@ -72,4 +72,4 @@ adminRoute.get("/getCsAnswerList", auth, getCsaListController);
 // // 사진 내용 불러오기
 // adminRoute.get("/photo", auth, getPhotoController);
 
-module.exports = adminRoute;
+module.exports = { adminRoute };
