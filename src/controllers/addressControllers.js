@@ -19,12 +19,14 @@ const insertDeliveryAddressController = async (req, res, next) => {
       deliveryAddressDetail,
       deliveryPhone,
       deliveryName,
+      postCode,
     } = req.body;
     await insertAddressService(
       deliveryAddress,
       deliveryAddressDetail,
       deliveryPhone,
-      deliveryName
+      deliveryName,
+      postCode
     );
 
     if (!userId) {
@@ -51,13 +53,15 @@ const insertDeliveryAddressController = async (req, res, next) => {
 const insertSendAddressController = async (req, res, next) => {
   try {
     const userId = req.userId;
-    const { sendAddress, sendAddressDetail, sendPhone, sendName } = req.body;
+    const { sendAddress, sendAddressDetail, sendPhone, sendName, postCode } =
+      req.body;
     await insertSendAddressService(
       userId,
       sendAddress,
       sendAddressDetail,
       sendPhone,
-      sendName
+      sendName,
+      postCode
     );
     if (userId.length === 0 || !userId)
       return res.status(400).json({ message: "KEY_ERROR" });
