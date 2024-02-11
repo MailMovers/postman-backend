@@ -8,28 +8,30 @@ const s3 = new AWS.S3({
 });
 
 const getPreSignedUrl = async (files) => {
-  const urls = await Promise.all(files.map(async (file) => {
-    const decodedFileName = decodeURIComponent(file.originalname);
-    const fileExtension = decodedFileName.split(".").pop();
-    const timestamp = Date.now();
-    const newFileName = `letter/${decodedFileName}_${timestamp}.${fileExtension}`;
-    const filename = `${decodedFileName}_${timestamp}.${fileExtension}`;
-    const encodedNewFileName = encodeURIComponent(newFileName);
-    const insertName = encodeURIComponent(filename);
+  const urls = await Promise.all(
+    files.map(async (file) => {
+      const decodedFileName = decodeURIComponent(file.originalname);
+      const fileExtension = decodedFileName.split(".").pop();
+      const timestamp = Date.now();
+      const newFileName = `letter/${decodedFileName}_${timestamp}.${fileExtension}`;
+      const filename = `${decodedFileName}_${timestamp}.${fileExtension}`;
+      const encodedNewFileName = encodeURIComponent(newFileName);
+      const insertName = encodeURIComponent(filename);
 
-    const params = {
-      Bucket: process.env.AWS_BUCKET_NAME,
-      Key: newFileName,
-      Expires: 3000,
-      ContentType: file.mimetype,
-    };
-    const preSignedUrl = await s3.getSignedUrlPromise("putObject", params);
-    return {
-      preSignedUrl,
-      encodedNewFileName,
-      insertName,
-    };
-  }));
+      const params = {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: newFileName,
+        Expires: 3000,
+        ContentType: file.mimetype,
+      };
+      const preSignedUrl = await s3.getSignedUrlPromise("putObject", params);
+      return {
+        preSignedUrl,
+        encodedNewFileName,
+        insertName,
+      };
+    })
+  );
   return urls;
 };
 
@@ -102,7 +104,7 @@ const checkLetterController = async (req, res, next) => {
 
 const getUploadUrl = async (req, res, next) => {
   try {
-    const files = req.files
+    const files = req.files;
     const result = await getPreSignedUrl(files);
     console.log("uploadUrl", result);
     return res.status(201).json({
@@ -127,10 +129,12 @@ const photoController = async (req, res, next) => {
     const { letterId, insertNames } = req.body;
 
     // 각 insertName에 대해 처리를 수행합니다.
-    const photoInfos = await Promise.all(insertNames.map(async (insertName) => {
-      const s3Url = `https://${Bucket}.s3.${region}.amazonaws.com/letter/${insertName}`;
-      return await PhotoService(s3Url, letterId);
-    }));
+    const photoInfos = await Promise.all(
+      insertNames.map(async (insertName) => {
+        const s3Url = `https://${Bucket}.s3.${region}.amazonaws.com/letter/${insertName}`;
+        return await PhotoService(s3Url, letterId);
+      })
+    );
 
     // 사진 개수를 업데이트합니다.
     await countPhotoService(letterId);
@@ -194,10 +198,12 @@ const stampController = async (req, res, next) => {
       deliveryAddressDetail,
       deliveryPhone,
       deliveryName,
+      deliveryPostCode,
       sendAddress,
       sendAddressDetail,
       sendPhone,
       sendName,
+      sendPostCode,
     } = req.body;
     const result = await stampService(stampId, letterId);
     const addResult = await checkAndInsertAddressService(
@@ -207,10 +213,12 @@ const stampController = async (req, res, next) => {
       deliveryAddressDetail,
       deliveryPhone,
       deliveryName,
+      deliveryPostCode,
       sendAddress,
       sendAddressDetail,
       sendPhone,
-      sendName
+      sendName,
+      sendPostCode
     );
     return res.status(201).json({
       success: true,

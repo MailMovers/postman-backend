@@ -14,14 +14,16 @@ const insertAddressService = async (
   deliveryAddress,
   deliveryAddressDetail,
   deliveryPhone,
-  deliveryName
+  deliveryName,
+  postCode
 ) => {
   return await insertDeliveryAddressDao(
     userId,
     deliveryAddress,
     deliveryAddressDetail,
     deliveryPhone,
-    deliveryName
+    deliveryName,
+    postCode
   );
 };
 
@@ -30,14 +32,16 @@ const insertSendAddressService = async (
   sendAddress,
   sendAddressDetail,
   sendPhone,
-  sendName
+  sendName,
+  postCode
 ) => {
   return await insertSendAddressDao(
     userId,
     sendAddress,
     sendAddressDetail,
     sendPhone,
-    sendName
+    sendName,
+    postCode
   );
 };
 

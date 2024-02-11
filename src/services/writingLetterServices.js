@@ -16,7 +16,7 @@ const {
   getContentDao,
   getPhotosDao,
   historyLetterDao,
-  getPhotoInfoDao
+  getPhotoInfoDao,
 } = require("../models/writingLetterDao");
 
 const { getProductDao } = require("../models/productDao");
@@ -63,10 +63,12 @@ const checkAndInsertAddressService = async (
   deliveryAddressDetail,
   deliveryPhone,
   deliveryName,
+  deliveryPostCode,
   sendAddress,
   sendAddressDetail,
   sendPhone,
-  sendName
+  sendName,
+  sendPostCode
 ) => {
   try {
     const existingDeliveryAddress = await checkExistingDeliveryAddressDao(
@@ -74,14 +76,16 @@ const checkAndInsertAddressService = async (
       deliveryAddress,
       deliveryAddressDetail,
       deliveryPhone,
-      deliveryName
+      deliveryName,
+      deliveryPostCode
     );
     const existingSendAddress = await checkExistingSendAddressDao(
       userId,
       sendAddress,
       sendAddressDetail,
       sendPhone,
-      sendName
+      sendName,
+      sendPostCode
     );
 
     let deliveryAddressId, sendAddressId;
@@ -94,7 +98,8 @@ const checkAndInsertAddressService = async (
         deliveryAddress,
         deliveryAddressDetail,
         deliveryPhone,
-        deliveryName
+        deliveryName,
+        deliveryPostCode
       );
       deliveryAddressId = newDeliveryAddress.insertId;
     }
@@ -107,7 +112,8 @@ const checkAndInsertAddressService = async (
         sendAddress,
         sendAddressDetail,
         sendPhone,
-        sendName
+        sendName,
+        sendPostCode
       );
       sendAddressId = newSendAddress.insertId;
     }
