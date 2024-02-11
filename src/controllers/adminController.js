@@ -151,7 +151,7 @@ const updateNoticeController = async (req, res, next) => {
 //공지사항 상세 불러오기
 const getNoticeDetailController = async (req, res, next) => {
   try {
-    const postId = req.body.postId;
+    const postId = req.query.postId;
     if (!postId) {
       return res.status(400).json({ message: "글이 삭제 되었습니다" });
     }
