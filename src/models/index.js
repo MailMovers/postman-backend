@@ -91,6 +91,9 @@ const {
   getProductReviewListDao,
   adminCsDetailDao,
   getCsaListDao,
+  getPhotoDao,
+  getLetterDao,
+  getLettersInfoDao,
 } = require("./adminDao");
 
 module.exports = {
@@ -146,6 +149,9 @@ module.exports = {
     getProductReviewListDao,
     adminCsDetailDao,
     getCsaListDao,
+    getPhotoDao,
+    getLetterDao,
+    getLettersInfoDao,
   },
   contentDao,
   checkLetterDao,

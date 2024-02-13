@@ -73,6 +73,9 @@ const {
   getProductReviewService,
   adminCsDetailService,
   getCsaListService,
+  getPhotoService,
+  getLetterService,
+  getLettersService,
 } = require("./adminService");
 
 module.exports = {
@@ -121,6 +124,9 @@ module.exports = {
     getProductReviewService,
     adminCsDetailService,
     getCsaListService,
+    getPhotoService,
+    getLetterService,
+    getLettersService,
   },
   checkLetterService,
   checkAndInsertAddressService,

@@ -10,6 +10,9 @@ const {
   getProductReviewListDao,
   adminCsDetailDao,
   getCsaListDao,
+  getPhotoDao,
+  getLetterDao,
+  getLettersInfoDao
 } = require("../models/adminDao");
 //어드민 상품 수정
 const updateProductService = async (
@@ -43,9 +46,21 @@ const updateProductService = async (
     category
   );
 };
+const getLettersService = async () => {
+  return await getLettersInfoDao();
+}
+
 //편지안에 주소 모두 불러오기
 const getAllAddressService = async (letterId) => {
   return await getLetterAddressDao(letterId);
+};
+
+const getPhotoService = async (letterId) => {
+  return await getPhotoDao(letterId);
+};
+
+const getLetterService = async (letterId) => {
+  return await getLetterDao(letterId);
 };
 
 //공지사항 입력
@@ -98,4 +113,7 @@ module.exports = {
   getProductReviewService,
   adminCsDetailService,
   getCsaListService,
+  getPhotoService,
+  getLetterService,
+  getLettersService,
 };

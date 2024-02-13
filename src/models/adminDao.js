@@ -56,6 +56,37 @@ const upDateProductDao = async (
   }
 };
 
+const getLettersInfoDao = async () => {
+  try {
+    const result = await AppDataSource.query(
+      `
+      SELECT 
+        letters.id AS letterId, 
+        writing_pads.name, 
+        letters.page, 
+        letters.photo_count, 
+        MAX(orders.created_at) AS latestOrderCreatedAt
+      FROM 
+        letters
+      JOIN 
+        orders ON letters.id = orders.letter_id
+      JOIN 
+        writing_pads ON letters.writing_pad_id = writing_pads.id
+      WHERE 
+        orders.status = 'done'
+      GROUP BY 
+        letters.id, writing_pads.name, letters.page, letters.photo_count
+      ORDER BY 
+        latestOrderCreatedAt ASC
+      `
+    );
+    return result;
+  } catch (err) {
+    console.error("getLettersInfo에서 발생한 오류", err);
+    throw err;
+  }
+};
+
 //보낸주소 받는주소 받기
 const getLetterAddressDao = async (letterId) => {
   try {
@@ -85,6 +116,35 @@ const getLetterAddressDao = async (letterId) => {
     return LetterAddress;
   } catch (err) {
     console.error("getLetterAddress에서 발생한 오류", err);
+    throw err;
+  }
+};
+
+const getPhotoDao = async (letterId) => {
+  try {
+    const result = await AppDataSource.query(
+      `
+      SELECT photo_url FROM photos WHERE letter_id = ?
+      `,
+      [letterId]
+    );
+    return result;
+  } catch (err) {
+    console.error("getPhotoDao에서 발생한 오류", err);
+    throw err;
+  }
+};
+const getLetterDao = async (letterId) => {
+  try {
+    const result = await AppDataSource.query(
+      `
+      SELECT * FROM letters WHERE id = ?
+      `,
+      [letterId]
+    );
+    return result;
+  } catch (err) {
+    console.error("getLetterDao에서 발생한 오류", err);
     throw err;
   }
 };
@@ -303,4 +363,7 @@ module.exports = {
   getProductReviewListDao,
   adminCsDetailDao,
   getCsaListDao,
+  getPhotoDao,
+  getLetterDao,
+  getLettersInfoDao,
 };
