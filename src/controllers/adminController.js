@@ -220,7 +220,9 @@ const getCsaListController = async (req, res, next) => {
 
 const getLetterController = async (req, res, next) => {
   try {
-    await getLetterService();
+    const letterId = req.query;
+    const result = await getLetterService(letterId);
+    return result;
   } catch (err) {
     console.error(err);
     next(err);
@@ -228,7 +230,9 @@ const getLetterController = async (req, res, next) => {
 };
 const getPhotoController = async (req, res, next) => {
   try {
-    await getPhotoService();
+    const letterId = req.query;
+    const result = await getPhotoService(letterId);
+    return result;
   } catch (err) {
     console.error(err);
     next(err);
@@ -236,7 +240,9 @@ const getPhotoController = async (req, res, next) => {
 };
 const getAddressController = async (req, res, next) => {
   try {
-    await getAllAddressService();
+    const letterId = req.query;
+    const result = await getAllAddressService(letterId);
+    return result;
   } catch (err) {
     console.error(err);
     next(err);
