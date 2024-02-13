@@ -16,6 +16,7 @@ const {
   adminDeleteReviewController,
   getProductReviewlistController,
   adminCsDetailController,
+  getLettersInfoController,
 } = require("../controllers/adminController");
 
 const {
@@ -68,13 +69,12 @@ adminRoute.get("/getCsAnswerList", auth, getCsaListController);
 // TODO : 편지에 첨부된 사진 불러오기, 고객이 작성한 편지 내용 불러오기, 발신지와 수신지 주소 불러오기 및 우표 정보 불러오기
 
 // 편지확인하기(admin)/
-adminRoute.get("/letters",auth)
-
+adminRoute.get("/letters", auth, getLettersInfoController);
 // 편지 내용 불러오기
 adminRoute.get("/letter", auth, getLetterController);
 // 사진 내용 불러오기
 adminRoute.get("/photo", auth, getPhotoController);
 // 우편주소 불러오기
-adminRoute.get("/address", auth , getAddressController)
+adminRoute.get("/address", auth, getAddressController);
 
 module.exports = { adminRoute };

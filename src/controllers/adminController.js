@@ -10,6 +10,9 @@ const {
   getProductReviewService,
   adminCsDetailService,
   getCsaListService,
+  getPhotoService,
+  getLetterService,
+  getLettersService,
 } = require("../services/adminService");
 const { getUserByIdDao } = require("../models/productDao");
 //어드민 상품 수정
@@ -81,6 +84,16 @@ const updataProductController = async (req, res, next) => {
     return res.status(200).json({ message: "SUCCESS" });
   } catch (err) {
     console.error("updataProductController에서 발생한 오류", err);
+    next(err);
+  }
+};
+
+const getLettersInfoController = async (req, res, next) => {
+  try {
+    const result = await getLettersService();
+    return result;
+  } catch (err) {
+    console.error("getLettersInfoController에서 발생한 애러", err);
     next(err);
   }
 };
@@ -314,4 +327,5 @@ module.exports = {
   getProductReviewlistController,
   adminCsDetailController,
   getCsaListController,
+  getLettersInfoController
 };
