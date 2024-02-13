@@ -56,7 +56,36 @@ const upDateProductDao = async (
   }
 };
 
-
+const getLettersInfoDao = async () => {
+  try {
+    const result = await AppDataSource.query(
+      `
+      SELECT 
+        letters.id AS letterId, 
+        writing_pads.name, 
+        letters.page, 
+        letters.photo_count, 
+        MAX(orders.created_at) AS latestOrderCreatedAt
+      FROM 
+        letters
+      JOIN 
+        orders ON letters.id = orders.letter_id
+      JOIN 
+        writing_pads ON letters.writing_pad_id = writing_pads.id
+      WHERE 
+        orders.status = 'done'
+      GROUP BY 
+        letters.id, writing_pads.name, letters.page, letters.photo_count
+      ORDER BY 
+        latestOrderCreatedAt ASC
+      `
+    );
+    return result;
+  } catch (err) {
+    console.error("getLettersInfo에서 발생한 오류", err);
+    throw err;
+  }
+};
 
 //보낸주소 받는주소 받기
 const getLetterAddressDao = async (letterId) => {
@@ -336,4 +365,5 @@ module.exports = {
   getCsaListDao,
   getPhotoDao,
   getLetterDao,
+  getLettersInfoDao,
 };
