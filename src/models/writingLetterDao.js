@@ -418,31 +418,11 @@ const nurserySchoolAddress = async () => {
   }
 };
 
-const deleteSpecificContentDao = async (letterId, pageNum) => {
+const deleteAllContentsByLetterId = async (letterId) => {
   try {
     const result = await AppDataSource.query(
-      `
-        DELETE FROM content
-        WHERE letter_id = ? AND content_count = ?;
-        `,
-      [letterId, pageNum]
-    );
-    return result;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
-
-const updateContentDao = async (letterId, pageNum, content) => {
-  try {
-    const result = await AppDataSource.query(
-      `
-        UPDATE content
-        SET content = ?
-        WHERE letter_id = ? AND content_count = ?;
-      `,
-      [content, letterId, pageNum]
+      `DELETE FROM content WHERE letter_id = ?;`,
+      [letterId]
     );
     return result;
   } catch (error) {
@@ -472,6 +452,5 @@ module.exports = {
   updateLetterStatusDao,
   prisonAddress,
   nurserySchoolAddress,
-  updateContentDao,
-  deleteSpecificContentDao,
+  deleteAllContentsByLetterId,
 };
