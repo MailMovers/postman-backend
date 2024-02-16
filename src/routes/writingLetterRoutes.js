@@ -15,6 +15,8 @@ const {
   delPhotoController,
   historyLetterController,
   getPhotoInfoController,
+  prisonAddressesController,
+  nurserySchoolAddressesController,
 } = writingLetterController;
 
 const writingLetterRoute = express.Router();
@@ -28,5 +30,7 @@ writingLetterRoute.get("/getPhoto", auth, getPhotoInfoController);
 writingLetterRoute.post("/stamp", auth, stampController);
 writingLetterRoute.get("/confirm", auth, confirmLetterController);
 writingLetterRoute.get("/history", auth, historyLetterController);
+writingLetterRoute.get('/prisons', prisonAddressesController);
+writingLetterRoute.get('/nurserySchools', nurserySchoolAddressesController);
 
 module.exports = { writingLetterRoute };

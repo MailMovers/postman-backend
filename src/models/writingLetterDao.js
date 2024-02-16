@@ -21,22 +21,6 @@ const letterDao = async (userId, writingPadId, page) => {
   }
 };
 
-const deleteContentsDao = async (letterId) => {
-  try {
-    const result = await AppDataSource.query(
-      `
-        DELETE FROM content
-        WHERE letter_id = ?;
-        `,
-      [letterId]
-    );
-    return result;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
-
 const updateLetterDao = async (page, letterId) => {
   try {
     const result = await AppDataSource.query(
@@ -392,6 +376,81 @@ const updateLetterStatusDao = async (letterId) => {
   }
 };
 
+const prisonAddress = async () => {
+  try {
+    const result = await AppDataSource.query(
+      `
+      SELECT 
+        id, 
+        name, 
+        delivery_address, 
+        delivery_address_detail, 
+        post_code 
+      FROM 
+        prison
+      `
+    );
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+const nurserySchoolAddress = async () => {
+  try {
+    const result = await AppDataSource.query(
+      `
+      SELECT 
+        id, 
+        name, 
+        delivery_address, 
+        delivery_address_detail, 
+        post_code 
+      FROM 
+        nursery_school
+      `
+    );
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+const deleteSpecificContentDao = async (letterId, pageNum) => {
+  try {
+    const result = await AppDataSource.query(
+      `
+        DELETE FROM content
+        WHERE letter_id = ? AND content_count = ?;
+        `,
+      [letterId, pageNum]
+    );
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+const updateContentDao = async (letterId, pageNum, content) => {
+  try {
+    const result = await AppDataSource.query(
+      `
+        UPDATE content
+        SET content = ?
+        WHERE letter_id = ? AND content_count = ?;
+      `,
+      [content, letterId, pageNum]
+    );
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 module.exports = {
   letterDao,
   photoDao,
@@ -404,7 +463,6 @@ module.exports = {
   checkExistingSendAddressDao,
   checkExistingDeliveryAddressDao,
   updateLetterDao,
-  deleteContentsDao,
   updateCountPhotoDao,
   delPhotoDao,
   getContentDao,
@@ -412,4 +470,8 @@ module.exports = {
   historyLetterDao,
   getPhotoInfoDao,
   updateLetterStatusDao,
+  prisonAddress,
+  nurserySchoolAddress,
+  updateContentDao,
+  deleteSpecificContentDao,
 };

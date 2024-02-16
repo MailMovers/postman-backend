@@ -19,6 +19,8 @@ const {
   delPhotoController,
   historyLetterController,
   getPhotoInfoController,
+  prisonAddressesController,
+  nurserySchoolAddressesController,
 } = require("./writingLetterControllers");
 
 // user controller class
@@ -98,6 +100,8 @@ module.exports = {
     delPhotoController,
     historyLetterController,
     getPhotoInfoController,
+    prisonAddressesController,
+    nurserySchoolAddressesController,
   },
 
   productController: {
