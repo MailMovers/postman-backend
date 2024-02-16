@@ -18,8 +18,7 @@ const {
   getPhotoInfoDao,
   prisonAddress,
   nurserySchoolAddress,
-  updateContentDao,
-  deleteSpecificContentDao,
+  deleteAllContentsByLetterId,
 } = require("../models/writingLetterDao");
 
 const { getProductDao } = require("../models/productDao");
@@ -45,31 +44,15 @@ const letterService = async (userId, writingPadId, contents) => {
 };
 const updateLetterService = async (contents, letterId) => {
   try {
-    const existingContents = await getContentDao(letterId);
-    const existingContentsMap = existingContents.reduce((map, content) => {
-      map[content.content_count] = content;
-      return map;
-    }, {});
+    await deleteAllContentsByLetterId(letterId);
 
-    const contentsMap = contents.reduce((map, content) => {
-      map[content.pageNum] = content;
-      return map;
-    }, {});
-    for (let existingContent of existingContents) {
-      if (!contentsMap[existingContent.content_count]) {
-        await deleteSpecificContentDao(letterId, existingContent.content_count);
-      }
+    for (let item of contents) {
+      await contentDao(letterId, item.pageNum, item.content);
     }
-    for (let pageNum in contentsMap) {
-      const item = contentsMap[pageNum];
-      if (existingContentsMap[item.pageNum]) {
-        await updateContentDao(letterId, item.pageNum, item.content);
-      } else {
-        await contentDao(letterId, item.pageNum, item.content);
-      }
-    }
-    const page = Object.keys(contentsMap).length;
+
+    const page = contents.length;
     await updateLetterDao(page, letterId);
+
     return { letterId, page };
   } catch (error) {
     console.error(error);

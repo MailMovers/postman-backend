@@ -30,8 +30,7 @@ const {
   updateLetterStatusDao,
   prisonAddress,
   nurserySchoolAddress,
-  updateContentDao,
-  deleteSpecificContentDao,
+  deleteAllContentsByLetterId,
 } = require("./writingLetterDao");
 
 // user dao
@@ -183,6 +182,5 @@ module.exports = {
   getTotalPoint,
   prisonAddress,
   nurserySchoolAddress,
-  updateContentDao,
-  deleteSpecificContentDao,
+  deleteAllContentsByLetterId,
 };
