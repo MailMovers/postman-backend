@@ -273,6 +273,42 @@ const historyLetterController = async (req, res, next) => {
   }
 };
 
+const prisonAddressesController = async (req, res) => {
+  try {
+    const prisons = await getPrisonAddresses();
+    res.status(200).json({
+      success: true,
+      message: "교도소 주소 정보 조회 성공",
+      data: prisons,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "교도소 주소 정보 조회 실패",
+      error: error.message,
+    });
+  }
+};
+
+const nurserySchoolAddressesController = async (req, res) => {
+  try {
+    const nurserySchools = await getNurserySchoolAddresses();
+    res.status(200).json({
+      success: true,
+      message: "보육원 주소 정보 조회 성공",
+      data: nurserySchools,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "보육원 주소 정보 조회 실패",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   letterController,
   photoController,
@@ -284,4 +320,6 @@ module.exports = {
   delPhotoController,
   historyLetterController,
   getPhotoInfoController,
+  prisonAddressesController,
+  nurserySchoolAddressesController,
 };
