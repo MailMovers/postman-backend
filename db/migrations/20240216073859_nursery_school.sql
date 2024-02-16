@@ -10,7 +10,7 @@ CREATE TABLE `nursery_school` (
   `deleted_at` timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP
 );
 
-INSERT INTO `prison` 
+INSERT INTO `nursery_school` 
 (`name`, `delivery_address`, `delivery_address_detail`, `post_code`)
  VALUES
 ('강남드림빌', '서울특별시 강남구 양재대로 344-27', '02-573-0412', ''),
