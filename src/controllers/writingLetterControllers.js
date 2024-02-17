@@ -47,6 +47,8 @@ const {
   delPhotoService,
   historyLetterService,
   getPhotoInfoService,
+  getPrisonAddresses,
+  getNurserySchoolAddresses,
 } = require("../services/writingLetterServices");
 
 const letterController = async (req, res, next) => {
