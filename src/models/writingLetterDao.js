@@ -288,10 +288,12 @@ const confirmLetterDao = async (letterId) => {
       send_address.send_address_detail,
       send_address.send_phone,
       send_address.send_name,
+      send_address.post_code AS send_post_code,
       delivery_address.delivery_address,
       delivery_address.delivery_address_detail,
       delivery_address.delivery_phone,
       delivery_address.delivery_name,
+      delivery_address.post_code AS delivery_post_code,
       users.point
   FROM
       letters

@@ -254,10 +254,12 @@ const confirmLetterService = async (letterId) => {
           deliveryAddressDetail: item.delivery_address_detail,
           deliveryPhone: item.delivery_phone,
           deliveryName: item.delivery_name,
+          deliveryPostCode: item.delivery_post_code,
           sendAddress: item.send_address,
           sendAddressDetail: item.send_address_detail,
           sendPhone: item.send_phone,
           sendName: item.send_name,
+          sendPostCode: item.send_post_code,
           totalCost: totalCost,
         };
       })
