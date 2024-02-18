@@ -23,6 +23,8 @@ const {
   delPhotoService,
   historyLetterService,
   getPhotoInfoService,
+  getPrisonAddresses,
+  getNurserySchoolAddresses,
 } = require("./writingLetterServices");
 
 const {
@@ -142,4 +144,6 @@ module.exports = {
   getPhotoInfoService,
   usePointsForPaymentService,
   s3: { PreSignedUrl, insertS3Url },
+  getPrisonAddresses,
+  getNurserySchoolAddresses,
 };

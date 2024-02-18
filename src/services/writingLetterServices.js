@@ -8,7 +8,6 @@ const {
   checkExistingDeliveryAddressDao,
   checkExistingSendAddressDao,
   updateLetterDao,
-  deleteContentsDao,
   countPhotoDao,
   updateCountPhotoDao,
   photoDao,
@@ -17,6 +16,9 @@ const {
   getPhotosDao,
   historyLetterDao,
   getPhotoInfoDao,
+  prisonAddress,
+  nurserySchoolAddress,
+  deleteAllContentsByLetterId,
 } = require("../models/writingLetterDao");
 
 const { getProductDao } = require("../models/productDao");
@@ -42,15 +44,16 @@ const letterService = async (userId, writingPadId, contents) => {
 };
 const updateLetterService = async (contents, letterId) => {
   try {
-    // 기존 contents를 삭제합니다.
-    await deleteContentsDao(letterId);
+    await deleteAllContentsByLetterId(letterId);
 
-    const page = contents.length;
-    const letterResult = await updateLetterDao(page, letterId);
     for (let item of contents) {
       await contentDao(letterId, item.pageNum, item.content);
     }
-    return { letterId, letterResult };
+
+    const page = contents.length;
+    await updateLetterDao(page, letterId);
+
+    return { letterId, page };
   } catch (error) {
     console.error(error);
     throw error;
@@ -251,10 +254,12 @@ const confirmLetterService = async (letterId) => {
           deliveryAddressDetail: item.delivery_address_detail,
           deliveryPhone: item.delivery_phone,
           deliveryName: item.delivery_name,
+          deliveryPostCode: item.delivery_post_code,
           sendAddress: item.send_address,
           sendAddressDetail: item.send_address_detail,
           sendPhone: item.send_phone,
           sendName: item.send_name,
+          sendPostCode: item.send_post_code,
           totalCost: totalCost,
         };
       })
@@ -281,6 +286,36 @@ const historyLetterService = async (userId, letterId) => {
   }
 };
 
+const changeToCamelCase = (data) => {
+  return data.map((item) => ({
+    id: item.id,
+    name: item.name,
+    deliveryAddress: item.delivery_address,
+    deliveryAddressDetail: item.delivery_address_detail,
+    postCode: item.post_code,
+  }));
+};
+
+const getPrisonAddresses = async () => {
+  try {
+    const prisons = await prisonAddress();
+    return changeToCamelCase(prisons);
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+const getNurserySchoolAddresses = async () => {
+  try {
+    const nurserySchools = await nurserySchoolAddress();
+    return changeToCamelCase(nurserySchools);
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 module.exports = {
   letterService,
   confirmLetterService,
@@ -293,4 +328,6 @@ module.exports = {
   delPhotoService,
   historyLetterService,
   getPhotoInfoService,
+  getPrisonAddresses,
+  getNurserySchoolAddresses,
 };

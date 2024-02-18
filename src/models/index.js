@@ -21,7 +21,6 @@ const {
   checkExistingDeliveryAddressDao,
   checkExistingSendAddressDao,
   updateLetterDao,
-  deleteContentsDao,
   updateCountPhotoDao,
   delPhotoDao,
   getContentDao,
@@ -29,6 +28,9 @@ const {
   historyLetterDao,
   getPhotoInfoDao,
   updateLetterStatusDao,
+  prisonAddress,
+  nurserySchoolAddress,
+  deleteAllContentsByLetterId,
 } = require("./writingLetterDao");
 
 // user dao
@@ -159,7 +161,6 @@ module.exports = {
   checkExistingDeliveryAddressDao,
   checkExistingSendAddressDao,
   updateLetterDao,
-  deleteContentsDao,
   updateCountPhotoDao,
   delPhotoDao,
   getContentDao,
@@ -179,4 +180,7 @@ module.exports = {
   getPhotoInfoDao,
   updateLetterStatusDao,
   getTotalPoint,
+  prisonAddress,
+  nurserySchoolAddress,
+  deleteAllContentsByLetterId,
 };

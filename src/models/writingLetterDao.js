@@ -21,22 +21,6 @@ const letterDao = async (userId, writingPadId, page) => {
   }
 };
 
-const deleteContentsDao = async (letterId) => {
-  try {
-    const result = await AppDataSource.query(
-      `
-        DELETE FROM content
-        WHERE letter_id = ?;
-        `,
-      [letterId]
-    );
-    return result;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
-
 const updateLetterDao = async (page, letterId) => {
   try {
     const result = await AppDataSource.query(
@@ -304,10 +288,12 @@ const confirmLetterDao = async (letterId) => {
       send_address.send_address_detail,
       send_address.send_phone,
       send_address.send_name,
+      send_address.post_code AS send_post_code,
       delivery_address.delivery_address,
       delivery_address.delivery_address_detail,
       delivery_address.delivery_phone,
       delivery_address.delivery_name,
+      delivery_address.post_code AS delivery_post_code,
       users.point
   FROM
       letters
@@ -392,6 +378,61 @@ const updateLetterStatusDao = async (letterId) => {
   }
 };
 
+const prisonAddress = async () => {
+  try {
+    const result = await AppDataSource.query(
+      `
+      SELECT 
+        id, 
+        name, 
+        delivery_address, 
+        delivery_address_detail, 
+        post_code 
+      FROM 
+        prison
+      `
+    );
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+const nurserySchoolAddress = async () => {
+  try {
+    const result = await AppDataSource.query(
+      `
+      SELECT 
+        id, 
+        name, 
+        delivery_address, 
+        delivery_address_detail, 
+        post_code 
+      FROM 
+        nursery_school
+      `
+    );
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+const deleteAllContentsByLetterId = async (letterId) => {
+  try {
+    const result = await AppDataSource.query(
+      `DELETE FROM content WHERE letter_id = ?;`,
+      [letterId]
+    );
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 module.exports = {
   letterDao,
   photoDao,
@@ -404,7 +445,6 @@ module.exports = {
   checkExistingSendAddressDao,
   checkExistingDeliveryAddressDao,
   updateLetterDao,
-  deleteContentsDao,
   updateCountPhotoDao,
   delPhotoDao,
   getContentDao,
@@ -412,4 +452,7 @@ module.exports = {
   historyLetterDao,
   getPhotoInfoDao,
   updateLetterStatusDao,
+  prisonAddress,
+  nurserySchoolAddress,
+  deleteAllContentsByLetterId,
 };
