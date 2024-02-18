@@ -24,39 +24,20 @@ const {
 
 const getPreSignedUrlController = async (req, res, next) => {
   try {
-    const {
-      imgUrl1,
-      imgUrl2,
-      imgUrl3,
-      imgUrl4,
-      imgUrl5,
-      descriptionImgUrl,
-      padImgUrl,
-    } = req.body;
+    const { fileName } = req.body;
 
     const folderName = "products";
-    const preSignedUrls = await Promise.all(
-      [
-        imgUrl1,
-        imgUrl2,
-        imgUrl3,
-        imgUrl4,
-        imgUrl5,
-        descriptionImgUrl,
-        padImgUrl,
-      ].map((file) => PreSignedUrl(file, folderName))
-    );
+    const preSignedUrl = await PreSignedUrl({ fileName }, folderName);
 
     return res.status(200).json({
       message: "사전 서명된 URL 생성 완료",
-      preSignedUrls,
+      preSignedUrl
     });
   } catch (err) {
     console.error("getPreSignedUrlController에서 생긴 오류", err);
     next(err);
   }
 };
-
 
 //어드민 계정일 경우에만 상품을 등록할수있습니다.
 const insertProductController = async (req, res, next) => {
