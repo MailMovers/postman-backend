@@ -24,7 +24,7 @@ const upDateProductDao = async (
           img_url_2 = ?, 
           img_url_3 = ?, 
           img_url_4 = ?, 
-          img_url_5, 
+          img_url_5 = ?, 
           description_img_url =?, 
           pad_img_url = ?, 
           price = ?, 
