@@ -19,7 +19,7 @@ const {
 } = productController;
 const productRoute = express.Router();
 
-productRoute.get("/presignedUrl", getPreSignedUrlController);
+productRoute.post("/presignedUrl", getPreSignedUrlController);
 //내가 작성한 상품 리뷰 불러오기
 productRoute.get("/myReviews", auth, getReviewListController);
 //내가 작성한 리뷰 삭제
