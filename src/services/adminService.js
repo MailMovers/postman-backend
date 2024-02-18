@@ -16,7 +16,6 @@ const {
 } = require("../models/adminDao");
 //어드민 상품 수정
 const updateProductService = async (
-  productId,
   name,
   imgUrl1,
   imgUrl2,
@@ -28,10 +27,10 @@ const updateProductService = async (
   price,
   addPrice,
   description,
-  category
+  category,
+  productId
 ) => {
   return await upDateProductDao(
-    productId,
     name,
     imgUrl1,
     imgUrl2,
@@ -43,7 +42,8 @@ const updateProductService = async (
     price,
     addPrice,
     description,
-    category
+    category,
+    productId
   );
 };
 const getLettersService = async () => {
