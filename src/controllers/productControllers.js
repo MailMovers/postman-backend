@@ -57,19 +57,20 @@ const getPreSignedUrlController = async (req, res, next) => {
   }
 };
 
+
 //어드민 계정일 경우에만 상품을 등록할수있습니다.
 const insertProductController = async (req, res, next) => {
   try {
     const userId = req.userId;
     const {
       name,
-      uploadedImgName1, // 클라이언트가 업로드한 파일의 이름
-      uploadedImgName2,
-      uploadedImgName3,
-      uploadedImgName4,
-      uploadedImgName5,
-      uploadedDescriptionImgName,
-      uploadedPadImgName,
+      uploadedImgUrl1,
+      uploadedImgUrl2,
+      uploadedImgUrl3,
+      uploadedImgUrl4,
+      uploadedImgUrl5,
+      uploadedDescriptionImgUrl,
+      uploadedPadImgUrl,
       price,
       addPrice,
       description,
@@ -77,26 +78,6 @@ const insertProductController = async (req, res, next) => {
       descriptionId,
     } = req.body;
 
-    const folderName = "products";
-    const [
-      { s3Url: uploadedImgUrl1 },
-      { s3Url: uploadedImgUrl2 },
-      { s3Url: uploadedImgUrl3 },
-      { s3Url: uploadedImgUrl4 },
-      { s3Url: uploadedImgUrl5 },
-      { s3Url: uploadedDescriptionImgUrl },
-      { s3Url: uploadedPadImgUrl },
-    ] = await Promise.all(
-      [
-        uploadedImgName1,
-        uploadedImgName2,
-        uploadedImgName3,
-        uploadedImgName4,
-        uploadedImgName5,
-        uploadedDescriptionImgName,
-        uploadedPadImgName,
-      ].map((fileName) => insertS3Url(fileName, folderName))
-    );
     const productInsertionResult = await insertProductService(
       name,
       uploadedImgUrl1,
