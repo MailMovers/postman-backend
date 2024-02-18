@@ -67,7 +67,6 @@ const updataProductController = async (req, res, next) => {
       return res.status(400).json({ message: "카테고리를 작성해주세요" });
     }
     await updateProductService(
-      productId,
       name,
       imgUrl1,
       imgUrl2,
@@ -79,7 +78,8 @@ const updataProductController = async (req, res, next) => {
       price,
       addPrice,
       description,
-      category
+      category,
+      productId
     );
     return res.status(200).json({ message: "SUCCESS" });
   } catch (err) {

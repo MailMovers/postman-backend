@@ -1,7 +1,6 @@
 const { AppDataSource } = require("./dataSource");
 //어드민 상품수정
 const upDateProductDao = async (
-  productId,
   name,
   imgUrl1,
   imgUrl2,
@@ -13,7 +12,8 @@ const upDateProductDao = async (
   price,
   addPrice,
   description,
-  category
+  category,
+  productId
 ) => {
   try {
     const updateProduct = await AppDataSource.query(
