@@ -280,7 +280,7 @@ const adminDeleteReviewController = async (req, res, next) => {
 //상품 리뷰 불러오기
 const getProductReviewlistController = async (req, res, next) => {
   try {
-    const productId = req.body.productId;
+    const productId = req.query.productId;
     if (!productId || productId.length === 0) {
       return res.status(400).json({ message: "상품 아이디를 입력해주세요" });
     }
