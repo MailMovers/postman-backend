@@ -27,7 +27,7 @@ const getPreSignedUrlController = async (req, res, next) => {
     const { fileName } = req.body;
 
     const folderName = "products";
-    const preSignedUrl = await PreSignedUrl({ fileName }, folderName);
+    const preSignedUrl = await PreSignedUrl( fileName, folderName);
 
     return res.status(200).json({
       message: "사전 서명된 URL 생성 완료",
