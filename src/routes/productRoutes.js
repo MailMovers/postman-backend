@@ -2,6 +2,8 @@ const express = require("express");
 const { productController } = require("../controllers");
 const auth = require("../middlewares/auth.middleware");
 const { populate } = require("dotenv");
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 
 const {
   getProductController,
@@ -19,7 +21,7 @@ const {
 } = productController;
 const productRoute = express.Router();
 
-productRoute.post("/presignedUrl", getPreSignedUrlController);
+productRoute.post('/presignedUrl', upload.single('file'), getPreSignedUrlController);
 //내가 작성한 상품 리뷰 불러오기
 productRoute.get("/myReviews", auth, getReviewListController);
 //내가 작성한 리뷰 삭제
