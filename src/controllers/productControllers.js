@@ -23,6 +23,7 @@ const {
 } = require("../models/productDao");
 
 const getPreSignedUrlController = async (req, res, next) => {
+console.log(req)
   try {
     const { fileName } = req.body;
 
