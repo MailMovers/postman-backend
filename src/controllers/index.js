@@ -40,6 +40,7 @@ const {
   newProductController,
   popularProductContoller,
   deleteMyreviewController,
+  getPreSignedUrlController,
 } = require("./productControllers");
 
 const {
@@ -118,6 +119,7 @@ module.exports = {
     newProductController,
     popularProductContoller,
     deleteMyreviewController,
+    getPreSignedUrlController,
   },
   paymentController: {
     paymentSuccessController,
