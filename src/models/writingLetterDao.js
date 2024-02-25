@@ -321,6 +321,7 @@ const historyLetterDao = async (userId) => {
           letters.id AS letterId,
           letters.status,
           writing_pads.name,
+          writing_pads.id AS writingPadId,
           delivery_address.delivery_address,
           delivery_address.delivery_address_detail,
           delivery_address.delivery_phone,
@@ -348,7 +349,7 @@ const historyLetterDao = async (userId) => {
       WHERE 
           users.id = ?
       GROUP BY 
-          letters.id, letters.status, writing_pads.name
+          letters.id, letters.status, writing_pads.name, writing_pads.id
       ORDER BY 
           orders.created_at DESC;
       `,
