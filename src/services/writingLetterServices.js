@@ -276,7 +276,8 @@ const historyLetterService = async (userId, letterId) => {
     if (letterId) {
       const letterInformation = await confirmLetterDao(letterId);
       const recipe = await getRecipe(letterId);
-      return { letterInformation, recipe };
+      const photo = await getPhotoInfoDao(letterId)
+      return { letterInformation, recipe, photo };
     }
     const result = await historyLetterDao(userId);
     return result;
