@@ -14,7 +14,7 @@ const {
   popularProductDao,
 } = require("../models/productDao");
 
-const { recordPointTransactionDao } = require("../models/paymentDao");
+const { recordPointTransactionDao, addPointDao } = require("../models/paymentDao");
 
 const insertProductService = async (
   name,
@@ -67,7 +67,7 @@ const insertReviewService = async (
   const reviewPoint = 100;
 
   await insertReviewDao(userId, productId, score, content, letterId);
-  if ((reviewPoint = !0)) await addPointDao(reviewPoint, userId);
+  if ((reviewPoint !== 0)) await addPointDao(reviewPoint, userId);
   await recordPointTransactionDao(
     userId,
     reviewPoint,
