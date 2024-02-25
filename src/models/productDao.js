@@ -188,13 +188,13 @@ const getUserByReviewDao = async (letterId) => {
     `
     SELECT
     user.id AS userId,
-    order.status AS orderStatus,
+    orderT.status AS orderStatus,
     writing_pad.id AS writing_pad_id
    FROM users user
-   LEFT JOIN orders order ON order.user_id = user.id
-   LEFT JOIN letters letter ON letter.id = order.letter_id
+   LEFT JOIN orders orderT ON orderT.user_id = user.id
+   LEFT JOIN letters letter ON letter.id = orderT.letter_id
    LEFT JOIN writing_pads writing_pad ON writing_pad.id = letter.writing_pad_id 
-   WHERE order.status = "done" AND letter.id = ?
+   WHERE orderT.status = "done" AND letter.id = ?
   `,
     [letterId]
   );
