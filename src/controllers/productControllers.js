@@ -186,8 +186,8 @@ const insertReviewController = async (req, res, next) => {
 
     await insertReviewService(userId, Number(productId), score, content, letterId);
     const user = await getUserByReviewDao(letterId);
-    if (user.orderStatus !== "done") {
-      console.log("리뷰 권한이 없습니다. 주문 상태:", user.oderStatus);
+    if (user.orderStatus !== "DONE") {
+      console.log("리뷰 권한이 없습니다. 주문 상태:", user.orderStatus);
       return res.status(400).json({ message: "리뷰 권한이 없습니다" });
     }
     if (!userId || userId.length === 0)
