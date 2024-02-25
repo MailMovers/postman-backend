@@ -194,7 +194,7 @@ const getUserByReviewDao = async (letterId) => {
    LEFT JOIN orders orderT ON orderT.user_id = user.id
    LEFT JOIN letters letter ON letter.id = orderT.letter_id
    LEFT JOIN writing_pads writing_pad ON writing_pad.id = letter.writing_pad_id 
-   WHERE orderT.status = "done" AND letter.id = ?
+   WHERE orderT.status = "DONE" AND letter.id = ?
   `,
     [letterId]
   );
@@ -217,7 +217,7 @@ const insertReviewDao = async (userId, productId, score, content, letterId) => {
     VALUES
     (?,?,?,?,?,?)
     `,
-    [userId, productId, score, content, letterId, "done"]
+    [userId, productId, score, content, letterId, "DONE"]
   );
   return insertReview;
 };
