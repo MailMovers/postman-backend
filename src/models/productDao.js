@@ -217,7 +217,7 @@ const insertReviewDao = async (userId, productId, score, content, letterId) => {
     VALUES
     (?,?,?,?,?,?)
     `,
-    [userId, productId, score, content, letterId, "done"]
+    [userId, productId, score, content, letterId, "DONE"]
   );
   return insertReview;
 };
