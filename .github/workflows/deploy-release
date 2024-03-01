@@ -1,0 +1,81 @@
+name: Deploy to cloudtype
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Connect deploy key
+        uses: cloudtype-github-actions/connect@v1
+        with:
+          token: ${{ secrets.CLOUDTYPE_RELEASE_TOKEN }}
+          ghtoken: ${{ secrets.GHP_RELEASE_TOKEN }}
+      - name: Deploy
+        uses: cloudtype-github-actions/deploy@v1
+        with:
+          token: ${{ secrets.CLOUDTYPE_RELEASE_TOKEN }}
+          project: mailtree/mailtree
+          stage: main
+          yaml: |
+            name: mailtree
+            app: node@18
+            options:
+              env:
+                - name: NODE_ENV
+                  value: production
+                - name: TYPEORM_CONNECTION
+                  secret: TYPEORM_CONNECTION
+                - name: TYPEORM_HOST
+                  secret: TYPEORM_HOST
+                - name: TYPEORM_PORT
+                  secret: TYPEORM_PORT
+                - name: TYPEORM_USERNAME
+                  secret: TYPEORM_USERNAME
+                - name: TYPEORM_DATABASE
+                  secret: TYPEORM_DATABASE
+                - name: DATABASE_URL
+                  secret: DATABASE_URL
+                - name: JWT_SECRET_KEY
+                  secret: JWT_SECRET_KEY
+                - name: SERVER_PORT
+                  secret: SERVER_PORT
+                - name: NODEMAILER_USER
+                  secret: NODEMAILER_USER
+                - name: NODEMAILER_PASS
+                  secret: NODEMAILER_PASS
+                - name: AWS_ACCESS_KEY
+                  secret: AWS_ACCESS_KEY
+                - name: AWS_SECRET_ACCESS_KEY
+                  secret: AWS_SECRET_ACCESS_KEY
+                - name: AWS_REGION
+                  secret: AWS_REGION
+                - name: AWS_BUCKET_NAME
+                  secret: AWS_BUCKET_NAME
+                - name: TOSSPAYMENTS_SECRET_KEY
+                  secret: TOSSPAYMENTS_SECRET_KEY
+                - name: KAKAO_CALLBACK
+                  secret: KAKAO_CALLBACK
+                - name: KAKAO_KEY
+                  secret: KAKAO_KEY
+                - name: NAVER_ID
+                  secret: NAVER_ID
+                - name: NAVER_SECRET
+                  secret: NAVER_SECRET
+                - name: NAVER_CALLBACK
+                  secret: NAVER_CALLBACK
+                - name: GOOGLE_ID
+                  secret: GOOGLE_ID
+                - name: GOOGLE_SECRET
+                  secret: GOOGLE_SECRET
+                - name: GOOGLE_CALLBACK
+                  secret: GOOGLE_CALLBACK
+              ports: 3000
+            context:
+              git:
+                url: git@github.com:${{ github.repository }}.git
+                ref: ${{ github.ref }}
+              preset: node
