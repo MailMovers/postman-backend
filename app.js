@@ -18,7 +18,7 @@ const createApp = () => {
     const app = express();
 
     app.get('/', (req, res) => {
-        res.send('Hello World - Github Actions!');
+        res.send('MailMovers - New Github Actions2!');
     });
 
     app.use(
