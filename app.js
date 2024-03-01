@@ -18,7 +18,7 @@ const createApp = () => {
     const app = express();
 
     app.get('/', (req, res) => {
-        res.send('MAILTREE - RELEASE GITHUB ACTIONS!');
+        res.send('MAILTREE - RELEASE GITHUB ACTIONS22!');
     });
 
     app.use(
