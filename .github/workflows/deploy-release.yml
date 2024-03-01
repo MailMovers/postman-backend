@@ -29,6 +29,8 @@ jobs:
                   value: production
                 - name: TYPEORM_CONNECTION
                   secret: TYPEORM_CONNECTION
+                - name: TYPEORM_PASSWORD
+                  secret: TYPEORM_PASSWORD
                 - name: TYPEORM_HOST
                   secret: TYPEORM_HOST
                 - name: TYPEORM_PORT
