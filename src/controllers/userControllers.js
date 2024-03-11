@@ -102,7 +102,7 @@ class UserController {
 
             return res.redirect(
                 url.format({
-                    pathname: `${process.env.SOCIAL_REDIRECT_URI}/login/kakao`,
+                    pathname: `${process.env.SOCIAL_REDIRECT_URL}/login/kakao`,
                     query: {
                         success: true,
                         message: '로그인에 성공했습니다.',
@@ -115,7 +115,7 @@ class UserController {
             console.log(error);
             return res.redirect(
                 url.format({
-                    pathname: `${process.env.SOCIAL_REDIRECT_URI}/login/kakao`,
+                    pathname: `${process.env.SOCIAL_REDIRECT_URL}/login/kakao`,
                     query: {
                         success: false,
                         message: error.message,
@@ -141,7 +141,7 @@ class UserController {
 
             return res.redirect(
                 url.format({
-                    pathname: `${process.env.SOCIAL_REDIRECT_URI}/login/naver`,
+                    pathname: `${process.env.SOCIAL_REDIRECT_URL}/login/naver`,
                     query: {
                         success: true,
                         message: '로그인에 성공했습니다.',
@@ -154,7 +154,7 @@ class UserController {
             console.log(error);
             return res.redirect(
                 url.format({
-                    pathname: `${process.env.SOCIAL_REDIRECT_URI}/login/naver`,
+                    pathname: `${process.env.SOCIAL_REDIRECT_URL}/login/naver`,
                     query: {
                         success: false,
                         message: error.message,
@@ -180,7 +180,7 @@ class UserController {
 
             return res.redirect(
                 url.format({
-                    pathname: `${process.env.SOCIAL_REDIRECT_URI}/login/google`,
+                    pathname: `${process.env.SOCIAL_REDIRECT_URL}/login/google`,
                     query: {
                         success: true,
                         message: '로그인에 성공했습니다.',
@@ -193,7 +193,7 @@ class UserController {
             console.log(error);
             return res.redirect(
                 url.format({
-                    pathname: `${process.env.SOCIAL_REDIRECT_URI}/login/google`,
+                    pathname: `${process.env.SOCIAL_REDIRECT_URL}/login/google`,
                     query: {
                         success: false,
                         message: error.message,
