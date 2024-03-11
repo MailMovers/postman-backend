@@ -12,7 +12,11 @@ const router = require('./src/routes');
 const cron = require('./src/cron');
 
 // cors whitelist
-const whitelist = ['http://localhost:3000', 'https://postman-frontend-beige.vercel.app'];
+const whitelist = [
+    'http://localhost:3000',
+    'https://postman-frontend-beige.vercel.app',
+    'https://port-0-mailtree-frontend-199u12dls5r68ip.sel5.cloudtype.app',
+];
 
 const createApp = () => {
     const app = express();
