@@ -18,6 +18,7 @@ const cron = require('./src/cron');
     3. 프론트 운영 서버
     4. 어드민 페이지 테스트 서버
     5. 어드민 페이지 운영 서버
+    6. 메일트리 홈페이지
 */
 const whitelist = [
     'http://localhost:3000',
@@ -25,6 +26,7 @@ const whitelist = [
     'https://port-0-mailtree-frontend-199u12dls5r68ip.sel5.cloudtype.app',
     'https://mail-movers-admin-vercel.vercel.app',
     'https://port-0-mail-movers-admin-vercel-199u12dls5r68ip.sel5.cloudtype.app',
+    'https://mailtree.co.kr',
 ];
 
 const createApp = () => {
