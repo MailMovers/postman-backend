@@ -58,7 +58,7 @@ const insertProductController = async (req, res, next) => {
       category,
       descriptionId,
     } = req.body;
-    console.log("데브 확인,", req.body)
+  
 
     const productInsertionResult = await insertProductService(
       name,
@@ -102,6 +102,7 @@ const insertProductController = async (req, res, next) => {
     if (!category) {
       return res.status(400).json({ message: "카테고리를 작성해주세요" });
     }
+    console.log("데브 확인,", productInsertionResult)
     if (productInsertionResult) {
       return res.status(200).json({ message: "상품 등록 성공" });
     } else {
