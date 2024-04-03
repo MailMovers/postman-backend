@@ -34,7 +34,7 @@ const insertProductService = async (
   category,
   descriptionId
 ) => {
-  await insertProductDao(
+ return await insertProductDao(
     name,
     imgUrl1,
     imgUrl2,
