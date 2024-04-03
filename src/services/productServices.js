@@ -21,33 +21,33 @@ const {
 
 const insertProductService = async (
   name,
-  uploadedImgUrl1,
-  uploadedImgUrl2,
-  uploadedImgUrl3,
-  uploadedImgUrl4,
-  uploadedImgUrl5,
-  uploadedPadImgUrl,
+  imgUrl1,
+  imgUrl2,
+  imgUrl3,
+  imgUrl4,
+  imgUrl5,
+  descriptionImgUrl,
+  padImgUrl,
   price,
   addPrice,
-  uploadedDescriptionImgUrl,
-  descriptionId,
+  description,
   category,
-  description
+  descriptionId
 ) => {
   await insertProductDao(
     name,
-    uploadedImgUrl1,
-    uploadedImgUrl2,
-    uploadedImgUrl3,
-    uploadedImgUrl4,
-    uploadedImgUrl5,
-    uploadedPadImgUrl,
+    imgUrl1,
+    imgUrl2,
+    imgUrl3,
+    imgUrl4,
+    imgUrl5,
+    descriptionImgUrl,
+    padImgUrl,
     price,
     addPrice,
-    uploadedDescriptionImgUrl,
-    descriptionId,
+    description,
     category,
-    description
+    descriptionId
   );
 };
 //상품삭제
