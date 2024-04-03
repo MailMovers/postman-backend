@@ -58,6 +58,7 @@ const insertProductController = async (req, res, next) => {
       category,
       descriptionId,
     } = req.body;
+    console.log("데브 확인,", req.body)
 
     const productInsertionResult = await insertProductService(
       name,
