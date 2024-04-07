@@ -33,60 +33,6 @@ class UserController {
         }
     };
 
-    // 이메일 인증
-    emailAuth = async (req, res, next) => {
-        try {
-            const { email } = await emailAuthSchema.validateAsync(req.body);
-
-            await this.userService.sendEmail({ email });
-
-            return res.status(200).json({ success: true, message: '인증번호를 발송하였습니다.' });
-        } catch (error) {
-            console.log('error: ', error);
-            // Joi
-            if (error.isJoi) {
-                const { message } = error.details[0];
-                return res.status(400).json({ success: false, message, error });
-            }
-            if (error.name === 'EmailExistError') {
-                return res.status(400).json({ success: false, message: error.message, error });
-            }
-            return res.status(400).json({
-                success: false,
-                message: '인증번호 발송에 실패했습니다. 다시 확인해주세요.',
-                error,
-            });
-        }
-    };
-
-    // 이메일 인증번호 확인
-    checkAuthNumber = async (req, res, next) => {
-        try {
-            const { authNumber, email } = await authNumberSchema.validateAsync(req.body);
-
-            await this.userService.verifyAuthNumber({ email, authNumber });
-
-            return res.status(200).json({ success: true, message: '인증되었습니다.' });
-        } catch (error) {
-            console.log('error : ', error);
-            // Joi
-            if (error.isJoi) {
-                const { message } = error.details[0];
-                return res.status(400).json({ success: false, message, error });
-            }
-
-            if (['AuthNumberFailedVerifyError', 'AuthNumberExpiredError'].includes(error.name)) {
-                return res.status(400).json({ success: false, message: error.message, error });
-            }
-
-            return res.status(400).json({
-                success: false,
-                message: '인증에 실패했습니다. 다시 확인해주세요.',
-                error,
-            });
-        }
-    };
-
     // 카카오 소셜로그인
     kakaoLogin = async (req, res, next) => {
         try {
@@ -416,6 +362,61 @@ class UserController {
                 .json({ success: false, message: '회원탈퇴에 실패했습니다.', error });
         }
     };
+
+    /* 사용하지 않는 API */
+    // 이메일 인증
+    // emailAuth = async (req, res, next) => {
+    //     try {
+    //         const { email } = await emailAuthSchema.validateAsync(req.body);
+
+    //         await this.userService.sendEmail({ email });
+
+    //         return res.status(200).json({ success: true, message: '인증번호를 발송하였습니다.' });
+    //     } catch (error) {
+    //         console.log('error: ', error);
+    //         // Joi
+    //         if (error.isJoi) {
+    //             const { message } = error.details[0];
+    //             return res.status(400).json({ success: false, message, error });
+    //         }
+    //         if (error.name === 'EmailExistError') {
+    //             return res.status(400).json({ success: false, message: error.message, error });
+    //         }
+    //         return res.status(400).json({
+    //             success: false,
+    //             message: '인증번호 발송에 실패했습니다. 다시 확인해주세요.',
+    //             error,
+    //         });
+    //     }
+    // };
+
+    // 이메일 인증번호 확인
+    // checkAuthNumber = async (req, res, next) => {
+    //     try {
+    //         const { authNumber, email } = await authNumberSchema.validateAsync(req.body);
+
+    //         await this.userService.verifyAuthNumber({ email, authNumber });
+
+    //         return res.status(200).json({ success: true, message: '인증되었습니다.' });
+    //     } catch (error) {
+    //         console.log('error : ', error);
+    //         // Joi
+    //         if (error.isJoi) {
+    //             const { message } = error.details[0];
+    //             return res.status(400).json({ success: false, message, error });
+    //         }
+
+    //         if (['AuthNumberFailedVerifyError', 'AuthNumberExpiredError'].includes(error.name)) {
+    //             return res.status(400).json({ success: false, message: error.message, error });
+    //         }
+
+    //         return res.status(400).json({
+    //             success: false,
+    //             message: '인증에 실패했습니다. 다시 확인해주세요.',
+    //             error,
+    //         });
+    //     }
+    // };
 }
 
 module.exports = UserController;
