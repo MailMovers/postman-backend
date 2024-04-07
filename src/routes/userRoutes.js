@@ -9,6 +9,9 @@ const userController = new UserController();
 // 회원가입
 userRoute.post('/signup', userController.signUp);
 
+// 이메일 중복 체크
+userRoute.post('/email-check', userController.emailCheck);
+
 // 로그인
 userRoute.post('/signin', userController.signIn);
 

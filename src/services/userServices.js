@@ -2,7 +2,6 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { UserDao } = require('../models');
 const { ErrorNames, CustomError } = require('../utils/customErrors');
-const smtpTransport = require('../config/email.config');
 const { v4: uuidv4 } = require('uuid');
 
 const SOCIAL_PASSWORD = 'a12345678';
@@ -28,6 +27,21 @@ class UserService {
                 provider,
                 customerId,
             });
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    emailCheck = async ({ email }) => {
+        try {
+            const [data] = await this.userDao.checkEmailDuplicate({ email });
+
+            // 이미 존재하는 이메일
+            if (data) {
+                throw new CustomError(ErrorNames.EmailExistError, '이미 사용중인 이메일입니다.');
+            }
+
+            return true;
         } catch (error) {
             throw error;
         }

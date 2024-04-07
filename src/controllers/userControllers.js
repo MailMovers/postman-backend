@@ -1,11 +1,10 @@
 const {
     signUpSchema,
-    emailAuthSchema,
-    authNumberSchema,
     signInSchema,
     updatePasswordSchema,
     updatePhoneSchema,
     withdrawalSchema,
+    emailCheckSchema,
 } = require('../utils/validation');
 const { UserService } = require('../services');
 const { ErrorNames, CustomError } = require('../utils/customErrors');
@@ -30,6 +29,30 @@ class UserController {
                 return res.status(400).json({ success: false, message });
             }
             return res.status(400).json({ success: false, message: '회원가입에 실패하였습니다.' });
+        }
+    };
+
+    // 이메일 중복 체크
+    emailCheck = async (req, res, next) => {
+        try {
+            const { email } = await emailCheckSchema.validateAsync(req.body);
+
+            const result = await this.userService.emailCheck({ email });
+
+            return res.status(200).json({
+                success: true,
+                message: '사용할 수 있는 이메일입니다.',
+            });
+        } catch (error) {
+            console.log(error);
+            if (error.isJoi) {
+                const { message } = error.details[0];
+                return res.status(400).json({ success: false, message, error });
+            }
+            if (error.name === 'EmailExistError') {
+                return res.status(400).json({ success: false, message: error.message, error });
+            }
+            return res.status(400).json({ success: false, message: '다시 시도해 주세요.', error });
         }
     };
 
