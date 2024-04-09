@@ -1,11 +1,10 @@
 const {
     signUpSchema,
-    emailAuthSchema,
-    authNumberSchema,
     signInSchema,
     updatePasswordSchema,
     updatePhoneSchema,
     withdrawalSchema,
+    emailCheckSchema,
 } = require('../utils/validation');
 const { UserService } = require('../services');
 const { ErrorNames, CustomError } = require('../utils/customErrors');
@@ -33,17 +32,19 @@ class UserController {
         }
     };
 
-    // 이메일 인증
-    emailAuth = async (req, res, next) => {
+    // 이메일 중복 체크
+    emailCheck = async (req, res, next) => {
         try {
-            const { email } = await emailAuthSchema.validateAsync(req.body);
+            const { email } = await emailCheckSchema.validateAsync(req.body);
 
-            await this.userService.sendEmail({ email });
+            const result = await this.userService.emailCheck({ email });
 
-            return res.status(200).json({ success: true, message: '인증번호를 발송하였습니다.' });
+            return res.status(200).json({
+                success: true,
+                message: '사용할 수 있는 이메일입니다.',
+            });
         } catch (error) {
-            console.log('error: ', error);
-            // Joi
+            console.log(error);
             if (error.isJoi) {
                 const { message } = error.details[0];
                 return res.status(400).json({ success: false, message, error });
@@ -51,39 +52,7 @@ class UserController {
             if (error.name === 'EmailExistError') {
                 return res.status(400).json({ success: false, message: error.message, error });
             }
-            return res.status(400).json({
-                success: false,
-                message: '인증번호 발송에 실패했습니다. 다시 확인해주세요.',
-                error,
-            });
-        }
-    };
-
-    // 이메일 인증번호 확인
-    checkAuthNumber = async (req, res, next) => {
-        try {
-            const { authNumber, email } = await authNumberSchema.validateAsync(req.body);
-
-            await this.userService.verifyAuthNumber({ email, authNumber });
-
-            return res.status(200).json({ success: true, message: '인증되었습니다.' });
-        } catch (error) {
-            console.log('error : ', error);
-            // Joi
-            if (error.isJoi) {
-                const { message } = error.details[0];
-                return res.status(400).json({ success: false, message, error });
-            }
-
-            if (['AuthNumberFailedVerifyError', 'AuthNumberExpiredError'].includes(error.name)) {
-                return res.status(400).json({ success: false, message: error.message, error });
-            }
-
-            return res.status(400).json({
-                success: false,
-                message: '인증에 실패했습니다. 다시 확인해주세요.',
-                error,
-            });
+            return res.status(400).json({ success: false, message: '다시 시도해 주세요.', error });
         }
     };
 
@@ -416,6 +385,61 @@ class UserController {
                 .json({ success: false, message: '회원탈퇴에 실패했습니다.', error });
         }
     };
+
+    /* 사용하지 않는 API */
+    // 이메일 인증
+    // emailAuth = async (req, res, next) => {
+    //     try {
+    //         const { email } = await emailAuthSchema.validateAsync(req.body);
+
+    //         await this.userService.sendEmail({ email });
+
+    //         return res.status(200).json({ success: true, message: '인증번호를 발송하였습니다.' });
+    //     } catch (error) {
+    //         console.log('error: ', error);
+    //         // Joi
+    //         if (error.isJoi) {
+    //             const { message } = error.details[0];
+    //             return res.status(400).json({ success: false, message, error });
+    //         }
+    //         if (error.name === 'EmailExistError') {
+    //             return res.status(400).json({ success: false, message: error.message, error });
+    //         }
+    //         return res.status(400).json({
+    //             success: false,
+    //             message: '인증번호 발송에 실패했습니다. 다시 확인해주세요.',
+    //             error,
+    //         });
+    //     }
+    // };
+
+    // 이메일 인증번호 확인
+    // checkAuthNumber = async (req, res, next) => {
+    //     try {
+    //         const { authNumber, email } = await authNumberSchema.validateAsync(req.body);
+
+    //         await this.userService.verifyAuthNumber({ email, authNumber });
+
+    //         return res.status(200).json({ success: true, message: '인증되었습니다.' });
+    //     } catch (error) {
+    //         console.log('error : ', error);
+    //         // Joi
+    //         if (error.isJoi) {
+    //             const { message } = error.details[0];
+    //             return res.status(400).json({ success: false, message, error });
+    //         }
+
+    //         if (['AuthNumberFailedVerifyError', 'AuthNumberExpiredError'].includes(error.name)) {
+    //             return res.status(400).json({ success: false, message: error.message, error });
+    //         }
+
+    //         return res.status(400).json({
+    //             success: false,
+    //             message: '인증에 실패했습니다. 다시 확인해주세요.',
+    //             error,
+    //         });
+    //     }
+    // };
 }
 
 module.exports = UserController;

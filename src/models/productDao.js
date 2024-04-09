@@ -28,13 +28,14 @@ const insertProductDao = async (
           img_url_5,
           description_img_url,
           pad_img_url,
-          price,add_price,
+          price,
+          add_price,
           description,
           category,
           letter_detail_id
           )
         VALUES
-        (?,?,?,?,?,?,?,?,?,?,?,?)
+        (?,?,?,?,?,?,?,?,?,?,?,?,?)
         `,
     [
       name,
