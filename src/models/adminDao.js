@@ -119,7 +119,7 @@ const getLetterAddressDao = async (letterId) => {
     throw err;
   }
 };
-
+// 고객첨부 사진 불러오기 
 const getPhotoDao = async (letterId) => {
   try {
     const result = await AppDataSource.query(
@@ -134,11 +134,19 @@ const getPhotoDao = async (letterId) => {
     throw err;
   }
 };
+// 고객작성 편지 내용 불러오기 
 const getLetterDao = async (letterId) => {
   try {
     const result = await AppDataSource.query(
       `
-      SELECT * FROM letters WHERE id = ?
+      SELECT 
+        letters.id,
+        letters.page,
+        content.content,
+        content.content_page
+      FROM letters 
+      JOIN content ON letters.id = content.letter_id
+      WHERE letters.id = ?
       `,
       [letterId]
     );

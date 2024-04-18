@@ -12,7 +12,7 @@ const {
   getCsaListDao,
   getPhotoDao,
   getLetterDao,
-  getLettersInfoDao
+  getLettersInfoDao,
 } = require("../models/adminDao");
 //어드민 상품 수정
 const updateProductService = async (
@@ -48,7 +48,7 @@ const updateProductService = async (
 };
 const getLettersService = async () => {
   return await getLettersInfoDao();
-}
+};
 
 //편지안에 주소 모두 불러오기
 const getAllAddressService = async (letterId) => {
@@ -60,7 +60,23 @@ const getPhotoService = async (letterId) => {
 };
 
 const getLetterService = async (letterId) => {
-  return await getLetterDao(letterId);
+  try {
+    const result = await getLetterDao(letterId);
+    if (result.length > 0) {
+      const formattedResult = {
+        id: result[0].id,
+        page: result[0].page,
+        contents: result.map((item) => ({
+          content: item.content,
+          content_page: item.content_page,
+        })),
+      };
+      return formattedResult;
+    }
+  } catch (error) {
+    console.error;
+    throw error;
+  }
 };
 
 //공지사항 입력
