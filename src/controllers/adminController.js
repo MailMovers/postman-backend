@@ -233,9 +233,9 @@ const getCsaListController = async (req, res, next) => {
 
 const getLetterController = async (req, res, next) => {
   try {
-    const letterId = req.query;
+    const { letterId } = req.query;
     const result = await getLetterService(letterId);
-    return result;
+    return res.status(200).json({ message: "SUCCESS", data: result });
   } catch (err) {
     console.error(err);
     next(err);
@@ -243,9 +243,9 @@ const getLetterController = async (req, res, next) => {
 };
 const getPhotoController = async (req, res, next) => {
   try {
-    const letterId = req.query;
+    const { letterId } = req.query;
     const result = await getPhotoService(letterId);
-    return result;
+    return res.status(200).json({ message: "SUCCESS", data: result });
   } catch (err) {
     console.error(err);
     next(err);
@@ -253,9 +253,9 @@ const getPhotoController = async (req, res, next) => {
 };
 const getAddressController = async (req, res, next) => {
   try {
-    const letterId = req.query;
+    const { letterId } = req.query;
     const result = await getAllAddressService(letterId);
-    return result;
+    return res.status(200).json({ message: "SUCCESS", data: result });
   } catch (err) {
     console.error(err);
     next(err);
@@ -327,5 +327,5 @@ module.exports = {
   getProductReviewlistController,
   adminCsDetailController,
   getCsaListController,
-  getLettersInfoController
+  getLettersInfoController,
 };
