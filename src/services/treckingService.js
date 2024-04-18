@@ -1,18 +1,15 @@
-const request = require("request");
+const axios = require("axios");
 
 const url =
   "http://openapi.epost.go.kr/trace/retrieveLongitudinalCombinedService/retrieveLongitudinalCombinedService/getLongitudinalCombinedList";
-const queryParams = "?" + encodeURIComponent(process.env.DATAGOV_SECRET_KEY);
+let queryParams = "?" + encodeURIComponent(process.env.DATAGOV_SECRET_KEY);
 const tracking = async (number) => {
   try {
     queryParams +=
       "&" + encodeURIComponent("rgist") + "=" + encodeURIComponent(number);
-    request({
-      url: url + queryParams,
-      method: "GET",
-    });
-    return;
-  } catch (err) {
+    const response = await axios.get(url + queryParams);
+    return response.data;
+  } catch (error) {
     console.error(error);
     throw error;
   }
