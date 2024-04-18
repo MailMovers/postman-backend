@@ -108,7 +108,6 @@ const getUploadUrl = async (req, res, next) => {
   try {
     const files = req.files;
     const result = await getPreSignedUrl(files);
-    console.log("uploadUrl", result);
     return res.status(201).json({
       success: true,
       message: "getUploadUrl pass.",
@@ -257,7 +256,6 @@ const confirmLetterController = async (req, res, next) => {
 
 const historyLetterController = async (req, res, next) => {
   try {
-    console.log(res)
     // const userId = req.userId;
     const userId = req.userId;
     const letterId = req.query.letterId;
