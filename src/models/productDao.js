@@ -71,7 +71,6 @@ const getUserByIdDao = async (userId) => {
     [userId]
   );
   const user = result[0];
-  console.log("dao", result);
   return user;
 };
 //상품 삭제

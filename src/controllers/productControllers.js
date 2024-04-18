@@ -23,7 +23,6 @@ const {
 } = require("../models/productDao");
 
 const getPreSignedUrlController = async (req, res, next) => {
-console.log(req)
   try {
     const file = req.file;
     const folderName = "products";
@@ -79,8 +78,6 @@ const insertProductController = async (req, res, next) => {
       return res.status(400).json({ message: "KEY_ERROR" });
     }
     const user = await getUserByIdDao(userId);
-    console.log("controller", user);
-    console.log(user.user_role_id);
     if (!user || user.user_role_id !== 3) {
       return res.status(400).json({ message: "권한이 없습니다" });
     }
@@ -102,7 +99,6 @@ const insertProductController = async (req, res, next) => {
     if (!category) {
       return res.status(400).json({ message: "카테고리를 작성해주세요" });
     }
-    console.log("데브 확인,", productInsertionResult)
     if (productInsertionResult) {
       return res.status(200).json({ message: "상품 등록 성공" });
     } else {
@@ -189,7 +185,6 @@ const insertReviewController = async (req, res, next) => {
     await insertReviewService(userId, Number(productId), score, content, letterId);
     const user = await getUserByReviewDao(letterId);
     if (user.orderStatus !== "DONE") {
-      console.log("리뷰 권한이 없습니다. 주문 상태:", user.orderStatus);
       return res.status(400).json({ message: "리뷰 권한이 없습니다" });
     }
     if (!userId || userId.length === 0)
