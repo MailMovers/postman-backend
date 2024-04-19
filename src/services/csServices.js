@@ -21,9 +21,9 @@ const getCsDetailService = async (userId, customerServiceId) => {
   return await getCsDetailDao(userId, customerServiceId);
 };
 //게시물 목록 불러오기
-const getCsListService = async (startItem, pageSize) => {
+const getCsListService = async (userId, startItem, pageSize) => {
   try {
-    const csList = await CsListDao(startItem, pageSize);
+    const csList = await CsListDao(userId, startItem, pageSize);
     return csList;
   } catch (err) {
     console.error("getCsListService에서 생긴 오류", err);
