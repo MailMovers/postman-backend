@@ -34,7 +34,7 @@ const getCsDetailDao = async (userId, customerServiceId) => {
       `
       SELECT
         customer_service.id,
-        customer_service.title,git p
+        customer_service.title,
         customer_service.content,
         customer_service.user_id,
         customer_service.created_at,
