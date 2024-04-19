@@ -91,7 +91,7 @@ const updataProductController = async (req, res, next) => {
 const getLettersInfoController = async (req, res, next) => {
   try {
     const result = await getLettersService();
-    return result;
+    return res.status(200).json({ message: "SUCCESS", data: result });
   } catch (err) {
     console.error("getLettersInfoController에서 발생한 애러", err);
     next(err);
