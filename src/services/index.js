@@ -9,15 +9,30 @@ const {
   getDeliveryAddressService,
 } = require("./addressServices");
 
+const { PreSignedUrl, insertS3Url } = require("./s3");
+
 const {
   letterService,
-  PhotoService,
+  countPhotoService,
   stampService,
   confirmLetterService,
   checkLetterService,
+  checkAndInsertAddressService,
+  updateLetterService,
+  PhotoService,
+  delPhotoService,
+  historyLetterService,
+  getPhotoInfoService,
+  getPrisonAddresses,
+  getNurserySchoolAddresses,
 } = require("./writingLetterServices");
 
-const { paymentSuccessService } = require("./paymentServices");
+const {
+  paymentSuccessService,
+  getPaymentInfoService,
+  getPointTransactionsService,
+  usePointsForPaymentService,
+} = require("./paymentServices");
 
 // user service class
 const UserService = require("./userServices");
@@ -31,6 +46,10 @@ const {
   getReviewService,
   deleteReviewService,
   getWritingPadService,
+  getProductCategoriService,
+  getReviewListService,
+  newProductService,
+  popularProductService,
 } = require("./productServices");
 
 const {
@@ -44,6 +63,23 @@ const {
   getCsAnswerListService,
 } = require("./csServices");
 
+const {
+  updateProductService,
+  getAllAddressService,
+  insertNoticeService,
+  updateNoticeService,
+  getNoticeDetailService,
+  getNoticeListService,
+  deleteNoticeService,
+  adminDeleteReviewService,
+  getProductReviewService,
+  adminCsDetailService,
+  getCsaListService,
+  getPhotoService,
+  getLetterService,
+  getLettersService,
+} = require("./adminService");
+
 module.exports = {
   insertAddressService,
   insertSendAddressService,
@@ -54,7 +90,6 @@ module.exports = {
   getSendAddressService,
   getDeliveryAddressService,
   letterService,
-  PhotoService,
   stampService,
   confirmLetterService,
   UserService,
@@ -67,6 +102,8 @@ module.exports = {
   deleteReviewService,
   paymentSuccessService,
   getWritingPadService,
+  getProductCategoriService,
+  getReviewListService,
   cs: {
     insertCsService,
     insertCsAnswerService,
@@ -77,5 +114,36 @@ module.exports = {
     adminDeleteCsAnswerService,
     getCsAnswerListService,
   },
+  admin: {
+    updateProductService,
+    getAllAddressService,
+    insertNoticeService,
+    updateNoticeService,
+    getNoticeDetailService,
+    getNoticeListService,
+    deleteNoticeService,
+    adminDeleteReviewService,
+    getProductReviewService,
+    adminCsDetailService,
+    getCsaListService,
+    getPhotoService,
+    getLetterService,
+    getLettersService,
+  },
   checkLetterService,
+  checkAndInsertAddressService,
+  updateLetterService,
+  countPhotoService,
+  PhotoService,
+  delPhotoService,
+  historyLetterService,
+  newProductService,
+  popularProductService,
+  getPaymentInfoService,
+  getPointTransactionsService,
+  getPhotoInfoService,
+  usePointsForPaymentService,
+  s3: { PreSignedUrl, insertS3Url },
+  getPrisonAddresses,
+  getNurserySchoolAddresses,
 };

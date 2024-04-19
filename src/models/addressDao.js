@@ -5,7 +5,8 @@ const insertDeliveryAddressDao = async (
   deliveryAddress,
   deliveryAddressDetail,
   deliveryPhone,
-  deliveryName
+  deliveryName,
+  postCode
 ) => {
   const insertDeliveryAddress = await AppDataSource.query(
     `
@@ -15,11 +16,12 @@ const insertDeliveryAddressDao = async (
             delivery_address,
             delivery_address_detail,
             delivery_phone,
-            delivery_name
+            delivery_name,
+            post_code
         )
         VALUES
         (
-            ?,?,?,?,?
+            ?,?,?,?,?,?
         )
         `,
     [
@@ -28,6 +30,7 @@ const insertDeliveryAddressDao = async (
       deliveryAddressDetail,
       deliveryPhone,
       deliveryName,
+      postCode
     ]
   );
   return insertDeliveryAddress;
@@ -37,7 +40,8 @@ const insertSendAddressDao = async (
   sendAddress,
   sendAddressDetail,
   sendPhone,
-  sendName
+  sendName,
+  postCode
 ) => {
   const insertSendAddress = await AppDataSource.query(
     `
@@ -47,14 +51,15 @@ const insertSendAddressDao = async (
               send_address,
               send_address_detail,
               send_phone,
-              send_name
+              send_name,
+              post_code
           )
           VALUES
           (
-              ?,?,?,?,?
+              ?,?,?,?,?,?
           )
           `,
-    [userId, sendAddress, sendAddressDetail, sendPhone, sendName]
+    [userId, sendAddress, sendAddressDetail, sendPhone, sendName, postCode]
   );
   return insertSendAddress;
 };
@@ -87,12 +92,14 @@ const getSendListAddressDao = async (userId) => {
   const sendAddressList = await AppDataSource.query(
     `
     SELECT
+    send_address.id,
     send_address_detail,
     send_address,
     send_phone,
     send_name,
+    post_code,
     send_address.deleted_at
-    FROM send_Address
+    FROM send_address
     LEFT JOIN users ON users.id = send_address.user_id
     WHERE user_id = ?
     `,
@@ -106,10 +113,12 @@ const getDeliveryListAddressDao = async (userId) => {
   const deliveryAddressList = await AppDataSource.query(
     `
     SELECT
+    delivery_address.id,
     delivery_address_detail,
     delivery_address,
     delivery_phone,
     delivery_name,
+    post_code,
     delivery_address.deleted_at
     FROM delivery_address
     LEFT JOIN users ON users.id = delivery_address.user_id
@@ -128,6 +137,7 @@ const getSendAddressDao = async (userId) => {
     send_address,
     send_phone,
     send_name,
+    post_code,
     send_address.deleted_at
     FROM send_address
     LEFT JOIN users ON users.id = send_address.user_id
@@ -146,6 +156,7 @@ const getDeliveryAddressDao = async (userId) => {
     delivery_address,
     delivery_phone,
     delivery_name,
+    post_code,
     delivery_address.deleted_at
     FROM delivery_address
     LEFT JOIN users ON users.id = delivery_address.user_id

@@ -10,11 +10,17 @@ const {
 } = require("./addressControllers");
 
 const {
-  letterContoller,
+  letterController,
   photoController,
-  confirmLetterContoller,
+  confirmLetterController,
   stampController,
   checkLetterController,
+  getUploadUrl,
+  delPhotoController,
+  historyLetterController,
+  getPhotoInfoController,
+  prisonAddressesController,
+  nurserySchoolAddressesController,
 } = require("./writingLetterControllers");
 
 // user controller class
@@ -29,9 +35,20 @@ const {
   getReviewController,
   deleteReviewController,
   getWritingPadController,
+  getProductCategoriController,
+  getReviewListController,
+  newProductController,
+  popularProductContoller,
+  deleteMyreviewController,
+  getPreSignedUrlController,
 } = require("./productControllers");
 
-const { paymentSuccessController } = require("./paymentControllers.js");
+const {
+  paymentSuccessController,
+  getPaymentInfoController,
+  getPointTransactions,
+  usePointsForPaymentController,
+} = require("./paymentControllers.js");
 
 const {
   insertCsController,
@@ -43,6 +60,24 @@ const {
   adminDeleteCsAnswerController,
   getCsAnswerListController,
 } = require("./csControllers");
+
+const {
+  updataProductController,
+  getAllAddressController,
+  insertNoticeController,
+  updateNoticeController,
+  getNoticeDetailController,
+  getNoticeListController,
+  deleteNoticeController,
+  getLetterController,
+  getPhotoController,
+  getAddressController,
+  adminDeleteReviewController,
+  getProductReviewlistController,
+  adminCsDetailController,
+  getCsaListController,
+  getLettersInfoController,
+} = require("./adminController");
 
 module.exports = {
   UserController,
@@ -57,11 +92,17 @@ module.exports = {
     getDeliveryAddressController,
   },
   writingLetterController: {
-    letterContoller,
+    letterController,
     photoController,
     stampController,
-    confirmLetterContoller,
+    confirmLetterController,
     checkLetterController,
+    getUploadUrl,
+    delPhotoController,
+    historyLetterController,
+    getPhotoInfoController,
+    prisonAddressesController,
+    nurserySchoolAddressesController,
   },
 
   productController: {
@@ -73,9 +114,18 @@ module.exports = {
     getReviewController,
     deleteReviewController,
     getWritingPadController,
+    getProductCategoriController,
+    getReviewListController,
+    newProductController,
+    popularProductContoller,
+    deleteMyreviewController,
+    getPreSignedUrlController,
   },
   paymentController: {
     paymentSuccessController,
+    getPaymentInfoController,
+    getPointTransactions,
+    usePointsForPaymentController,
   },
   csController: {
     insertCsController,
@@ -86,5 +136,22 @@ module.exports = {
     adminCsDeleteController,
     adminDeleteCsAnswerController,
     getCsAnswerListController,
+  },
+  admin: {
+    updataProductController,
+    getAllAddressController,
+    insertNoticeController,
+    updateNoticeController,
+    getNoticeDetailController,
+    getNoticeListController,
+    deleteNoticeController,
+    getLetterController,
+    getPhotoController,
+    getAddressController,
+    adminDeleteReviewController,
+    getProductReviewlistController,
+    adminCsDetailController,
+    getCsaListController,
+    getLettersInfoController,
   },
 };
