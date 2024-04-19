@@ -68,7 +68,7 @@ const getLetterService = async (letterId) => {
         page: result[0].page,
         contents: result.map((item) => ({
           content: item.content,
-          content_page: item.content_page,
+          contentPage: item.content_count,
         })),
       };
       return formattedResult;
