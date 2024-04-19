@@ -33,29 +33,24 @@ const getCsDetailDao = async (userId, customerServiceId) => {
     const csDetail = await AppDataSource.query(
       `
       SELECT
-      customer_service.id,
-      customer_service.title,
-      customer_service.content,
-      customer_service.user_id,
-      customer_service.created_at,
-      cs_answer.id AS csa_id,
-      cs_answer.content AS csa_content,
-      cs_answer.user_id AS csa_user_id,
-      cs_answer.created_at AS csa_created_at
-  FROM customer_service
-  LEFT JOIN cs_answer ON customer_service.id = cs_answer.id
-  LEFT JOIN users ON customer_service.user_id = users.id
-  WHERE users.id = ? AND customer_service.id = ? AND customer_service.deleted_at IS NULL;
+        customer_service.id,
+        customer_service.title,git p
+        customer_service.content,
+        customer_service.user_id,
+        customer_service.created_at,
+        cs_answer.id AS csa_id,
+        cs_answer.content AS csa_content,
+        cs_answer.user_id AS csa_user_id,
+        cs_answer.created_at AS csa_created_at
+      FROM customer_service
+      LEFT JOIN cs_answer ON customer_service.id = cs_answer.customer_service_id
+      WHERE customer_service.id = ? AND customer_service.user_id = ? AND customer_service.deleted_at IS NULL
       `,
-      [userId, customerServiceId]
+      [customerServiceId, userId]
     );
 
     if (!csDetail || csDetail.length === 0) {
       throw new Error("게시글을 찾을 수 없습니다");
-    }
-
-    if (csDetail[0].user_id !== userId) {
-      throw new Error("게시글 열람 권한이 없습니다");
     }
 
     return csDetail[0];
@@ -66,7 +61,7 @@ const getCsDetailDao = async (userId, customerServiceId) => {
 };
 
 //고객센터 문의 리스트
-const CsListDao = async (startItem, pageSize) => {
+const CsListDao = async (userId, startItem, pageSize) => {
   try {
     const csListQuery = `
       SELECT
@@ -79,17 +74,18 @@ const CsListDao = async (startItem, pageSize) => {
         customer_service
       WHERE
         customer_service.deleted_at IS NULL
+        AND customer_service.user_id = ?
       ORDER BY
         created_at DESC
       LIMIT ? OFFSET ?;
     `;
     const totalQuery = `
-      SELECT COUNT(*) AS total FROM customer_service WHERE deleted_at IS NULL
+      SELECT COUNT(*) AS total FROM customer_service WHERE deleted_at IS NULL AND user_id = ?
     `;
 
     const [csList, totalResult] = await Promise.all([
-      AppDataSource.query(csListQuery, [pageSize, startItem]),
-      AppDataSource.query(totalQuery),
+      AppDataSource.query(csListQuery, [userId, pageSize, startItem]),
+      AppDataSource.query(totalQuery, [userId]),
     ]);
 
     return { csList, total: totalResult[0]?.total || 0 };
