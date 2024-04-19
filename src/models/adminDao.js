@@ -124,7 +124,7 @@ const getPhotoDao = async (letterId) => {
   try {
     const result = await AppDataSource.query(
       `
-      SELECT photo_url FROM photos WHERE letter_id = ?
+      SELECT img_url FROM photos WHERE letter_id = ?
       `,
       [letterId]
     );
@@ -143,7 +143,7 @@ const getLetterDao = async (letterId) => {
         letters.id,
         letters.page,
         content.content,
-        content.content_page
+        content.content_count
       FROM letters 
       JOIN content ON letters.id = content.letter_id
       WHERE letters.id = ?
