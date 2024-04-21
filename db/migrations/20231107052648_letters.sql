@@ -9,6 +9,7 @@ CREATE TABLE `letters` (
   `stamp_id` int NOT NULL,
   `send_address_id` int NULL,
   `delivery_address_id` int NULL,
+  `registration_number` varchar(255) DEFAULT "normal",
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 ALTER TABLE `letters` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
