@@ -78,6 +78,7 @@ const {
   getPhotoService,
   getLetterService,
   getLettersService,
+  insertRegistrationService,
 } = require("./adminService");
 
 const 
@@ -133,6 +134,7 @@ module.exports = {
     getPhotoService,
     getLetterService,
     getLettersService,
+    insertRegistrationService,
   },
   checkLetterService,
   checkAndInsertAddressService,

@@ -77,6 +77,7 @@ const {
   adminCsDetailController,
   getCsaListController,
   getLettersInfoController,
+  insertRegistrationController,
 } = require("./adminController");
 
 module.exports = {
@@ -153,5 +154,6 @@ module.exports = {
     adminCsDetailController,
     getCsaListController,
     getLettersInfoController,
+    insertRegistrationController,
   },
 };

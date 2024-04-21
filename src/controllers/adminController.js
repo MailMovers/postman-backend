@@ -13,6 +13,7 @@ const {
   getPhotoService,
   getLetterService,
   getLettersService,
+  insertRegistrationService,
 } = require("../services/adminService");
 const { getUserByIdDao } = require("../models/productDao");
 //어드민 상품 수정
@@ -312,6 +313,24 @@ const adminCsDetailController = async (req, res, next) => {
   }
 };
 
+const insertRegistrationController = async (req, res, next) => {
+  try {
+    const letterId = req.body.letterId
+    const numberOfRegistration = req.body.registrationNumber;
+    if (length.numberOfRegistration ==! 13) {
+      return res.status(400).json({message: "올바른 등기번호 13자리를 입력해 주세요"})
+    } 
+    const data = await insertRegistrationService(numberOfRegistration, letterId)
+    return res.status(200).json({
+      message: "SUCCESS",
+      data: data
+    })
+  } catch(error) {
+    console.error("insertRegistrationController에서 발생한 오류", error);
+    next(error)
+  }
+}
+
 module.exports = {
   updataProductController,
   getAllAddressController,
@@ -328,4 +347,5 @@ module.exports = {
   adminCsDetailController,
   getCsaListController,
   getLettersInfoController,
+  insertRegistrationController,
 };
