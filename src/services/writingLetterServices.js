@@ -28,6 +28,8 @@ const {
 } = require("../models/addressDao");
 const { getPricesDao, getRecipe } = require("../models/paymentDao");
 
+const  tracking  = require("./tracking");
+
 const letterService = async (userId, writingPadId, contents) => {
   try {
     const page = contents.length;
@@ -272,11 +274,27 @@ const historyLetterService = async (userId, letterId) => {
     if (letterId) {
       const letterInformation = await confirmLetterDao(letterId);
       const recipe = await getRecipe(letterId);
-      const photo = await getPhotosDao(letterId)
+      const photo = await getPhotosDao(letterId);
       return { letterInformation, recipe, photo };
+    } else {
+      const results = await historyLetterDao(userId);
+      const updatedResults = await Promise.all(results.map(async (result) => {
+        let statusOfDelivery = result.status;
+        if (result.registration_number !== "normal" && result.status !== "배송완료") {
+          try {
+            const trackingResult = await tracking(result.status, result.registration_number, result.letter_id);
+            statusOfDelivery = trackingResult;
+          } catch (error) {
+            console.error("Tracking error:", error);
+          }
+        } 
+        return {
+          ...result,
+          statusOfDelivery,
+        };
+      }));
+      return updatedResults;
     }
-    const result = await historyLetterDao(userId);
-    return result;
   } catch (error) {
     console.error(error);
     throw error;

@@ -80,6 +80,10 @@ const {
   getLettersService,
 } = require("./adminService");
 
+const 
+  tracking
+ = require("./tracking")
+
 module.exports = {
   insertAddressService,
   insertSendAddressService,
@@ -146,4 +150,5 @@ module.exports = {
   s3: { PreSignedUrl, insertS3Url },
   getPrisonAddresses,
   getNurserySchoolAddresses,
+  tracking,
 };
