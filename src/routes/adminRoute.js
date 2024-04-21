@@ -17,6 +17,7 @@ const {
   getProductReviewlistController,
   adminCsDetailController,
   getLettersInfoController,
+  insertRegistrationController,
 } = require("../controllers/adminController");
 
 const {
@@ -76,5 +77,7 @@ adminRoute.get("/letter", auth, getLetterController);
 adminRoute.get("/photo", auth, getPhotoController);
 // 우편주소 불러오기
 adminRoute.get("/address", auth, getAddressController);
+// 등기번호 저장하기
+adminRoute.post("/registration", auth, insertRegistrationController);
 
 module.exports = { adminRoute };

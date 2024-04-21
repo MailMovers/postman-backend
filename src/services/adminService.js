@@ -13,6 +13,7 @@ const {
   getPhotoDao,
   getLetterDao,
   getLettersInfoDao,
+  insertRegistrationDao,
 } = require("../models/adminDao");
 //어드민 상품 수정
 const updateProductService = async (
@@ -117,6 +118,10 @@ const getCsaListService = async (customerServiceId) => {
   return await getCsaListDao(customerServiceId);
 };
 
+const insertRegistrationService = async (numberOfRegistration, letterId) =>{
+  return await insertRegistrationDao(numberOfRegistration, letterId);
+}
+
 module.exports = {
   updateProductService,
   getAllAddressService,
@@ -132,4 +137,5 @@ module.exports = {
   getPhotoService,
   getLetterService,
   getLettersService,
+  insertRegistrationService,
 };
