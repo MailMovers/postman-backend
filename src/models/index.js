@@ -31,6 +31,7 @@ const {
   prisonAddress,
   nurserySchoolAddress,
   deleteAllContentsByLetterId,
+  updateLetterTrackStatusDao,
 } = require("./writingLetterDao");
 
 // user dao
@@ -183,4 +184,5 @@ module.exports = {
   prisonAddress,
   nurserySchoolAddress,
   deleteAllContentsByLetterId,
+  updateLetterTrackStatusDao,
 };
