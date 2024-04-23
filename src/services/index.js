@@ -79,11 +79,10 @@ const {
   getLetterService,
   getLettersService,
   insertRegistrationService,
+  changeStatusService,
 } = require("./adminService");
 
-const 
-  tracking
- = require("./tracking")
+const tracking = require("./tracking");
 
 module.exports = {
   insertAddressService,
@@ -135,6 +134,7 @@ module.exports = {
     getLetterService,
     getLettersService,
     insertRegistrationService,
+    changeStatusService,
   },
   checkLetterService,
   checkAndInsertAddressService,

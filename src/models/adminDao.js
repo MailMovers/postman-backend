@@ -64,7 +64,8 @@ const getLettersInfoDao = async () => {
         letters.id AS letterId, 
         writing_pads.name, 
         letters.page, 
-        letters.photo_count, 
+        letters.photo_count,
+        letters.status,
         MAX(orders.created_at) AS latestOrderCreatedAt
       FROM 
         letters
@@ -75,7 +76,7 @@ const getLettersInfoDao = async () => {
       WHERE 
         orders.status = 'done'
       GROUP BY 
-        letters.id, writing_pads.name, letters.page, letters.photo_count
+        letters.id, writing_pads.name, letters.page, letters.photo_count, letters.status
       ORDER BY 
         latestOrderCreatedAt ASC
       `
@@ -371,6 +372,18 @@ const insertRegistrationDao = async (numberOfRegistration, letterId) => {
   return result;
 };
 
+const changeStatusDao = async (letterId) => {
+  const result = await AppDataSource.query(
+    `
+    UPDATE letters
+    SET status = "printed"
+    WHERE id = ?
+    `,
+    [letterId]
+  );
+  return result;
+};
+
 module.exports = {
   upDateProductDao,
   getLetterAddressDao,
@@ -387,4 +400,5 @@ module.exports = {
   getLetterDao,
   getLettersInfoDao,
   insertRegistrationDao,
+  changeStatusDao,
 };
