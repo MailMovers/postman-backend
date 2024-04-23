@@ -14,6 +14,7 @@ const {
   getLetterService,
   getLettersService,
   insertRegistrationService,
+  changeStatusService,
 } = require("../services/adminService");
 const { getUserByIdDao } = require("../models/productDao");
 //어드민 상품 수정
@@ -321,9 +322,10 @@ const insertRegistrationController = async (req, res, next) => {
       return res.status(400).json({message: "올바른 등기번호 13자리를 입력해 주세요"})
     } 
     const data = await insertRegistrationService(numberOfRegistration, letterId)
+    const changeStatus = await changeStatusService(letterId)
     return res.status(200).json({
       message: "SUCCESS",
-      data: data
+      data: { data,changeStatus }
     })
   } catch(error) {
     console.error("insertRegistrationController에서 발생한 오류", error);
