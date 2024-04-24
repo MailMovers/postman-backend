@@ -77,6 +77,8 @@ jobs:
                             secret: GOOGLE_CALLBACK
                           - name: SOCIAL_REDIRECT_URL
                             secret: SOCIAL_REDIRECT_URL
+                          - name: DATAGOV_SECRET_KEY
+                            secret: DATAGOV_SECRET_KEY
                         ports: 3000
                       context:
                         git:
