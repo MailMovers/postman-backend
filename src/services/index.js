@@ -78,7 +78,11 @@ const {
   getPhotoService,
   getLetterService,
   getLettersService,
+  insertRegistrationService,
+  changeStatusService,
 } = require("./adminService");
+
+const tracking = require("./tracking");
 
 module.exports = {
   insertAddressService,
@@ -129,6 +133,8 @@ module.exports = {
     getPhotoService,
     getLetterService,
     getLettersService,
+    insertRegistrationService,
+    changeStatusService,
   },
   checkLetterService,
   checkAndInsertAddressService,
@@ -146,4 +152,5 @@ module.exports = {
   s3: { PreSignedUrl, insertS3Url },
   getPrisonAddresses,
   getNurserySchoolAddresses,
+  tracking,
 };

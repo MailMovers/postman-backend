@@ -320,6 +320,7 @@ const historyLetterDao = async (userId) => {
       SELECT 
           letters.id AS letterId,
           letters.status,
+          letters.registration_number,
           writing_pads.name,
           writing_pads.id AS writingPadId,
           delivery_address.delivery_address,
@@ -434,6 +435,23 @@ const deleteAllContentsByLetterId = async (letterId) => {
   }
 };
 
+const updateLetterTrackStatusDao = async (insertInfo,letterId) => {
+  try {
+    const result = await AppDataSource.query(
+      `
+      UPDATE letters
+      SET status = ?
+      WHERE id = ?
+      `,
+      [insertInfo ,letterId]
+    );
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 module.exports = {
   letterDao,
   photoDao,
@@ -456,4 +474,5 @@ module.exports = {
   prisonAddress,
   nurserySchoolAddress,
   deleteAllContentsByLetterId,
+  updateLetterTrackStatusDao,
 };
