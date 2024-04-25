@@ -13,6 +13,9 @@ const {
   getPhotoDao,
   getLetterDao,
   getLettersInfoDao,
+  insertRegistrationDao,
+  changeStatusDao,
+  getLettersByDateTimeRangeDao
 } = require("../models/adminDao");
 //어드민 상품 수정
 const updateProductService = async (
@@ -46,7 +49,10 @@ const updateProductService = async (
     productId
   );
 };
-const getLettersService = async () => {
+const getLettersService = async (startDate, endDate) => {
+  if ((startDate, endDate)) {
+    return await getLettersByDateTimeRangeDao(startDate, endDate);
+  }
   return await getLettersInfoDao();
 };
 
@@ -117,6 +123,14 @@ const getCsaListService = async (customerServiceId) => {
   return await getCsaListDao(customerServiceId);
 };
 
+const insertRegistrationService = async (numberOfRegistration, letterId) => {
+  return await insertRegistrationDao(numberOfRegistration, letterId);
+};
+
+const changeStatusService = async (letterId) => {
+  return await changeStatusDao(letterId);
+};
+
 module.exports = {
   updateProductService,
   getAllAddressService,
@@ -132,4 +146,6 @@ module.exports = {
   getPhotoService,
   getLetterService,
   getLettersService,
+  insertRegistrationService,
+  changeStatusService,
 };

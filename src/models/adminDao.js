@@ -64,7 +64,8 @@ const getLettersInfoDao = async () => {
         letters.id AS letterId, 
         writing_pads.name, 
         letters.page, 
-        letters.photo_count, 
+        letters.photo_count,
+        letters.status,
         MAX(orders.created_at) AS latestOrderCreatedAt
       FROM 
         letters
@@ -72,10 +73,12 @@ const getLettersInfoDao = async () => {
         orders ON letters.id = orders.letter_id
       JOIN 
         writing_pads ON letters.writing_pad_id = writing_pads.id
-      WHERE 
+        WHERE 
         orders.status = 'done'
+        AND orders.created_at > CURDATE() - INTERVAL 1 DAY + INTERVAL 17 HOUR
+        AND orders.created_at <= CURDATE() + INTERVAL 17 HOUR
       GROUP BY 
-        letters.id, writing_pads.name, letters.page, letters.photo_count
+        letters.id, writing_pads.name, letters.page, letters.photo_count, letters.status
       ORDER BY 
         latestOrderCreatedAt ASC
       `
@@ -83,6 +86,37 @@ const getLettersInfoDao = async () => {
     return result;
   } catch (err) {
     console.error("getLettersInfo에서 발생한 오류", err);
+    throw err;
+  }
+};
+
+const getLettersByDateTimeRangeDao = async (startDate, endDate) => {
+  try {
+    const result = await AppDataSource.query(
+      `
+      SELECT 
+        letters.id AS letterId, 
+        writing_pads.name, 
+        letters.page, 
+        letters.photo_count,
+        letters.status,
+        orders.created_at AS orderCreatedAt
+      FROM 
+        letters
+      JOIN 
+        orders ON letters.id = orders.letter_id
+      JOIN 
+        writing_pads ON letters.writing_pad_id = writing_pads.id
+      WHERE 
+        orders.created_at >= ? AND orders.created_at <= ?
+      ORDER BY 
+        orders.created_at ASC
+      `,
+      [startDate, endDate]
+    );
+    return result;
+  } catch (err) {
+    console.error("getLettersByDateTimeRange에서 발생한 오류", err);
     throw err;
   }
 };
@@ -119,7 +153,7 @@ const getLetterAddressDao = async (letterId) => {
     throw err;
   }
 };
-// 고객첨부 사진 불러오기 
+// 고객첨부 사진 불러오기
 const getPhotoDao = async (letterId) => {
   try {
     const result = await AppDataSource.query(
@@ -134,7 +168,7 @@ const getPhotoDao = async (letterId) => {
     throw err;
   }
 };
-// 고객작성 편지 내용 불러오기 
+// 고객작성 편지 내용 불러오기
 const getLetterDao = async (letterId) => {
   try {
     const result = await AppDataSource.query(
@@ -359,6 +393,30 @@ const getCsaListDao = async (customerServiceId) => {
   return csaList;
 };
 
+const insertRegistrationDao = async (numberOfRegistration, letterId) => {
+  const result = await AppDataSource.query(
+    `
+    UPDATE letters
+    SET registration_number = ?
+    WHERE id = ?
+  `,
+    [numberOfRegistration, letterId]
+  );
+  return result;
+};
+
+const changeStatusDao = async (letterId) => {
+  const result = await AppDataSource.query(
+    `
+    UPDATE letters
+    SET status = "printed"
+    WHERE id = ?
+    `,
+    [letterId]
+  );
+  return result;
+};
+
 module.exports = {
   upDateProductDao,
   getLetterAddressDao,
@@ -374,4 +432,7 @@ module.exports = {
   getPhotoDao,
   getLetterDao,
   getLettersInfoDao,
+  insertRegistrationDao,
+  changeStatusDao,
+  getLettersByDateTimeRangeDao
 };

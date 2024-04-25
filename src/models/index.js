@@ -31,6 +31,7 @@ const {
   prisonAddress,
   nurserySchoolAddress,
   deleteAllContentsByLetterId,
+  updateLetterTrackStatusDao,
 } = require("./writingLetterDao");
 
 // user dao
@@ -52,6 +53,7 @@ const {
   newProductDao,
   popularProductDao,
   deleteMyReviewDao,
+  getMainReviewsDao,
 } = require("./productDao");
 
 const {
@@ -96,6 +98,9 @@ const {
   getPhotoDao,
   getLetterDao,
   getLettersInfoDao,
+  insertRegistrationDao,
+  changeStatusDao,
+  getLettersByDateTimeRangeDao
 } = require("./adminDao");
 
 module.exports = {
@@ -154,6 +159,9 @@ module.exports = {
     getPhotoDao,
     getLetterDao,
     getLettersInfoDao,
+    insertRegistrationDao,
+    changeStatusDao,
+    getLettersByDateTimeRangeDao
   },
   contentDao,
   checkLetterDao,
@@ -183,4 +191,6 @@ module.exports = {
   prisonAddress,
   nurserySchoolAddress,
   deleteAllContentsByLetterId,
+  updateLetterTrackStatusDao,
+  getMainReviewsDao,
 };

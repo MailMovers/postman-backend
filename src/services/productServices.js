@@ -12,6 +12,7 @@ const {
   getCategoryListWithCountDao,
   newProductDao,
   popularProductDao,
+  getMainReviewsDao,
 } = require("../models/productDao");
 
 const {
@@ -147,6 +148,11 @@ const popularProductService = async () => {
   }));
 };
 
+const getMainReviewsService = async () => {
+  const result = await getMainReviewsDao();
+  return result
+}
+
 module.exports = {
   insertProductService,
   deleteProductService,
@@ -160,4 +166,5 @@ module.exports = {
   getReviewListService,
   newProductService,
   popularProductService,
+  getMainReviewsService,
 };
