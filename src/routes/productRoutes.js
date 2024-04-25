@@ -33,6 +33,8 @@ productRoute.get("/category", getProductCategoriController);
 productRoute.get("/new", newProductController);
 //편지지 인기 Scroe
 productRoute.get("/popular", popularProductContoller);
+//메인화면 리뷰 불러오기
+productRoute.get("/reviewsList", getMainReviewsController)
 //상품 상세보기
 productRoute.get("/:productId", getProductController);
 //편지지 이미지 불러오기
@@ -45,8 +47,7 @@ productRoute.post("/:productId", auth, insertReviewController);
 productRoute.get("/:productId/review", getReviewController);
 //리뷰 삭제
 productRoute.post("/:productId/review/delete", auth, deleteReviewController);
-//메인화면 리뷰 불러오기
-productRoute.get("/reviewsList", getMainReviewsController)
+
 //편지지 추천 Price
 
 module.exports = { productRoute };
