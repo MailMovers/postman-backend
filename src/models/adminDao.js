@@ -177,10 +177,16 @@ const getLetterDao = async (letterId) => {
         letters.id,
         letters.page,
         content.content,
-        content.content_count
-      FROM letters 
-      JOIN content ON letters.id = content.letter_id
-      WHERE letters.id = ?
+        content.content_count,
+        writing_pads.pad_img_url
+      FROM 
+        letters 
+      JOIN 
+        content ON letters.id = content.letter_id
+      JOIN 
+        writing_pads ON letters.writing_pad_id = writing_pads.id
+      WHERE 
+        letters.id = ?;
       `,
       [letterId]
     );
