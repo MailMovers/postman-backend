@@ -13,6 +13,7 @@ const {
   getReviewListService,
   newProductService,
   popularProductService,
+  getMainReviewsService,
 } = require("../services/productServices");
 
 const {
@@ -349,6 +350,18 @@ const popularProductContoller = async (req, res, next) => {
     next(err);
   }
 };
+const getMainReviewsController = async (req, res, next) => {
+  try {
+    const result = await getMainReviewsService();
+    return res.status(200).json({
+      message: "SUCCESS",
+      data: result,
+    })
+  } catch (err) {
+    console.error("getMainReviewsController에서 발생한 오류", err)
+    next(err)
+  }
+}
 
 module.exports = {
   insertProductController,
@@ -365,4 +378,5 @@ module.exports = {
   popularProductContoller,
   deleteMyreviewController,
   getPreSignedUrlController,
+  getMainReviewsController,
 };

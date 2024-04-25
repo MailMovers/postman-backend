@@ -50,6 +50,7 @@ const {
   getReviewListService,
   newProductService,
   popularProductService,
+  getMainReviewsService
 } = require("./productServices");
 
 const {
@@ -153,4 +154,5 @@ module.exports = {
   getPrisonAddresses,
   getNurserySchoolAddresses,
   tracking,
+  getMainReviewsService,
 };
