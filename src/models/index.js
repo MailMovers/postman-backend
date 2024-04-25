@@ -99,6 +99,7 @@ const {
   getLettersInfoDao,
   insertRegistrationDao,
   changeStatusDao,
+  getLettersByDateTimeRangeDao
 } = require("./adminDao");
 
 module.exports = {
@@ -159,6 +160,7 @@ module.exports = {
     getLettersInfoDao,
     insertRegistrationDao,
     changeStatusDao,
+    getLettersByDateTimeRangeDao
   },
   contentDao,
   checkLetterDao,

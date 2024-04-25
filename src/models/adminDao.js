@@ -73,8 +73,10 @@ const getLettersInfoDao = async () => {
         orders ON letters.id = orders.letter_id
       JOIN 
         writing_pads ON letters.writing_pad_id = writing_pads.id
-      WHERE 
+        WHERE 
         orders.status = 'done'
+        AND orders.created_at > CURDATE() - INTERVAL 1 DAY + INTERVAL 17 HOUR
+        AND orders.created_at <= CURDATE() + INTERVAL 17 HOUR
       GROUP BY 
         letters.id, writing_pads.name, letters.page, letters.photo_count, letters.status
       ORDER BY 
@@ -84,6 +86,37 @@ const getLettersInfoDao = async () => {
     return result;
   } catch (err) {
     console.error("getLettersInfo에서 발생한 오류", err);
+    throw err;
+  }
+};
+
+const getLettersByDateTimeRangeDao = async (startDate, endDate) => {
+  try {
+    const result = await AppDataSource.query(
+      `
+      SELECT 
+        letters.id AS letterId, 
+        writing_pads.name, 
+        letters.page, 
+        letters.photo_count,
+        letters.status,
+        orders.created_at AS orderCreatedAt
+      FROM 
+        letters
+      JOIN 
+        orders ON letters.id = orders.letter_id
+      JOIN 
+        writing_pads ON letters.writing_pad_id = writing_pads.id
+      WHERE 
+        orders.created_at >= ? AND orders.created_at <= ?
+      ORDER BY 
+        orders.created_at ASC
+      `,
+      [startDate, endDate]
+    );
+    return result;
+  } catch (err) {
+    console.error("getLettersByDateTimeRange에서 발생한 오류", err);
     throw err;
   }
 };
@@ -401,4 +434,5 @@ module.exports = {
   getLettersInfoDao,
   insertRegistrationDao,
   changeStatusDao,
+  getLettersByDateTimeRangeDao
 };
