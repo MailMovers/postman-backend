@@ -454,6 +454,7 @@ const getMainReviewsDao = async () => {
     ORDER BY score  DESC
     LIMIT 4;
     `);
+    return result
   } catch (err) {
     console.error("getMainReviewsDao에서 오류:", err);
     throw err;
