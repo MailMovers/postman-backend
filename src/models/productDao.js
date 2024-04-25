@@ -448,7 +448,7 @@ const getMainReviewsDao = async () => {
   try {
     const result = await AppDataSource.query(`
     SELECT 
-    r.id , r.content , r.score, wp.pad_img_url  
+    r.id , r.content , r.score, wp.img_url_1  
     FROM reviews r, writing_pads wp 
     WHERE r.writing_pad_id = wp.id 
     ORDER BY score  DESC
