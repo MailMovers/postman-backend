@@ -53,6 +53,7 @@ const {
   newProductDao,
   popularProductDao,
   deleteMyReviewDao,
+  getMainReviewsDao,
 } = require("./productDao");
 
 const {
@@ -191,4 +192,5 @@ module.exports = {
   nurserySchoolAddress,
   deleteAllContentsByLetterId,
   updateLetterTrackStatusDao,
+  getMainReviewsDao,
 };
