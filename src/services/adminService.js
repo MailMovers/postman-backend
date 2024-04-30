@@ -50,7 +50,7 @@ const updateProductService = async (
   );
 };
 const getLettersService = async (startDate, endDate) => {
-  if ((startDate, endDate)) {
+  if ((startDate && endDate)) {
     return await getLettersByDateTimeRangeDao(startDate, endDate);
   }
   return await getLettersInfoDao();
