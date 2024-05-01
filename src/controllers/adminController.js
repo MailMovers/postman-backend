@@ -92,7 +92,7 @@ const updataProductController = async (req, res, next) => {
 
 const getLettersInfoController = async (req, res, next) => {
   try {
-    const { startDate, endDate } = req.body;
+    const { startDate, endDate } = req.query;
     const result = await getLettersService(startDate, endDate);
     return res.status(200).json({ message: "SUCCESS", data: result });
   } catch (err) {

@@ -50,7 +50,7 @@ const updateProductService = async (
   );
 };
 const getLettersService = async (startDate, endDate) => {
-  if ((startDate, endDate)) {
+  if ((startDate && endDate)) {
     return await getLettersByDateTimeRangeDao(startDate, endDate);
   }
   return await getLettersInfoDao();
@@ -71,6 +71,7 @@ const getLetterService = async (letterId) => {
     if (result.length > 0) {
       const formattedResult = {
         id: result[0].id,
+        pad: result[0].pad_img_url,
         page: result[0].page,
         contents: result.map((item) => ({
           content: item.content,
