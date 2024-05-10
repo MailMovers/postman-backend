@@ -27,7 +27,7 @@ const whitelist = [
     'https://mail-movers-admin-vercel.vercel.app',
     'https://port-0-mail-movers-admin-vercel-199u12dls5r68ip.sel5.cloudtype.app',
     'https://mailtree.co.kr',
-    'https://port-0-mailmavers-frontend-1ru12mlvza49dk.sel5.cloudtype.app/ ',
+    'https://port-0-mailmavers-frontend-1ru12mlvza49dk.sel5.cloudtype.app',
 ];
 
 const createApp = () => {
