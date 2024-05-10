@@ -13,6 +13,8 @@ const {
   getPhotoService,
   getLetterService,
   getLettersService,
+  insertRegistrationService,
+  changeStatusService,
 } = require("../services/adminService");
 const { getUserByIdDao } = require("../models/productDao");
 //어드민 상품 수정
@@ -90,8 +92,9 @@ const updataProductController = async (req, res, next) => {
 
 const getLettersInfoController = async (req, res, next) => {
   try {
-    const result = await getLettersService();
-    return result;
+    const { startDate, endDate } = req.query;
+    const result = await getLettersService(startDate, endDate);
+    return res.status(200).json({ message: "SUCCESS", data: result });
   } catch (err) {
     console.error("getLettersInfoController에서 발생한 애러", err);
     next(err);
@@ -233,9 +236,9 @@ const getCsaListController = async (req, res, next) => {
 
 const getLetterController = async (req, res, next) => {
   try {
-    const letterId = req.query;
+    const { letterId } = req.query;
     const result = await getLetterService(letterId);
-    return result;
+    return res.status(200).json({ message: "SUCCESS", data: result });
   } catch (err) {
     console.error(err);
     next(err);
@@ -243,9 +246,9 @@ const getLetterController = async (req, res, next) => {
 };
 const getPhotoController = async (req, res, next) => {
   try {
-    const letterId = req.query;
+    const { letterId } = req.query;
     const result = await getPhotoService(letterId);
-    return result;
+    return res.status(200).json({ message: "SUCCESS", data: result });
   } catch (err) {
     console.error(err);
     next(err);
@@ -253,9 +256,9 @@ const getPhotoController = async (req, res, next) => {
 };
 const getAddressController = async (req, res, next) => {
   try {
-    const letterId = req.query;
+    const { letterId } = req.query;
     const result = await getAllAddressService(letterId);
-    return result;
+    return res.status(200).json({ message: "SUCCESS", data: result });
   } catch (err) {
     console.error(err);
     next(err);
@@ -312,6 +315,30 @@ const adminCsDetailController = async (req, res, next) => {
   }
 };
 
+const insertRegistrationController = async (req, res, next) => {
+  try {
+    const letterId = req.body.letterId;
+    const numberOfRegistration = req.body.registrationNumber;
+    if (length.numberOfRegistration == !13) {
+      return res
+        .status(400)
+        .json({ message: "올바른 등기번호 13자리를 입력해 주세요" });
+    }
+    const data = await insertRegistrationService(
+      numberOfRegistration,
+      letterId
+    );
+    const changeStatus = await changeStatusService(letterId);
+    return res.status(200).json({
+      message: "SUCCESS",
+      data: { data, changeStatus },
+    });
+  } catch (error) {
+    console.error("insertRegistrationController에서 발생한 오류", error);
+    next(error);
+  }
+};
+
 module.exports = {
   updataProductController,
   getAllAddressController,
@@ -327,5 +354,6 @@ module.exports = {
   getProductReviewlistController,
   adminCsDetailController,
   getCsaListController,
-  getLettersInfoController
+  getLettersInfoController,
+  insertRegistrationController,
 };

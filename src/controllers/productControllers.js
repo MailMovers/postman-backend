@@ -13,6 +13,7 @@ const {
   getReviewListService,
   newProductService,
   popularProductService,
+  getMainReviewsService,
 } = require("../services/productServices");
 
 const {
@@ -23,7 +24,6 @@ const {
 } = require("../models/productDao");
 
 const getPreSignedUrlController = async (req, res, next) => {
-console.log(req)
   try {
     const file = req.file;
     const folderName = "products";
@@ -58,6 +58,7 @@ const insertProductController = async (req, res, next) => {
       category,
       descriptionId,
     } = req.body;
+  
 
     const productInsertionResult = await insertProductService(
       name,
@@ -78,8 +79,6 @@ const insertProductController = async (req, res, next) => {
       return res.status(400).json({ message: "KEY_ERROR" });
     }
     const user = await getUserByIdDao(userId);
-    console.log("controller", user);
-    console.log(user.user_role_id);
     if (!user || user.user_role_id !== 3) {
       return res.status(400).json({ message: "권한이 없습니다" });
     }
@@ -187,7 +186,6 @@ const insertReviewController = async (req, res, next) => {
     await insertReviewService(userId, Number(productId), score, content, letterId);
     const user = await getUserByReviewDao(letterId);
     if (user.orderStatus !== "DONE") {
-      console.log("리뷰 권한이 없습니다. 주문 상태:", user.orderStatus);
       return res.status(400).json({ message: "리뷰 권한이 없습니다" });
     }
     if (!userId || userId.length === 0)
@@ -352,6 +350,18 @@ const popularProductContoller = async (req, res, next) => {
     next(err);
   }
 };
+const getMainReviewsController = async (req, res, next) => {
+  try {
+    const result = await getMainReviewsService();
+    return res.status(200).json({
+      message: "SUCCESS",
+      data: result,
+    })
+  } catch (err) {
+    console.error("getMainReviewsController에서 발생한 오류", err)
+    next(err)
+  }
+}
 
 module.exports = {
   insertProductController,
@@ -368,4 +378,5 @@ module.exports = {
   popularProductContoller,
   deleteMyreviewController,
   getPreSignedUrlController,
+  getMainReviewsController,
 };

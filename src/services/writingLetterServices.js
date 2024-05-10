@@ -28,6 +28,8 @@ const {
 } = require("../models/addressDao");
 const { getPricesDao, getRecipe } = require("../models/paymentDao");
 
+const  tracking  = require("./tracking");
+
 const letterService = async (userId, writingPadId, contents) => {
   try {
     const page = contents.length;
@@ -134,7 +136,6 @@ const checkLetterService = async (userId) => {
     const letters = await Promise.all(
       result.map(async (row) => {
         const product = await getProductDao(row.writing_pad_id);
-        console.log(product);
         const productPic = product[0] ? product[0].img_url : null; // product가 null이 아닌 경우에만 img_url에 접근
         return {
           letterId: row.letter_id,
@@ -215,11 +216,9 @@ const confirmLetterService = async (letterId) => {
     const MAX_FREE_PAGES = 3;
 
     const result = await confirmLetterDao(letterId);
-    console.log("result", result);
     const writingPadId = result[0].writing_pad_id;
     const stampId = result[0].stamp_id;
     const prices = await getPricesDao([writingPadId], [stampId]);
-    console.log("prices:", prices);
     const formattedResult = await Promise.all(
       result.map(async (item) => {
         const writingPadPrice = prices.writingPadPrices[0].writingPadPrice;
@@ -234,7 +233,6 @@ const confirmLetterService = async (letterId) => {
 
         const contents = await getContentDao(item.id);
         const photos = await getPhotosDao(item.id);
-        console.log("additionalPageCost : ", additionalPageCost);
         return {
           letterId: item.id,
           writingPadId: item.writing_pad_id,
@@ -276,11 +274,27 @@ const historyLetterService = async (userId, letterId) => {
     if (letterId) {
       const letterInformation = await confirmLetterDao(letterId);
       const recipe = await getRecipe(letterId);
-      const photo = await getPhotosDao(letterId)
+      const photo = await getPhotosDao(letterId);
       return { letterInformation, recipe, photo };
+    } else {
+      const results = await historyLetterDao(userId);
+      const updatedResults = await Promise.all(results.map(async (result) => {
+        let statusOfDelivery = result.status;
+        if (result.registration_number !== "normal" && result.status !== "배송완료") {
+          try {
+            const trackingResult = await tracking(result.status, result.registration_number, result.letter_id);
+            statusOfDelivery = trackingResult;
+          } catch (error) {
+            console.error("Tracking error:", error);
+          }
+        } 
+        return {
+          ...result,
+          statusOfDelivery,
+        };
+      }));
+      return updatedResults;
     }
-    const result = await historyLetterDao(userId);
-    return result;
   } catch (error) {
     console.error(error);
     throw error;

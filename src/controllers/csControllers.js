@@ -93,13 +93,14 @@ const getCsDetailController = async (req, res, next) => {
 //게시글 리스트 보여주기
 const getCslistController = async (req, res, next) => {
   try {
+    const userId = req.userId;
     const page = req.query.page || 1;
     const pageSize = 10;
     if (isNaN(page) || page <= 0) {
       return res.status(400).json({ message: "유효하지 않은 페이지 번호" });
     }
     const startItem = (page - 1) * pageSize;
-    const csList = await getCsListService(startItem, pageSize);
+    const csList = await getCsListService(userId, startItem, pageSize);
     if (!csList || csList.length === 0) {
       return res
         .status(400)

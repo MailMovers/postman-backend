@@ -28,13 +28,14 @@ const insertProductDao = async (
           img_url_5,
           description_img_url,
           pad_img_url,
-          price,add_price,
+          price,
+          add_price,
           description,
           category,
           letter_detail_id
           )
         VALUES
-        (?,?,?,?,?,?,?,?,?,?,?,?)
+        (?,?,?,?,?,?,?,?,?,?,?,?,?)
         `,
     [
       name,
@@ -70,7 +71,6 @@ const getUserByIdDao = async (userId) => {
     [userId]
   );
   const user = result[0];
-  console.log("dao", result);
   return user;
 };
 //상품 삭제
@@ -444,6 +444,23 @@ const popularProductDao = async () => {
   }
 };
 
+const getMainReviewsDao = async () => {
+  try {
+    const result = await AppDataSource.query(`
+    SELECT 
+    r.id , r.content , r.score, wp.img_url_1 AS img_url
+    FROM reviews r, writing_pads wp 
+    WHERE r.writing_pad_id = wp.id 
+    ORDER BY score  DESC
+    LIMIT 4;
+    `);
+    return result
+  } catch (err) {
+    console.error("getMainReviewsDao에서 오류:", err);
+    throw err;
+  }
+};
+
 module.exports = {
   insertProductDao,
   getUserByIdDao,
@@ -461,4 +478,5 @@ module.exports = {
   newProductDao,
   popularProductDao,
   deleteMyReviewDao,
+  getMainReviewsDao,
 };

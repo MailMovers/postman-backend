@@ -12,26 +12,42 @@ const {
   getCategoryListWithCountDao,
   newProductDao,
   popularProductDao,
+  getMainReviewsDao,
 } = require("../models/productDao");
 
-const { recordPointTransactionDao, addPointDao } = require("../models/paymentDao");
+const {
+  recordPointTransactionDao,
+  addPointDao,
+} = require("../models/paymentDao");
 
 const insertProductService = async (
   name,
-  imgUrl,
+  imgUrl1,
+  imgUrl2,
+  imgUrl3,
+  imgUrl4,
+  imgUrl5,
+  descriptionImgUrl,
   padImgUrl,
   price,
   addPrice,
-  discription,
+  description,
+  category,
   descriptionId
 ) => {
-  await insertProductDao(
+ return await insertProductDao(
     name,
-    imgUrl,
+    imgUrl1,
+    imgUrl2,
+    imgUrl3,
+    imgUrl4,
+    imgUrl5,
+    descriptionImgUrl,
     padImgUrl,
     price,
     addPrice,
-    discription,
+    description,
+    category,
     descriptionId
   );
 };
@@ -67,7 +83,7 @@ const insertReviewService = async (
   const reviewPoint = 100;
 
   await insertReviewDao(userId, productId, score, content, letterId);
-  if ((reviewPoint !== 0)) await addPointDao(reviewPoint, userId);
+  if (reviewPoint !== 0) await addPointDao(reviewPoint, userId);
   await recordPointTransactionDao(
     userId,
     reviewPoint,
@@ -132,6 +148,11 @@ const popularProductService = async () => {
   }));
 };
 
+const getMainReviewsService = async () => {
+  const result = await getMainReviewsDao();
+  return result
+}
+
 module.exports = {
   insertProductService,
   deleteProductService,
@@ -145,4 +166,5 @@ module.exports = {
   getReviewListService,
   newProductService,
   popularProductService,
+  getMainReviewsService,
 };

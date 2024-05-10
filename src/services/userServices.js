@@ -2,7 +2,6 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { UserDao } = require('../models');
 const { ErrorNames, CustomError } = require('../utils/customErrors');
-const smtpTransport = require('../config/email.config');
 const { v4: uuidv4 } = require('uuid');
 
 const SOCIAL_PASSWORD = 'a12345678';
@@ -33,72 +32,16 @@ class UserService {
         }
     };
 
-    sendEmail = async ({ email }) => {
+    emailCheck = async ({ email }) => {
         try {
-            // 이메일 중복검사
-            const [user] = await this.userDao.getUserInfoByEmail({
-                email,
-                provider: 'local',
-            });
+            const [data] = await this.userDao.checkEmailDuplicate({ email });
 
-            if (user) {
-                throw new CustomError(ErrorNames.EmailExistError, '이미 가입된 이메일입니다.');
+            // 이미 존재하는 이메일
+            if (data) {
+                throw new CustomError(ErrorNames.EmailExistError, '이미 사용중인 이메일입니다.');
             }
 
-            // 인증번호 생성
-            const authNumber = Math.floor(Math.random() * 888888) + 111111;
-
-            // 인증번호 DB저장
-            await this.userDao.insertAuthNumber({ email, authNumber });
-
-            // 인증번호 전송
-            const mailOptions = {
-                from: process.env.NODEMAILER_USER, // 발신자 이메일 주소
-                to: email,
-                subject: '[MailMovers] 인증 관련 메일입니다.',
-                html: `<h1>아래 인증번호를 확인하여 이메일 인증을 완료해주세요.</h1><br>
-                <p>인증번호 ${authNumber}</p>`,
-            };
-
-            await smtpTransport.sendMail(mailOptions);
-        } catch (error) {
-            throw error;
-        }
-    };
-
-    verifyAuthNumber = async ({ email, authNumber }) => {
-        try {
-            const [auth] = await this.userDao.getAuthNumber({ email });
-
-            const authNumberDate = new Date(auth.created_at);
-            const now = new Date();
-
-            const timeDifference = now - authNumberDate;
-            const minutesDifferenct = timeDifference / (1000 * 60);
-
-            // 유효시간이 3분이 넘어갔다면 삭제 후 에러
-            if (minutesDifferenct > 3) {
-                await this.userDao.deleteAuthNumber({ email });
-
-                throw new CustomError(
-                    ErrorNames.AuthNumberExpiredError,
-                    '인증번호가 유효하지 않습니다.'
-                );
-            }
-
-            // 유효하다면 비교
-            if (Number(authNumber) !== auth.auth_number) {
-                // 일치하지 않는다면 삭제 후 에러
-                await this.userDao.deleteAuthNumber({ email });
-
-                throw new CustomError(
-                    ErrorNames.AuthNumberFailedVerifyError,
-                    '인증번호가 일치하지 않습니다.'
-                );
-            }
-
-            // 인증 성공, DB에서 삭제
-            return await this.userDao.deleteAuthNumber({ email });
+            return true;
         } catch (error) {
             throw error;
         }
@@ -389,6 +332,78 @@ class UserService {
             throw error;
         }
     };
+
+    /* 사용하지 않는 API */
+    // sendEmail = async ({ email }) => {
+    //     try {
+    //         // 이메일 중복검사
+    //         const [user] = await this.userDao.getUserInfoByEmail({
+    //             email,
+    //             provider: 'local',
+    //         });
+
+    //         if (user) {
+    //             throw new CustomError(ErrorNames.EmailExistError, '이미 가입된 이메일입니다.');
+    //         }
+
+    //         // 인증번호 생성
+    //         const authNumber = Math.floor(Math.random() * 888888) + 111111;
+
+    //         // 인증번호 DB저장
+    //         await this.userDao.insertAuthNumber({ email, authNumber });
+
+    //         // 인증번호 전송
+    //         const mailOptions = {
+    //             from: process.env.NODEMAILER_USER, // 발신자 이메일 주소
+    //             to: email,
+    //             subject: '[MailMovers] 인증 관련 메일입니다.',
+    //             html: `<h1>아래 인증번호를 확인하여 이메일 인증을 완료해주세요.</h1><br>
+    //             <p>인증번호 ${authNumber}</p>`,
+    //         };
+
+    //         await smtpTransport.sendMail(mailOptions);
+    //     } catch (error) {
+    //         throw error;
+    //     }
+    // };
+
+    // verifyAuthNumber = async ({ email, authNumber }) => {
+    //     try {
+    //         const [auth] = await this.userDao.getAuthNumber({ email });
+
+    //         const authNumberDate = new Date(auth.created_at);
+    //         const now = new Date();
+
+    //         const timeDifference = now - authNumberDate;
+    //         const minutesDifferenct = timeDifference / (1000 * 60);
+
+    //         // 유효시간이 3분이 넘어갔다면 삭제 후 에러
+    //         if (minutesDifferenct > 3) {
+    //             await this.userDao.deleteAuthNumber({ email });
+
+    //             throw new CustomError(
+    //                 ErrorNames.AuthNumberExpiredError,
+    //                 '인증번호가 유효하지 않습니다.'
+    //             );
+    //         }
+
+    //         // 유효하다면 비교
+    //         if (Number(authNumber) !== auth.auth_number) {
+    //             // 일치하지 않는다면 삭제 후 에러
+    //             await this.userDao.deleteAuthNumber({ email });
+
+    //             throw new CustomError(
+    //                 ErrorNames.AuthNumberFailedVerifyError,
+    //                 '인증번호가 일치하지 않습니다.'
+    //             );
+    //         }
+
+    //         // 인증 성공, DB에서 삭제
+    //         return await this.userDao.deleteAuthNumber({ email });
+    //     } catch (error) {
+    //         throw error;
+    //     }
+    // };
 }
 
 module.exports = UserService;

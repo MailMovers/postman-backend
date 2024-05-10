@@ -12,7 +12,10 @@ const {
   getCsaListDao,
   getPhotoDao,
   getLetterDao,
-  getLettersInfoDao
+  getLettersInfoDao,
+  insertRegistrationDao,
+  changeStatusDao,
+  getLettersByDateTimeRangeDao
 } = require("../models/adminDao");
 //어드민 상품 수정
 const updateProductService = async (
@@ -46,9 +49,12 @@ const updateProductService = async (
     productId
   );
 };
-const getLettersService = async () => {
+const getLettersService = async (startDate, endDate) => {
+  if ((startDate && endDate)) {
+    return await getLettersByDateTimeRangeDao(startDate, endDate);
+  }
   return await getLettersInfoDao();
-}
+};
 
 //편지안에 주소 모두 불러오기
 const getAllAddressService = async (letterId) => {
@@ -60,7 +66,24 @@ const getPhotoService = async (letterId) => {
 };
 
 const getLetterService = async (letterId) => {
-  return await getLetterDao(letterId);
+  try {
+    const result = await getLetterDao(letterId);
+    if (result.length > 0) {
+      const formattedResult = {
+        id: result[0].id,
+        pad: result[0].pad_img_url,
+        page: result[0].page,
+        contents: result.map((item) => ({
+          content: item.content,
+          contentPage: item.content_count,
+        })),
+      };
+      return formattedResult;
+    }
+  } catch (error) {
+    console.error;
+    throw error;
+  }
 };
 
 //공지사항 입력
@@ -101,6 +124,14 @@ const getCsaListService = async (customerServiceId) => {
   return await getCsaListDao(customerServiceId);
 };
 
+const insertRegistrationService = async (numberOfRegistration, letterId) => {
+  return await insertRegistrationDao(numberOfRegistration, letterId);
+};
+
+const changeStatusService = async (letterId) => {
+  return await changeStatusDao(letterId);
+};
+
 module.exports = {
   updateProductService,
   getAllAddressService,
@@ -116,4 +147,6 @@ module.exports = {
   getPhotoService,
   getLetterService,
   getLettersService,
+  insertRegistrationService,
+  changeStatusService,
 };
